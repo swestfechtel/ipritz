@@ -4,17 +4,17 @@
 
     // The width and color of the border
     <stroke
-        android:width="4dp"
+        android:width="2dp"
         android:color="@color/colorBorderGrey" />
     <solid android:color="@color/colorSearchBar" />
     // The desired corner radius. reduce it to keep it less rounded
-    <corners android:radius="125dp" />
+    <corners android:radius="12dp" />
 
     // Add your desired padding
     <padding
-        android:bottom="5dp"
+        android:bottom="0dp"
         android:left="20dp"
         android:right="20dp"
-        android:top="5dp"></padding>
+        android:top="0dp"></padding>
 
 </shape>
