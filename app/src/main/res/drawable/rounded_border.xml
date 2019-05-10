@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    // The width and color of the border
+    <stroke
+        android:width="4dp"
+        android:color="@color/colorBorderGrey" />
+    <solid android:color="@color/colorSearchBar" />
+    // The desired corner radius. reduce it to keep it less rounded
+    <corners android:radius="125dp" />
+
+    // Add your desired padding
+    <padding
+        android:bottom="5dp"
+        android:left="20dp"
+        android:right="20dp"
+        android:top="5dp"></padding>
+
+</shape>
