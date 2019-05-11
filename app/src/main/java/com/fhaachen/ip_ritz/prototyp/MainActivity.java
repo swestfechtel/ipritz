@@ -1,5 +1,6 @@
 package com.fhaachen.ip_ritz.prototyp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -131,6 +132,8 @@ public class MainActivity extends AppCompatActivity
             Log.i("MainActivity", "Navigation item selected: Contact");
         } else if (id == R.id.nav_friends) {
             Log.i("MainActivity", "Navigation item selected: Friends");
+            Intent i = new Intent(getApplicationContext(), FriendsActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_about) {
             Log.i("MainActivity", "Navigation item selected: About");
         } else if (id == R.id.nav_privacy) {
