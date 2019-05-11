@@ -10,6 +10,16 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
+    <string name="menu_bookings">Bookings</string>
+    <string name="menu_payments">Payments</string>
+    <string name="menu_contact">Contact Us</string>
+    <string name="menu_about">About Us</string>
+    <string name="menu_privacy">Privacy</string>
+    <string name="menu_friends">Friends</string>
+    <string name="menu_logout">Log Out</string>
+    <string name="menu_group_communicate">Communicate</string>
+    <string name="menu_group_misc">Miscellaneous</string>
+    <string name="title_activity_test">test</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_tools">Tools</string>

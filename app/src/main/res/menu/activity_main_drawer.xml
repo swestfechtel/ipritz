@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_bookings"
+            android:icon="@drawable/ic_event_note_black_24dp"
+            android:title="@string/menu_bookings" />
+        <item
+            android:id="@+id/nav_payments"
+            android:icon="@drawable/ic_credit_card_black_24dp"
+            android:title="@string/menu_payments" />
+    </group>
+
+    <item android:title="@string/menu_group_communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_contact"
+                android:icon="@drawable/ic_mail_outline_black_24dp"
+                android:title="@string/menu_contact" />
+            <item
+                android:id="@+id/nav_friends"
+                android:icon="@drawable/ic_people_outline_black_24dp"
+                android:title="@string/menu_friends" />
+        </menu>
+    </item>
+    <item android:title="@string/menu_group_misc">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info_outline_black_24dp"
+                android:title="@string/menu_about" />
+            <item
+                android:id="@+id/nav_privacy"
+                android:icon="@drawable/ic_fingerprint_black_24dp"
+                android:title="@string/menu_privacy" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="@string/menu_logout" />
+        </menu>
+    </item>
+
+
+</menu>
