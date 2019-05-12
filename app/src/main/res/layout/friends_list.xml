@@ -2,44 +2,44 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip">
+    android:padding="6dip"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/friendsItemImage"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:padding="10dp"
         android:src="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:id="@+id/firstLine"
+        android:id="@+id/friendsItemFirstLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/secondLine"
+        android:layout_above="@id/friendsItemSecondLine"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/profileImage"
+        android:layout_toRightOf="@id/friendsItemImage"
         android:gravity="center_vertical"
         android:text="Example application"
         android:textColor="#000000"
         style="@style/sub1" />
 
     <TextView
-        android:id="@+id/secondLine"
+        android:id="@+id/friendsItemSecondLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/profileImage"
+        android:layout_toRightOf="@id/friendsItemImage"
         android:text="Description"
         android:textColor="#000000"
-        style="@style/cap" />
+        style="@style/sub2" />
 
     <Button
+        android:id="@+id/friendsItemUnfollowButton"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/firstLine"
         android:text="unfollow"
-        android:background="@drawable/rounded_border"
         style="@style/button" />
 
 </RelativeLayout>

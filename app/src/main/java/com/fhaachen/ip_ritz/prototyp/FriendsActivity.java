@@ -1,36 +1,71 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class FriendsActivity extends AppCompatActivity {
+
+    ImageButton mBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        final ListView listView = findViewById(R.id.list_view_friends);
+        mBackButton = findViewById(R.id.friendsBackButton);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), MainActivity.class);
+                startActivity(i);
+            }
+        });
+
+        final ListView listView = findViewById(R.id.friendsListView);
+
+        /* Hier spaeter json object von rest api parsen */
         String[] friends = new String[]{
                 "Burn Marks", "Maria Snow", "Aurelian Salomon"
         };
+        /* Jedes Listenelement muss spaeter eine eindeutige Id bekommen,
+         * um dann das entsprechende Profil zu laden
+         * => arraylist<int>, fuer jedes erhaltene json object die id
+         * in die arraylist packen, dann entspricht die position in der
+         * arraylist der position in der listview...
+         * */
+        final Integer[] ids = new Integer[]{
+                1, 2, 3
+        };
 
-        final ArrayList<String> list = new ArrayList<String>(friends.length);
+        /*final ArrayList<String> list = new ArrayList<String>(friends.length);
         for (String s : friends)
-            list.add(s);
+            list.add(s);*/
 
         final CustomArrayAdapter adapter = new CustomArrayAdapter(getApplicationContext(), friends);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("FriendsActivity", "List item + " + position + " selected.");
+                int friendId = ids[position];
+                /* hier dann spaeter das entsprechende Profil laden */
+                Intent i = new Intent(view.getContext(), ProfileActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     class CustomArrayAdapter extends ArrayAdapter<String> {
@@ -47,9 +82,9 @@ public class FriendsActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.friends_list, parent, false);
-            TextView firstLine = rowView.findViewById(R.id.firstLine);
-            TextView secondLine = rowView.findViewById(R.id.secondLine);
-            ImageView profileImage = rowView.findViewById(R.id.profileImage);
+            TextView firstLine = rowView.findViewById(R.id.friendsItemFirstLine);
+            TextView secondLine = rowView.findViewById(R.id.friendsItemSecondLine);
+            ImageView profileImage = rowView.findViewById(R.id.friendsItemImage);
 
             firstLine.setText(values[position]);
             secondLine.setText("Location placeholder");

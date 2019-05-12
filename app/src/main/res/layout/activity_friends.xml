@@ -11,24 +11,24 @@
         android:layout_margin="20dp">
 
         <ImageButton
-            android:id="@+id/back_button_friends"
+            android:id="@+id/friendsBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_back_black_24dp" />
 
         <TextView
-            android:id="@+id/header_friends"
+            android:id="@+id/friendsHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_activity_friends"
-            android:layout_below="@id/back_button_friends"
+            android:layout_below="@id/friendsBackButton"
             style="@style/h3" />
 
         <ListView
-            android:id="@+id/list_view_friends"
+            android:id="@+id/friendsListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/header_friends"></ListView>
+            android:layout_below="@id/friendsHeader"></ListView>
     </RelativeLayout>
 
 </RelativeLayout>
