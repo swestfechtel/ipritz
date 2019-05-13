@@ -78,10 +78,11 @@ public class MainActivity extends AppCompatActivity
             }
             location = locManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-            if(location!=null){
+            if(location!=null) {
                 LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(loc).title("Current Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15) );
+
             }
         }
 

@@ -50,14 +50,14 @@
             style="@style/sub1" />
 
         <Button
-            style="@style/button"
             android:id="@+id/btn_follow"
+            style="@style/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/profileLocation"
             android:layout_alignParentRight="true"
             android:layout_marginRight="21dp"
-            android:layout_marginBottom="0dp"
+            android:layout_marginBottom="-48dp"
             android:paddingRight="20dp"
             android:text="unfollow" />
     </RelativeLayout>
@@ -113,6 +113,7 @@
                     android:layout_below="@id/profileChatButton"
                     android:layout_alignParentLeft="true"
                     android:textColor="@color/colorBlack"
+                    tools:visibility="visible"
                     android:text="Chat" />
 
                 <TextView
@@ -120,14 +121,16 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/profileDocksButton"
                     android:layout_centerHorizontal="true"
+                    android:text="Docks"
                     android:textColor="@color/colorBlack"
-                    android:text="Docks" />
+                    tools:visibility="visible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/profileLocationButton"
                     android:layout_alignParentRight="true"
+                    tools:visibility="visible"
                     android:textColor="@color/colorBlack"
                     android:text="Chat" />
             </RelativeLayout>
@@ -167,27 +170,29 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#FFFFFF"
                     android:layout_below="@id/profileFriendsButton"
                     android:layout_alignParentLeft="true"
                     android:textColor="@color/colorBlack"
+                    tools:visibility="visible"
                     android:text="Friends" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#FFFFFF"
+
                     android:layout_below="@id/profileSettingsButton"
                     android:layout_centerHorizontal="true"
+                    tools:visibility="visible"
                     android:textColor="@color/colorBlack"
                     android:text="Settings" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#FFFFFF"
+
                     android:layout_below="@id/profileNotificationsButton"
                     android:layout_alignParentRight="true"
+                    tools:visibility="visible"
                     android:textColor="@color/colorBlack"
                     android:text="Notifications" />
             </RelativeLayout>
