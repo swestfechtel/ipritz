@@ -19,7 +19,7 @@
     <string name="menu_contact">Contact Us</string>
     <string name="menu_about">About Us</string>
     <string name="menu_privacy">Privacy</string>
-    <string name="menu_friends">Friends</string>
+    <string name="menu_friends">Your Friends</string>
     <string name="menu_logout">Log Out</string>
     <string name="menu_group_communicate">Communicate</string>
     <string name="menu_group_misc">Miscellaneous</string>
