@@ -50,14 +50,16 @@
             style="@style/sub1" />
 
         <Button
+            style="@style/button"
+            android:id="@+id/btn_follow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="20dp"
             android:layout_above="@id/profileLocation"
-            android:text="unfollow"
-
-            style="@style/button" />
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="21dp"
+            android:layout_marginBottom="0dp"
+            android:paddingRight="20dp"
+            android:text="unfollow" />
     </RelativeLayout>
 
     <LinearLayout
@@ -75,6 +77,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:backgroundTint="#FFFFFF"
                 android:layout_weight="0.15"
                 android:layout_margin="20dp"
                 android:paddingLeft="20dp"
@@ -84,6 +87,7 @@
                     android:id="@+id/profileChatButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:src="@drawable/ic_chat_bubble_outline_black_24dp"
                     android:layout_alignParentLeft="true" />
 
@@ -91,6 +95,7 @@
                     android:id="@+id/profileDocksButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:src="@drawable/ic_blur_on_black_24dp"
                     android:layout_centerHorizontal="true" />
 
@@ -98,6 +103,7 @@
                     android:id="@+id/profileLocationButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:src="@drawable/ic_location_on_black_24dp"
                     android:layout_alignParentRight="true" />
 
@@ -138,6 +144,7 @@
                     android:id="@+id/profileFriendsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:src="@drawable/ic_people_outline_black_24dp"
                     android:layout_alignParentLeft="true" />
 
@@ -145,6 +152,7 @@
                     android:id="@+id/profileSettingsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:src="@drawable/ic_settings_black_24dp"
                     android:layout_centerHorizontal="true" />
 
@@ -152,12 +160,14 @@
                     android:id="@+id/profileNotificationsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:src="@drawable/ic_notifications_none_black_24dp"
                     android:layout_alignParentRight="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:layout_below="@id/profileFriendsButton"
                     android:layout_alignParentLeft="true"
                     android:textColor="@color/colorBlack"
@@ -166,6 +176,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:layout_below="@id/profileSettingsButton"
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/colorBlack"
@@ -174,6 +185,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
                     android:layout_below="@id/profileNotificationsButton"
                     android:layout_alignParentRight="true"
                     android:textColor="@color/colorBlack"
