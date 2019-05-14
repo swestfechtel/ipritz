@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".AcceptBookingActivity" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="15dp"
+        android:background="@color/colorPrimaryDark">
+
+        <TextView
+            android:id="@+id/acceptBookingHeadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New booking"
+            android:textColor="@color/colorSearchBar"
+            android:layout_margin="20dp"
+            style="@style/h3" />
+
+        <TextView
+            android:id="@+id/acceptBookingBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tim has booked a flight to pick you up.\nPlease accept or decline this ride."
+            android:textColor="@color/colorSearchBar"
+            android:layout_below="@id/acceptBookingHeadline"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            style="@style/body1" />
+
+        <ImageButton
+            android:id="@+id/acceptBookingAcceptButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_check_black_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/acceptBookingBody"
+            android:layout_margin="20dp" />
+
+        <ImageButton
+            android:id="@+id/acceptBookingDeclineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_close_black_24dp"
+            android:layout_below="@id/acceptBookingBody"
+            android:layout_toLeftOf="@id/acceptBookingAcceptButton"
+            android:layout_margin="20dp" />
+    </RelativeLayout>
+</RelativeLayout>
+

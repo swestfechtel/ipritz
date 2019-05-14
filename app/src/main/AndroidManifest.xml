@@ -30,8 +30,14 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".WaitingActivity"
+            android:label="@string/title_activity_waiting"></activity>
+        <activity
+            android:name=".AcceptBookingActivity"
+            android:label="@string/title_activity_accept_booking" />
+        <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FriendsActivity" />
         <activity
