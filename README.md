@@ -8,7 +8,7 @@ Zum Klonen einfach in Android Studio auf File -> New -> Project from version con
 
 Android Studio hat eine eingebaute Version Control. Wenn man neue Dateien zum Projekt hinzufuegt, fragt Android Studio automatisch, ob diese zur Versionskontrolle hinzugefuegt werden sollen. Dies am besten immer bestaetigen.
 
-## Commit
+#### Commit
 
 Nachdem man eigene Aenderungen vorgenommen hat, auf den gruenen Haken in der toolbar oben rechts (git, shortcut strg + k) druecken und commiten. Dann ggf. VCS -> git -> pull, um remote changes zu mergen. Dann die Aenderungen pushen (ggf. auf einen neuen Zweig).
 
