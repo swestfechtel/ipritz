@@ -10,11 +10,13 @@
         android:layout_height="match_parent"
         android:layout_margin="20dp">
 
+        <!-- brauchen bei android keinen back button... -->
         <ImageButton
             android:id="@+id/friendsBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_back_black_24dp" />
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/friendsHeader"

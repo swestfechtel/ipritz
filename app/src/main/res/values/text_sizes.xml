@@ -40,7 +40,7 @@
         <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:letterSpacing">0.15</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="sub1" parent="TextAppearance.AppCompat">
@@ -61,14 +61,14 @@
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:letterSpacing">0.5</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="body2" parent="TextAppearance.AppCompat">
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:letterSpacing">0.25</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="button" parent="TextAppearance.AppCompat">
@@ -82,13 +82,13 @@
         <item name="android:textSize">12sp</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:letterSpacing">0.4</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="over" parent="TextAppearance.AppCompat">
         <item name="android:textSize">10sp</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:letterSpacing">1.5</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 </resources>
