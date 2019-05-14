@@ -76,9 +76,11 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/fetchFetchCancelButtonContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.2">
+            android:layout_weight="0.2"
+            android:visibility="visible">
 
             <Button
                 android:id="@+id/fetchFetchButton"
@@ -95,5 +97,30 @@
                 android:layout_below="@id/fetchFetchButton"
                 style="@style/button" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/fetchOptionButtonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/fetchNormalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="normal\n15 min\n$15"
+                android:layout_gravity="center"
+                style="@style/button" />
+
+            <Button
+                android:id="@+id/fetchFastButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="normal\n10 min\n$25"
+                android:layout_gravity="center"
+                style="@style/button" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

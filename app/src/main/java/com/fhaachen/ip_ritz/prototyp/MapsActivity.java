@@ -2,6 +2,10 @@ package com.fhaachen.ip_ritz.prototyp;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,6 +20,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
+    private Button mFetchButton;
+    private Button mNormalButton;
+
+    private RelativeLayout mFetchFetchCancelButtonContainer;
+    private LinearLayout mFetchOptionButtonContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +34,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mFetchFetchCancelButtonContainer = findViewById(R.id.fetchFetchCancelButtonContainer);
+        mFetchOptionButtonContainer = findViewById(R.id.fetchOptionButtonContainer);
+
+        mFetchButton = findViewById(R.id.fetchFetchButton);
+        mFetchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFetchFetchCancelButtonContainer.setVisibility(View.GONE);
+                mFetchOptionButtonContainer.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mNormalButton = findViewById(R.id.fetchNormalButton);
+        mNormalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 
