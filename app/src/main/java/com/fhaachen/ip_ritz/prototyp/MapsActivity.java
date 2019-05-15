@@ -91,6 +91,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(freundin).title("Freundin"));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(westpark));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
     }
 }

@@ -55,7 +55,8 @@
             android:background="@drawable/ic_close_black_24dp"
             android:layout_below="@id/acceptBookingBody"
             android:layout_toLeftOf="@id/acceptBookingAcceptButton"
-            android:layout_margin="20dp" />
+            android:layout_margin="20dp"
+            />
     </RelativeLayout>
 </RelativeLayout>
 
