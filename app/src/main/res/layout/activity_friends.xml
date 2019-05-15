@@ -2,35 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:backgroundTint="#FFFFFF"
     android:layout_height="match_parent"
     tools:context=".FriendsActivity">
 
     <RelativeLayout
-        android:layout_width="391dp"
-        android:layout_height="711dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp">
 
         <ImageButton
             android:id="@+id/friendsBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
             android:src="@drawable/ic_arrow_back_black_24dp" />
 
         <TextView
             android:id="@+id/friendsHeader"
-            style="@style/h3"
-            android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/title_activity_friends"
             android:layout_below="@id/friendsBackButton"
-            android:text="@string/title_activity_friends" />
+            style="@style/h3" />
 
         <ListView
             android:id="@+id/friendsListView"
