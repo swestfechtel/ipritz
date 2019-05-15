@@ -1,5 +1,10 @@
 package com.fhaachen.ip_ritz.prototyp;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -7,11 +12,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
+import com.google.android.gms.maps.model.Tile;
+
+import java.io.File;
+
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource;
 
 public class WaitingActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -52,12 +64,30 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
         polyline1.setStartCap(new RoundCap());
         polyline1.setEndCap(new RoundCap());
         polyline1.setColor(R.color.colorPrimary);
-
-        /* wie kann ich custom icons fuer marker setzen? */
-        mMap.addMarker(new MarkerOptions().position(drone).title("Drone"));
+        drawMarker(drone, "Flugtaxi");
         mMap.addMarker(new MarkerOptions().position(freundin).title("Freundin"));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(freundin));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+    }
+
+    public void drawMarker(LatLng position, String title) {
+        Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_airplanemode_active_black_24dp);
+        BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+
+        mMap.addMarker(new MarkerOptions()
+                .position(position)
+                .title(title)
+                .icon(markerIcon)
+        );
+    }
+
+    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
