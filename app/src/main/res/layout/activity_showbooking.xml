@@ -18,19 +18,44 @@
             android:backgroundTint="#FFFFFF"
             android:src="@drawable/ic_arrow_back_black_24dp" />
 
-        <TextView
-            android:id="@+id/bookingHeader"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/showHeader"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Your Bookings"
-            android:layout_below="@id/bookingBackButton"
-            style="@style/h3" />
+            android:layout_below="@id/bookingBackButton">
+            <TextView
+                android:id="@+id/bookingHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Flights"
+                android:clickable="true"
+               android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                style="@style/h5" />
+            <TextView
+                android:id="@+id/shoppingHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Orders"
+                android:clickable="true"
+               android:layout_weight="1"
+                style="@style/h5" />
+        </LinearLayout>
+
 
         <ListView
             android:id="@+id/bookingListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/bookingHeader"></ListView>
+            android:layout_below="@id/showHeader"
+            android:visibility="visible"></ListView>
+        <ListView
+            android:id="@+id/ordersListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/showHeader"
+            android:visibility="gone"></ListView>
+
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

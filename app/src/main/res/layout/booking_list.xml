@@ -18,11 +18,11 @@
         style="@style/sub1"/>
 
     <TextView
-        android:id="@+id/BookingItemStart"
+        android:id="@+id/ItemStart"
         style="@style/sub1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/BookingItemEnd"
+        android:layout_above="@id/ItemEnd"
         android:layout_alignParentTop="true"
         android:layout_marginTop="11dp"
         android:layout_marginBottom="1dp"
@@ -40,7 +40,7 @@
         style="@style/sub1"/>
 
     <TextView
-        android:id="@+id/BookingItemEnd"
+        android:id="@+id/ItemEnd"
         style="@style/sub1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         android:textColor="#000000" />
 
     <Button
-        android:id="@+id/BookingItemChancelButton"
+        android:id="@+id/ItemChancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

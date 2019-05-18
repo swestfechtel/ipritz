@@ -2,7 +2,9 @@ package com.fhaachen.ip_ritz.prototyp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,10 @@ import android.widget.TextView;
 public class ShowBookingActivity extends AppCompatActivity {
 
     private ImageButton mBackButton;
+    private TextView BookingButton;
+    private TextView OrderButton;
+    private ListView bookings;
+    private ListView orders;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,14 +37,39 @@ public class ShowBookingActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-        final ListView listView = findViewById(R.id.bookingListView);
-
+        bookings = findViewById(R.id.bookingListView);
+        orders = findViewById(R.id.ordersListView);
+        BookingButton = findViewById(R.id.bookingHeader);
+        BookingButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                orders.setVisibility(View.GONE);
+                bookings.setVisibility(View.VISIBLE);
+                BookingButton.setTextColor(getColor(R.color.colorPrimary));
+                OrderButton.setTextColor(getColor(R.color.colorBlack));
+            }
+        });
+        OrderButton = findViewById(R.id.shoppingHeader);
+        OrderButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                bookings.setVisibility(View.GONE);
+                orders.setVisibility(View.VISIBLE);
+                OrderButton.setTextColor(getColor(R.color.colorPrimary));
+                BookingButton.setTextColor(getColor(R.color.colorBlack));
+            }
+        });
+        final ListView listViewb = findViewById(R.id.bookingListView);
+        final ListView listViewo = findViewById(R.id.ordersListView);
         /* Hier spaeter json object von rest api parsen */
         String[] bookings = new String[]{
-                "Eupenerstraße 70; Nebenstraß 34", "Hauptstraße 1; Postgasse 4", "Testweg 99; Breucheweg 78"
+                "Eupenerstraße 70;Nebenstraß 34", "Hauptstraße 1;Postgasse 4", "Testweg 99;Breucheweg 78"
         };
-
+        String[] orders = new String[]{
+                "Media Markt Aachen;Zuhause", "Edeka Zur Heide;Speyerweg 19"
+        };
         /* Jedes Listenelement muss spaeter eine eindeutige Id bekommen,
          * um dann das entsprechende Profil zu laden
          * => arraylist<int>, fuer jedes erhaltene json object die id
@@ -53,10 +84,23 @@ public class ShowBookingActivity extends AppCompatActivity {
         for (String s : friends)
             list.add(s);*/
 
-        final CustomArrayAdapter adapter = new CustomArrayAdapter(getApplicationContext(), bookings);
-        listView.setAdapter(adapter);
+        final CustomArrayAdapter adapterb = new CustomArrayAdapter(getApplicationContext(), bookings);
+        listViewb.setAdapter(adapterb);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewb.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("BookingItem", "List item + " + position + " selected.");
+                int BookingdId = ids[position];
+                /* hier dann spaeter das entsprechende Profil laden */
+                Intent i = new Intent(view.getContext(), ShowBookingActivity.class);
+                startActivity(i);
+            }
+        });
+        final CustomArrayAdapter adaptero = new CustomArrayAdapter(getApplicationContext(), orders);
+        listViewo.setAdapter(adaptero);
+
+        listViewo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("BookingItem", "List item + " + position + " selected.");
@@ -82,8 +126,8 @@ public class ShowBookingActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.booking_list, parent, false);
-            TextView start = rowView.findViewById(R.id.BookingItemStart);
-            TextView goal = rowView.findViewById(R.id.BookingItemEnd);
+            TextView start = rowView.findViewById(R.id.ItemStart);
+            TextView goal = rowView.findViewById(R.id.ItemEnd);
             String[] g = values[position].split(";");
             start.setText(g[0]);
             goal.setText(g[1]);
