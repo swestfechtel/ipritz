@@ -16,6 +16,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+
+        <!--
+         Main music service, provides media browsing and media playback services to
+         consumers through MediaBrowserService and MediaSession. Consumers connect to it through
+         MediaBrowser (for browsing) and MediaController (for playback control)
+        -->
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -31,7 +40,7 @@
 
         <activity
             android:name=".WaitingActivity"
-            android:label="@string/title_activity_waiting"></activity>
+            android:label="@string/title_activity_waiting" />
         <activity
             android:name=".AcceptBookingActivity"
             android:label="@string/title_activity_accept_booking" />
@@ -40,6 +49,7 @@
             android:label="@string/title_activity_maps" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FriendsActivity" />
+        <activity android:name=".ShowBookingActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_test"

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ShowBookingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp">
+
+        <ImageButton
+            android:id="@+id/bookingBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFF"
+            android:src="@drawable/ic_arrow_back_black_24dp" />
+
+        <TextView
+            android:id="@+id/bookingHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Bookings"
+            android:layout_below="@id/bookingBackButton"
+            style="@style/h3" />
+
+        <ListView
+            android:id="@+id/bookingListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/bookingHeader"></ListView>
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newBooking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:layout_margin="30dp"
+        android:layout_alignParentBottom="true" y="bottom"
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@color/colorButton"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>

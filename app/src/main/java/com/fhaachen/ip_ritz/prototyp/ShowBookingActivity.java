@@ -10,21 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class FriendsActivity extends AppCompatActivity {
+public class ShowBookingActivity extends AppCompatActivity {
 
     private ImageButton mBackButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
+        setContentView(R.layout.activity_showbooking);
 
-        mBackButton = findViewById(R.id.friendsBackButton);
+        mBackButton = findViewById(R.id.bookingBackButton);
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,12 +32,13 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
-        final ListView listView = findViewById(R.id.friendsListView);
+        final ListView listView = findViewById(R.id.bookingListView);
 
         /* Hier spaeter json object von rest api parsen */
-        String[] friends = new String[]{
-                "Burn Marks", "Maria Snow", "Aurelian Salomon"
+        String[] bookings = new String[]{
+                "Eupenerstraße 70; Nebenstraß 34", "Hauptstraße 1; Postgasse 4", "Testweg 99; Breucheweg 78"
         };
+
         /* Jedes Listenelement muss spaeter eine eindeutige Id bekommen,
          * um dann das entsprechende Profil zu laden
          * => arraylist<int>, fuer jedes erhaltene json object die id
@@ -53,16 +53,16 @@ public class FriendsActivity extends AppCompatActivity {
         for (String s : friends)
             list.add(s);*/
 
-        final CustomArrayAdapter adapter = new CustomArrayAdapter(getApplicationContext(), friends);
+        final CustomArrayAdapter adapter = new CustomArrayAdapter(getApplicationContext(), bookings);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("FriendsActivity", "List item + " + position + " selected.");
-                int friendId = ids[position];
+                Log.i("BookingItem", "List item + " + position + " selected.");
+                int BookingdId = ids[position];
                 /* hier dann spaeter das entsprechende Profil laden */
-                Intent i = new Intent(view.getContext(), ProfileActivity.class);
+                Intent i = new Intent(view.getContext(), ShowBookingActivity.class);
                 startActivity(i);
             }
         });
@@ -81,15 +81,12 @@ public class FriendsActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.friends_list, parent, false);
-            TextView firstLine = rowView.findViewById(R.id.friendsItemFirstLine);
-            TextView secondLine = rowView.findViewById(R.id.friendsItemSecondLine);
-            ImageView profileImage = rowView.findViewById(R.id.friendsItemImage);
-
-            firstLine.setText(values[position]);
-            secondLine.setText("Location placeholder");
-            profileImage.setImageResource(R.mipmap.ic_launcher_round);
-
+            View rowView = inflater.inflate(R.layout.booking_list, parent, false);
+            TextView start = rowView.findViewById(R.id.BookingItemStart);
+            TextView goal = rowView.findViewById(R.id.BookingItemEnd);
+            String[] g = values[position].split(";");
+            start.setText(g[0]);
+            goal.setText(g[1]);
             return rowView;
         }
     }

@@ -139,9 +139,12 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             Log.i("MainActivity", "Navigation item selected: Home");
         } else if (id == R.id.nav_bookings) {
-            Log.i("MainActivity", "Navigation item selected: Bookings");
+            Log.i("ShowBookingActivity", "Navigation item selected: Bookings");
+            Intent i = new Intent(getApplicationContext(), ShowBookingActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
+
         } else if (id == R.id.nav_contact) {
             Log.i("MainActivity", "Navigation item selected: Contact");
         } else if (id == R.id.nav_friends) {
