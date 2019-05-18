@@ -20,7 +20,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/ItemImage"
         android:gravity="center_vertical"
-        android:text="Example application"
+        android:text="Example shop"
         android:textColor="#000000"
         style="@style/sub1" />
 

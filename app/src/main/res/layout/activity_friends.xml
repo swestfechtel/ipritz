@@ -16,20 +16,47 @@
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFFFF"
             android:src="@drawable/ic_arrow_back_black_24dp" />
-
-        <TextView
-            android:id="@+id/friendsHeader"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title_activity_friends"
-            android:layout_below="@id/friendsBackButton"
-            style="@style/h3" />
+            android:id="@+id/header"
+            android:layout_below="@id/friendsBackButton">
+            <TextView
+                android:id="@+id/friendsHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/friendsBackButton"
+                android:text="@string/title_activity_friends"
+                android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                android:clickable="true"
+                style="@style/h5"/>
+            <TextView
+                android:id="@+id/favshopsHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/friendsBackButton"
+                android:text="Your Fav. Shops"
+                android:layout_weight="1"
+                android:clickable="true"
+                style="@style/h5"/>
+
+        </LinearLayout>
+
 
         <ListView
             android:id="@+id/friendsListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/friendsHeader"></ListView>
+            android:layout_below="@id/header"></ListView>
+
+        <ListView
+            android:id="@+id/FavShopsListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/header"
+            android:visibility="gone"
+            tools:visibility="gone"></ListView>
     </RelativeLayout>
 
 </RelativeLayout>

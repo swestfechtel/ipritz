@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:padding="6dip"
+    android:descendantFocusability="blocksDescendants">
+
+
+    <TextView
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="1dp"
+        android:layout_alignParentTop="true"
+        android:text="From: "
+        style="@style/sub1"/>
+
+    <TextView
+        android:id="@+id/BookingItemStart"
+        style="@style/sub1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/BookingItemEnd"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="1dp"
+        android:layout_toRightOf="@id/start"
+        android:gravity="center_vertical"
+        android:text="Start Location"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="To: "
+        style="@style/sub1"/>
+
+    <TextView
+        android:id="@+id/ShoppingtemEnd"
+        style="@style/sub1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/end"
+        android:text="Goal Locaation"
+        android:textColor="#000000" />
+
+    <Button
+        android:id="@+id/ShoppingItemChancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="cancel"
+        style="@style/button" />
+
+</RelativeLayout>
