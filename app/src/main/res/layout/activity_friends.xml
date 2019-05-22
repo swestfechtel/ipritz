@@ -31,15 +31,6 @@
                 android:textColor="@color/colorPrimary"
                 android:clickable="true"
                 style="@style/h5"/>
-            <TextView
-                android:id="@+id/favshopsHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/friendsBackButton"
-                android:text="Your Shops"
-                android:layout_weight="1"
-                android:clickable="true"
-                style="@style/h5"/>
 
         </LinearLayout>
 
@@ -50,13 +41,6 @@
             android:layout_height="match_parent"
             android:layout_below="@id/header"></ListView>
 
-        <ListView
-            android:id="@+id/FavShopsListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/header"
-            android:visibility="gone"
-            tools:visibility="gone"></ListView>
     </RelativeLayout>
 
 </RelativeLayout>

@@ -67,4 +67,13 @@
         android:src="@drawable/ic_add"
         android:backgroundTint="@color/colorButton"
         android:layout_alignParentRight="true"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:layout_alignParentBottom="true" y="bottom"
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@color/colorButton"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>

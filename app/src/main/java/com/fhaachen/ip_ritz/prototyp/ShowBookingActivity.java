@@ -1,10 +1,12 @@
 package com.fhaachen.ip_ritz.prototyp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -24,6 +27,8 @@ public class ShowBookingActivity extends AppCompatActivity {
     private TextView OrderButton;
     private ListView bookings;
     private ListView orders;
+    private FloatingActionButton newFlight;
+    private FloatingActionButton newOrder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +44,11 @@ public class ShowBookingActivity extends AppCompatActivity {
         });
         bookings = findViewById(R.id.bookingListView);
         orders = findViewById(R.id.ordersListView);
+        newFlight = findViewById(R.id.newBooking);
+        newOrder = findViewById(R.id.newOrder);
         BookingButton = findViewById(R.id.bookingHeader);
         BookingButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
@@ -48,10 +56,13 @@ public class ShowBookingActivity extends AppCompatActivity {
                 bookings.setVisibility(View.VISIBLE);
                 BookingButton.setTextColor(getColor(R.color.colorPrimary));
                 OrderButton.setTextColor(getColor(R.color.colorBlack));
+                newOrder.setVisibility(View.GONE);
+                newFlight.setVisibility(View.VISIBLE);
             }
         });
         OrderButton = findViewById(R.id.shoppingHeader);
         OrderButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
@@ -59,13 +70,15 @@ public class ShowBookingActivity extends AppCompatActivity {
                 orders.setVisibility(View.VISIBLE);
                 OrderButton.setTextColor(getColor(R.color.colorPrimary));
                 BookingButton.setTextColor(getColor(R.color.colorBlack));
+                newFlight.setVisibility(View.GONE);
+                newOrder.setVisibility(View.VISIBLE);
             }
         });
         final ListView listViewb = findViewById(R.id.bookingListView);
         final ListView listViewo = findViewById(R.id.ordersListView);
         /* Hier spaeter json object von rest api parsen */
         String[] bookings = new String[]{
-                "Eupenerstraße 70;Nebenstraß 34", "Hauptstraße 1;Postgasse 4", "Testweg 99;Breucheweg 78"
+                "Eupenerstraße 70;Nebenstraße 34", "Hauptstraße 1;Postgasse 4", "Testweg 99;Breucheweg 78"
         };
         String[] orders = new String[]{
                 "Media Markt Aachen;Zuhause", "Edeka Zur Heide;Speyerweg 19"
