@@ -8,4 +8,5 @@
     <color name="colorMenuIcon">#1E88E5</color>
     <color name="colorButton">#76ff03</color>
     <color name="colorBlack">#000000</color>
+    <color name="background_popup">#2C3E50</color>
 </resources>

@@ -1,8 +1,11 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -10,16 +13,30 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,18 +44,35 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private FrameLayout flSearch;
+    private ImageButton imageButton;
+    private EditText searchText;
+    private ImageButton closePopupButton;
+    private Button buttonMyself;
+    private Button buttonSomebody;
+
+    DrawerLayout drawerLayout;
+    PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -49,6 +83,8 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
 
     @Override
@@ -130,6 +166,54 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void showPopup(){
+
+       drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
+        //instantiate the popup.xml layout file
+        LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View customView = layoutInflater.inflate(R.layout.booking_popup,null);
+
+        closePopupButton = (ImageButton) customView.findViewById(R.id.close_popup_button);
+
+        //instantiate popup window
+        popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        //display the popup window
+        popupWindow.showAtLocation(drawerLayout, Gravity.CENTER, 0, 0);
+
+        //close the popup window on button click
+        closePopupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        buttonMyself = customView.findViewById(R.id.btn_myself);
+        buttonSomebody = customView.findViewById(R.id.btn_somebody);
+
+        buttonMyself.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("BookingActivity", "Go to SearchLocationActivity");
+                Intent i = new Intent(getApplicationContext(), SearchLocationActivity.class);
+                startActivity(i);
+            }
+        });
+
+        buttonSomebody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("BookingActivity", "Go to SearchLocationActivity");
+                Intent i = new Intent(getApplicationContext(), SearchLocationActivity.class);
+                startActivity(i);
+            }
+        });
+
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -140,14 +224,23 @@ public class MainActivity extends AppCompatActivity
             Log.i("MainActivity", "Navigation item selected: Home");
         } else if (id == R.id.nav_bookings) {
             Log.i("MainActivity", "Navigation item selected: Bookings");
+            //Intent in = new Intent(getApplicationContext(), BookingActivity.class);
+            //startActivity(in);
+            showPopup();
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
+        } else if(id == R.id.nav_delivery){
+
+            Log.i("MainActivity", "Navigation item selected: Delivery");
+            Intent i = new Intent(getApplicationContext(), DeliveryActivity.class);
+           startActivity(i);
+
         } else if (id == R.id.nav_contact) {
             Log.i("MainActivity", "Navigation item selected: Contact");
         } else if (id == R.id.nav_friends) {
             Log.i("MainActivity", "Navigation item selected: Friends");
-            Intent i = new Intent(getApplicationContext(), FriendsActivity.class);
-            startActivity(i);
+            Intent in = new Intent(getApplicationContext(), FriendsActivity.class);
+            startActivity(in);
         } else if (id == R.id.nav_about) {
             Log.i("MainActivity", "Navigation item selected: About");
         } else if (id == R.id.nav_privacy) {

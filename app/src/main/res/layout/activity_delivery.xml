@@ -16,10 +16,12 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity" />
 
-    <include
+    <!--<include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" />-->
+
+    <include layout="@layout/fragment_search_bar" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

@@ -16,6 +16,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_bookings">Bookings</string>
     <string name="menu_payments">Payments</string>
+    <string name="menu_delivey">Delivery</string>
     <string name="menu_contact">Contact Us</string>
     <string name="menu_about">About Us</string>
     <string name="menu_privacy">Privacy</string>
@@ -34,6 +35,13 @@
     <string name="action_search">Search Location</string>
     <string name="title_activity_accept_booking">Map</string>
     <string name="title_activity_waiting">Map</string>
+    <string name="title_activity_delivery">Delivery</string>
     <!-- Friends Group -->
+
+
+    <!-- Bookings part -->
+    <string name="booking_popup_message">Would you like to book a flight for yourself or for somebody else?</string>
+    <string name="title_activity_Booking">Booking</string>
+    <!-- Bookings part -->
 
 </resources>
