@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Log.i("MainActivity", "Navigation item selected: Friends");
-                Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                Intent i = new Intent(getApplicationContext(), NewFlightAcitivity.class);
                 i.putExtra("destination", String.valueOf(searchText));
                 startActivity(i);
 
