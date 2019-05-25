@@ -44,10 +44,9 @@ import static com.fhaachen.ip_ritz.prototyp.Constants.PERMISSIONS_REQUEST_ACCESS
 import static com.fhaachen.ip_ritz.prototyp.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
 
+public class NewFlightAcitivity extends AppCompatActivity implements  OnMapReadyCallback {
 
-public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyCallback {
-
-    private static final String TAG = "NewOrderactivity";
+    private static final String TAG = "NewFlightActivity";
     private double destinationLatitude;
     private double destinationLongitude;
     private double myLocationLatitude;
@@ -139,14 +138,14 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
          * onRequestPermissionsResult.
          */
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
 
             getLastKnownLocation();
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
@@ -154,7 +153,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     public boolean isServicesOK(){
         Log.d(TAG, "isServicesOK: checking google services version");
 
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(NewOrderAcitivity.this);
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(NewFlightAcitivity.this);
 
         if(available == ConnectionResult.SUCCESS){
             //everything is fine and the user can make map requests
@@ -164,7 +163,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
             //an error occured but we can resolve it
             Log.d(TAG, "isServicesOK: an error occured but we can fix it");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(NewOrderAcitivity.this, available, ERROR_DIALOG_REQUEST);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(NewFlightAcitivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
         }else{
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
@@ -219,7 +218,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         }
 
-        Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+        Geocoder geocoder = new Geocoder(NewFlightAcitivity.this);
         List<Address> list = new ArrayList<>();
         try{
             list = geocoder.getFromLocationName(searchString, 1);

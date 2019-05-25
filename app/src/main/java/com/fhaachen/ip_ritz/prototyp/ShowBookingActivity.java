@@ -14,9 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -72,6 +70,22 @@ public class ShowBookingActivity extends AppCompatActivity {
                 BookingButton.setTextColor(getColor(R.color.colorBlack));
                 newFlight.setVisibility(View.GONE);
                 newOrder.setVisibility(View.VISIBLE);
+            }
+        });
+        newFlight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("NewOrderActivity", "new Flight");
+                Intent i = new Intent(view.getContext(), NewFlightAcitivity.class);
+                startActivity(i);
+            }
+        });
+        newOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("NewOrderActivity", "new Order");
+                Intent i = new Intent(view.getContext(), NewOrderAcitivity.class);
+                startActivity(i);
             }
         });
         final ListView listViewb = findViewById(R.id.bookingListView);
