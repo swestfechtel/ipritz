@@ -1,6 +1,7 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -17,8 +18,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -32,10 +36,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
-   private GoogleMap mMap;
+    private GoogleMap mMap;
     private ImageButton searchButton;
+    private LinearLayout Type;
+    private LinearLayout Time;
+    private Button Flight;
+    private Button Order;
+    private Button Normal;
+    private Button Fast;
     private EditText searchText;
     private FusedLocationProviderClient mFusedLocationClient;
+
+    protected String chosenType;
+    protected String chosenTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +63,12 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
+        Type = findViewById(R.id.bookingtype);
+        Time = findViewById(R.id.timetype);
+        Flight = findViewById(R.id.flight);
+        Order = findViewById(R.id.order);
+        Normal = findViewById(R.id.normal);
+        Fast = findViewById(R.id.fast);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -61,14 +79,59 @@ public class MainActivity extends AppCompatActivity
                searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("MainActivity", "Navigation item selected: Friends");
-                Intent i = new Intent(getApplicationContext(), NewFlightAcitivity.class);
-                i.putExtra("destination", String.valueOf(searchText));
-                startActivity(i);
+                    Type.setVisibility(View.VISIBLE);
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        });
+        Flight.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                       chosenType = "Flight";
+                       Type.setVisibility(View.GONE);
+                       Time.setVisibility(View.VISIBLE);
+               }
+           });
+        Order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenType = "Order";
+                Type.setVisibility(View.GONE);
+                Time.setVisibility(View.VISIBLE);
+            }
+        });
+        Normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenTime = "Normal";
+                Time.setVisibility(View.GONE);
+                Type.setVisibility(View.GONE);
+                if(chosenType == "Flight"){
+                    //auf neue Activity verweisen
+                }
+                if(chosenType == "Order"){
+                    //auf neue Activity verweisen
+                }
 
             }
         });
-
+        Fast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenTime = "Fast";
+                Time.setVisibility(View.GONE);
+                Type.setVisibility(View.GONE);
+                if(chosenType == "Flight"){
+                    //auf neue Activity verweisen
+                }
+                if(chosenType == "Order"){
+                    //auf neue Activity verweisen
+                }
+            }
+        });
     }
 
     @Override
@@ -167,5 +230,4 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }
