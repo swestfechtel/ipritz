@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity
 
             if(location!=null) {
                 LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+                Log.i ( "MainActivity" , "Setting own location to " + loc.toString () );
                 mMap.addMarker(new MarkerOptions().position(loc).title("Current Location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15) );
 

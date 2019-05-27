@@ -56,6 +56,8 @@ public class ProfileActivity extends AppCompatActivity {
             profileLocation.setText ( jsonObject.get ( "addresses" ).getAsJsonObject ().get ( "city" ).getAsString () );
             profileAge.setText ( "TODO" );
 
+            connection.disconnect ();
+
         } catch ( Exception e ) {
             e.printStackTrace ();
             Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );

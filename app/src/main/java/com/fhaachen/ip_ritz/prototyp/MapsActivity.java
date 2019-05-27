@@ -1,24 +1,29 @@
 package com.fhaachen.ip_ritz.prototyp;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import com.fhaachen.ip_ritz.prototyp.data.LoginDataSource;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -28,6 +33,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Button mFetchButton;
     private Button mNormalButton;
+
+    private TextView fetchProfileName;
 
     private RelativeLayout mFetchFetchCancelButtonContainer;
     private LinearLayout mFetchOptionButtonContainer;
@@ -43,6 +50,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mFetchFetchCancelButtonContainer = findViewById(R.id.fetchFetchCancelButtonContainer);
         mFetchOptionButtonContainer = findViewById(R.id.fetchOptionButtonContainer);
+
+        fetchProfileName = findViewById ( R.id.fetchProfileName );
 
         mFetchButton = findViewById(R.id.fetchFetchButton);
         mFetchButton.setOnClickListener(new View.OnClickListener() {
@@ -79,18 +88,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         final String friendId = getIntent ().getStringExtra ( "friendId" );
+        String friendName = "";
+        float friendLat = 0, friendLong = 0;
 
         try {
-            URL server = new URL ( "http://149.201.48.86:8001/app/api/user/" + friendId );
+            URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + friendId );
+            Log.i ( "MapsActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + friendId );
             HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
-            connection.setRequestMethod ( "GET" );
-            connection.setRequestProperty ( "Accept" , "application/json" );
-            connection.connect ();
 
             if ( connection.getResponseCode () != 200 ) {
                 throw new RuntimeException ( "Failed: HTTP error code: " + connection.getResponseCode () );
             }
 
+            JsonParser jsonParser = new JsonParser ();
+            JsonElement jsonElement = jsonParser.parse ( new InputStreamReader ( ( InputStream ) connection.getContent () ) );
+            JsonObject jsonObject = jsonElement.getAsJsonObject ();
+            JsonArray locationArray = jsonObject.get ( "currentLocation" ).getAsJsonArray ();
+
+            friendName = jsonObject.get ( "firstName" ).getAsString ();
+            fetchProfileName.setText ( friendName );
+
+            /*for ( JsonElement element : locationArray ) {*/
+            JsonElement element = locationArray.get ( 0 );
+            JsonObject latlong = element.getAsJsonObject ();
+            friendLat = latlong.get ( "latitude" ).getAsFloat ();
+            friendLong = latlong.get ( "longitude" ).getAsFloat ();
+            //}
+
+            Log.i ( "MapsActivity" , String.valueOf ( friendLat ) );
+            Log.i ( "MapsActivity" , String.valueOf ( friendLong ) );
+
+            connection.disconnect ();
             //TODO: get location information from friend
         } catch ( Exception e ) {
             Log.e ( "ProfileActivity" , "URL connection error" );
@@ -103,9 +131,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         boolean network_enabled = locManager.isProviderEnabled ( LocationManager.NETWORK_PROVIDER );
 
         Location location;
-        LatLng westpark = null;
+        LatLng ownLocation = new LatLng ( 50.771758 , 6.068255 );
+        LatLng friendLocation = new LatLng ( friendLat , friendLong );
+        Log.i ( "MapsActivity" , "Setting own location to " + ownLocation.toString () );
+        Log.i ( "MapsActivity" , "Setting friend location to " + friendLocation.toString () );
 
-        if ( network_enabled ) {
+        /*if ( network_enabled ) {
 
             if ( ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
@@ -114,30 +145,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             location = locManager.getLastKnownLocation ( LocationManager.NETWORK_PROVIDER );
 
             if ( location != null ) {
-                westpark = new LatLng ( location.getLatitude () , location.getLongitude () );
+                ownLocation = new LatLng ( location.getLatitude () , location.getLongitude () );
+                Log.i("MapsActivity", "Setting own location to " + ownLocation.toString ());
                 //mMap.addMarker(new MarkerOptions().position(westpark).title("Current Location"));
                 //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(westpark, 15) );
 
             }
-        }
+        }*/
         // Add a marker in Sydney and move the camera
         //LatLng westpark = new LatLng(50.771758, 6.068255);
         // TODO: set map marker for friend
-        LatLng freundin = new LatLng(50.785474, 6.052972);
+
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
                 .clickable(true)
                 .add(
-                        westpark,
-                        freundin));
+                        ownLocation ,
+                        friendLocation ) );
         polyline1.setStartCap(new RoundCap());
         polyline1.setEndCap(new RoundCap());
         polyline1.setColor(R.color.colorPrimary);
 
-        mMap.addMarker ( new MarkerOptions ().position ( westpark ).title ( "You" ) );
-        mMap.addMarker ( new MarkerOptions ().position ( freundin ).title ( "PLACEHOLDER_FRIEND_NAME" ) );
+        mMap.addMarker ( new MarkerOptions ().position ( ownLocation ).title ( "You" ) );
+        mMap.addMarker ( new MarkerOptions ().position ( friendLocation ).title ( friendName ) );
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(westpark));
+        mMap.moveCamera ( CameraUpdateFactory.newLatLng ( ownLocation ) );
         mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
     }
 }
