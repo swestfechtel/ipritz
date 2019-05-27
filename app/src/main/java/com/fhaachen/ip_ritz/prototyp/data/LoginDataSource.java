@@ -1,5 +1,6 @@
 package com.fhaachen.ip_ritz.prototyp.data;
 
+import android.os.AsyncTask;
 import android.util.Log;
 import com.fhaachen.ip_ritz.prototyp.data.model.LoggedInUser;
 import com.google.gson.JsonElement;
@@ -14,17 +15,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Class that handles authentication w/ login credentials and retrieves user information.
+ * Class that handles authentication w/ doInBackground credentials and retrieves user information.
  */
-public class LoginDataSource {
+public class LoginDataSource extends AsyncTask < String, Integer, Result > {
 
     public static String serverAddress = "http://192.168.178.20/app/api";
 
-    public Result < LoggedInUser > login ( String username , String password ) {
+    @Override
+    public Result < LoggedInUser > doInBackground ( String... params ) {
 
         try {
-            Log.i ( "LoginDataSource" , "Trying to log in " + username + ":" + password );
-            String url = serverAddress + "/login.php?email=" + username + "&pw=" + password;
+            Log.i ( "LoginDataSource" , "Trying to log in " + params[ 0 ] + ":" + params[ 1 ] );
+            String url = serverAddress + "/login.php?email=" + params[ 0 ] + "&pw=" + params[ 1 ];
             Log.i ( "LoginDataSource" , "URL is " + url );
             URL server = new URL ( url );
             Log.i ( "LoginDataSource" , "URL created. Open connection now.." );
@@ -90,6 +92,16 @@ public class LoginDataSource {
             Log.e ( "LoginDataSource" , "Error logging in. " + e.getMessage () );
             return new Result.Error ( new IOException ( "Error logging in" , e ) );
         }
+    }
+
+    @Override
+    protected void onProgressUpdate ( Integer... progress ) {
+
+    }
+
+    @Override
+    protected void onPostExecute ( Result result ) {
+
     }
 
     public void logout () {

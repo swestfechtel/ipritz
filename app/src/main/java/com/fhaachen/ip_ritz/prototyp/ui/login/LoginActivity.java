@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public static LoginViewModel loginViewModel;
 
+
     @Override
     public void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 setResult ( Activity.RESULT_OK );
 
-                //Complete and destroy login activity once successful
+                //Complete and destroy doInBackground activity once successful
                 finish ();
             }
         } );

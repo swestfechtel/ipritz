@@ -3,7 +3,7 @@ package com.fhaachen.ip_ritz.prototyp.ui.login;
 import android.support.annotation.Nullable;
 
 /**
- * Data validation state of the login form.
+ * Data validation state of the doInBackground form.
  */
 class LoginFormState {
     @Nullable
