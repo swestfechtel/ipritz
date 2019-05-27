@@ -1,22 +1,26 @@
 package com.fhaachen.ip_ritz.prototyp;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.RoundCap;
+import com.google.android.gms.maps.model.*;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -74,8 +78,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        final String friendId = getIntent ().getStringExtra ( "friendId" );
+
+        try {
+            URL server = new URL ( "http://149.201.48.86:8001/app/api/user/" + friendId );
+            HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
+            connection.setRequestMethod ( "GET" );
+            connection.setRequestProperty ( "Accept" , "application/json" );
+            connection.connect ();
+
+            if ( connection.getResponseCode () != 200 ) {
+                throw new RuntimeException ( "Failed: HTTP error code: " + connection.getResponseCode () );
+            }
+
+            //TODO: get location information from friend
+        } catch ( Exception e ) {
+            Log.e ( "ProfileActivity" , "URL connection error" );
+            Log.e ( "ProfileActivity" , e.getLocalizedMessage () );
+        }
+
+
+        LocationManager locManager = ( LocationManager ) getSystemService ( LOCATION_SERVICE );
+
+        boolean network_enabled = locManager.isProviderEnabled ( LocationManager.NETWORK_PROVIDER );
+
+        Location location;
+        LatLng westpark = null;
+
+        if ( network_enabled ) {
+
+            if ( ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+                return;
+            }
+            location = locManager.getLastKnownLocation ( LocationManager.NETWORK_PROVIDER );
+
+            if ( location != null ) {
+                westpark = new LatLng ( location.getLatitude () , location.getLongitude () );
+                //mMap.addMarker(new MarkerOptions().position(westpark).title("Current Location"));
+                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(westpark, 15) );
+
+            }
+        }
         // Add a marker in Sydney and move the camera
-        LatLng westpark = new LatLng(50.771758, 6.068255);
+        //LatLng westpark = new LatLng(50.771758, 6.068255);
+        // TODO: set map marker for friend
         LatLng freundin = new LatLng(50.785474, 6.052972);
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
@@ -87,8 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polyline1.setEndCap(new RoundCap());
         polyline1.setColor(R.color.colorPrimary);
 
-        mMap.addMarker(new MarkerOptions().position(westpark).title("Westpark"));
-        mMap.addMarker(new MarkerOptions().position(freundin).title("Freundin"));
+        mMap.addMarker ( new MarkerOptions ().position ( westpark ).title ( "You" ) );
+        mMap.addMarker ( new MarkerOptions ().position ( freundin ).title ( "PLACEHOLDER_FRIEND_NAME" ) );
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(westpark));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(13));

@@ -8,13 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
+import com.fhaachen.ip_ritz.prototyp.data.model.LoggedInUser;
+import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class FriendsActivity extends AppCompatActivity {
 
@@ -37,6 +36,25 @@ public class FriendsActivity extends AppCompatActivity {
         final ListView listView = findViewById(R.id.friendsListView);
 
         /* Hier spaeter json object von rest api parsen */
+        LoggedInUser loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+        String userId = loggedInUser.getUserId ();
+        try {
+            URL server = new URL ( "http://149.201.48.86:8001/app/api/user/" + userId + "/friends" );
+            HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
+            connection.setRequestMethod ( "GET" );
+            connection.setRequestProperty ( "Accept" , "application/json" );
+            connection.connect ();
+
+            if ( connection.getResponseCode () != 200 ) {
+                throw new RuntimeException ( "Failed: HTTP error code: " + connection.getResponseCode () );
+            }
+
+            //TODO: parse json file
+        } catch ( Exception e ) {
+            Log.e ( "FriendsActivity" , "URL connection error" );
+            Log.e ( "FriendsActivity" , e.getLocalizedMessage () );
+        }
+
         String[] friends = new String[]{
                 "Burn Marks", "Maria Snow", "Aurelian Salomon"
         };
@@ -64,6 +82,7 @@ public class FriendsActivity extends AppCompatActivity {
                 int friendId = ids[position];
                 /* hier dann spaeter das entsprechende Profil laden */
                 Intent i = new Intent(view.getContext(), ProfileActivity.class);
+                i.putExtra ( "profileId" , friendId );
                 startActivity(i);
             }
         });
