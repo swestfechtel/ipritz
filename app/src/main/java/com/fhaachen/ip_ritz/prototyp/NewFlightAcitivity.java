@@ -60,7 +60,7 @@ public class NewFlightAcitivity extends AppCompatActivity implements  OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         searchText = getIntent().getExtras().getString("destination");
-        setContentView(R.layout.activity_new_order);
+        setContentView(R.layout.activity_new_flight);
         getLastKnownLocation();
         //find location of destination
         geoLocate(searchText);

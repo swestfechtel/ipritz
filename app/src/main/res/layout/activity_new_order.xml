@@ -1,23 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_order"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    android:layout_margin="20dp"
+    tools:context=".NewOrderAcitivity">
+        <LinearLayout
+            android:id="@+id/btn_l"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/orderBackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FFFFFF"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
+        </LinearLayout>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".NewOrderAcitivity" />
 
-    <include
-        layout="@layout/app_bar_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</android.support.v4.widget.DrawerLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/route_titles"
+            android:layout_below="@id/btn_l">
+
+            <TextView
+                android:id="@+id/order_from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="From: "
+                style="@style/h6" />
+
+            <TextView
+                android:id="@+id/order_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="To: "
+                style="@style/h6" />
+
+            <TextView
+                android:id="@+id/order_ankommen_uhrzeit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Ankunft um: "
+                style="@style/h6" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_destination_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/route_titles"
+            android:layout_below="@id/btn_l">
+
+            <AutoCompleteTextView
+                android:id="@+id/order_text_from"
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorSearchBar"
+                android:inputType="text"
+                android:completionThreshold="1"
+                android:popupBackground="@color/colorPrimary"
+                android:hint="Enter a start address"/>
+
+            <EditText
+                android:id="@+id/order_text_to"
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorSearchBar"
+                android:inputType="text"
+                android:hint="Enter a destination address"/>
+            <TextView
+                android:id="@+id/order_text_ankommen_uhrzeit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="110dp"
+                android:text="11:00"
+                android:textStyle="bold"
+                style="@style/h6" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_weight="0.6"
+            android:id="@+id/card"
+            android:layout_below="@id/route_titles"
+            android:layout_marginTop="10dp">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_below="@id/card"
+            android:id="@+id/price_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/h6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Price: " />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/price_output"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/card"
+
+            android:layout_toRightOf="@id/price_title">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="70dp"
+                android:text="11.50 €"
+                android:textStyle="bold"
+                style="@style/h6"/>
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/order_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/price_title"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:text="Order now"
+            android:textSize="20dp"
+            android:layout_centerHorizontal="true"
+            android:backgroundTint="@color/colorButton"/>
+    </RelativeLayout>
