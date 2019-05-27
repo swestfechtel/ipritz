@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private TextView navHeaderName;
+    private TextView navHeaderMail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,11 @@ public class MainActivity extends AppCompatActivity
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder ().permitAll ().build ();
         StrictMode.setThreadPolicy ( policy );
 
+        if ( LoginActivity.loginViewModel == null ) {
+            Intent i = new Intent ( getApplicationContext () , LoginActivity.class );
+            startActivity ( i );
+        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,7 +55,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         View header = navigationView.getHeaderView ( 0 );
-        ImageView headerImage = header.findViewById ( R.id.imageView );
+        ImageView headerImage = header.findViewById ( R.id.navHeaderImage );
+        navHeaderName = header.findViewById ( R.id.navHeaderName );
+        navHeaderMail = header.findViewById ( R.id.navHeaderMail );
+
         headerImage.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick ( View v ) {
@@ -66,6 +77,21 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onResume () {
+        super.onResume ();
+
+        if ( LoginActivity.loginViewModel != null && LoginActivity.loginViewModel.getLoggedInUser () == null ) {
+            Intent i = new Intent ( getApplicationContext () , LoginActivity.class );
+            startActivity ( i );
+        }
+
+        if ( LoginActivity.loginViewModel != null && LoginActivity.loginViewModel.getLoggedInUser () != null ) {
+            navHeaderName.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getDisplayName () + " " + LoginActivity.loginViewModel.getLoggedInUser ().getSurname () );
+            navHeaderMail.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getMailAddress () );
+        }
     }
 
     @Override
@@ -173,6 +199,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             Log.i("MainActivity", "Navigation item selected: Logout");
             LoginActivity.loginViewModel.logout ();
+            Intent i = new Intent ( getApplicationContext () , LoginActivity.class );
+            startActivity ( i );
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

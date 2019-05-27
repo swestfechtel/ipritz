@@ -26,7 +26,11 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+    }
 
+    @Override
+    protected void onResume () {
+        super.onResume ();
         final String profileId = getIntent ().getStringExtra ( "profileId" );
 
         profileName = findViewById ( R.id.profileName );
@@ -63,14 +67,14 @@ public class ProfileActivity extends AppCompatActivity {
             Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );
         }
 
-        locationButton = findViewById(R.id.profileLocationButton);
-        locationButton.setOnClickListener(new View.OnClickListener() {
+        locationButton = findViewById ( R.id.profileLocationButton );
+        locationButton.setOnClickListener ( new View.OnClickListener () {
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), MapsActivity.class);
+            public void onClick ( View v ) {
+                Intent i = new Intent ( v.getContext () , MapsActivity.class );
                 i.putExtra ( "friendId" , profileId );
-                startActivity(i);
+                startActivity ( i );
             }
-        });
+        } );
     }
 }

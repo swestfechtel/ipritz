@@ -36,12 +36,17 @@ public class FriendsActivity extends AppCompatActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), MainActivity.class);
-                startActivity(i);
+                /*Intent i = new Intent(v.getContext(), MainActivity.class);
+                startActivity(i);*/
+                finish ();
             }
         });
+    }
 
-        final ListView listView = findViewById(R.id.friendsListView);
+    @Override
+    protected void onResume () {
+        super.onResume ();
+        final ListView listView = findViewById ( R.id.friendsListView );
 
         /* Hier spaeter json object von rest api parsen */
         LoggedInUser loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
@@ -118,19 +123,19 @@ public class FriendsActivity extends AppCompatActivity {
             list.add(s);*/
 
         final CustomArrayAdapter adapter = new CustomArrayAdapter ( getApplicationContext () , names );
-        listView.setAdapter(adapter);
+        listView.setAdapter ( adapter );
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener ( new AdapterView.OnItemClickListener () {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("FriendsActivity", "List item + " + position + " selected.");
+            public void onItemClick ( AdapterView < ? > parent , View view , int position , long id ) {
+                Log.i ( "FriendsActivity" , "List item + " + position + " selected." );
                 String friendId = ids.get ( position );
                 /* hier dann spaeter das entsprechende Profil laden */
-                Intent i = new Intent(view.getContext(), ProfileActivity.class);
+                Intent i = new Intent ( view.getContext () , ProfileActivity.class );
                 i.putExtra ( "profileId" , friendId );
-                startActivity(i);
+                startActivity ( i );
             }
-        });
+        } );
     }
 
     class CustomArrayAdapter extends ArrayAdapter<String> {

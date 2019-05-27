@@ -7,10 +7,23 @@ public class LoggedInUser {
 
     private String userId;
     private String displayName;
+    private String surname;
 
-    public LoggedInUser ( String userId , String displayName ) {
+    public String getSurname () {
+        return surname;
+    }
+
+    public String getMailAddress () {
+        return mailAddress;
+    }
+
+    private String mailAddress;
+
+    public LoggedInUser ( String userId , String displayName , String surname , String mailAddress ) {
         this.userId = userId;
         this.displayName = displayName;
+        this.surname = surname;
+        this.mailAddress = mailAddress;
     }
 
     public String getUserId () {

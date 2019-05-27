@@ -77,7 +77,9 @@ public class LoginDataSource {
             LoggedInUser loggedInUser =
                     new LoggedInUser (
                             userId ,
-                            jsonObject.get ( "firstName" ).getAsString () );
+                            jsonObject.get ( "firstName" ).getAsString () ,
+                            jsonObject.get ( "lastName" ).getAsString () ,
+                            jsonObject.get ( "email" ).getAsString () );
 
             connection.disconnect ();
 

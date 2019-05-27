@@ -1,6 +1,5 @@
 package com.fhaachen.ip_ritz.prototyp;
 
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -12,18 +11,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.fhaachen.ip_ritz.prototyp.data.LoginDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.model.Order;
+import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -38,6 +37,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private RelativeLayout mFetchFetchCancelButtonContainer;
     private LinearLayout mFetchOptionButtonContainer;
+
+    private double friendLat = 0, friendLong = 0, ownLat = 50.771758, ownLong = 6.068255;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +64,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         mNormalButton = findViewById(R.id.fetchNormalButton);
-        mNormalButton.setOnClickListener(new View.OnClickListener() {
+    }
+
+    @Override
+    protected void onResume () {
+        super.onResume ();
+        mNormalButton.setOnClickListener ( new View.OnClickListener () {
             @Override
-            public void onClick(View v) {
+            public void onClick ( View v ) {
                 /* wie schicke ich die map daten an das andere handy? */
-                Intent i = new Intent(v.getContext(), AcceptBookingActivity.class);
-                startActivity(i);
+                /*Intent i = new Intent(v.getContext(), AcceptBookingActivity.class);
+                startActivity(i);*/
+                // TODO: order als model object -> json encode
+                String[] startLocation = new String[] { String.valueOf ( friendLat ) , String.valueOf ( friendLong ) };
+                String[] destinationLocation = new String[] { String.valueOf ( ownLat ) , String.valueOf ( ownLong ) };
+                Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().getUserId () , startLocation , destinationLocation );
+
+                try {
+                    URL server = new URL ( LoginDataSource.serverAddress + "/orders.php" );
+                    //Log.i ( "ProfileActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + profileId );
+                    HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
+                    connection.setDoOutput ( true );
+                    connection.setRequestMethod ( "POST" );
+                    connection.setRequestProperty ( "Content-Type" , "application/json" );
+
+                    Gson gson = new Gson ();
+                    String payload = gson.toJson ( order );
+
+                    OutputStream os = connection.getOutputStream ();
+                    os.write ( payload.getBytes () );
+                    os.flush ();
+
+                    if ( connection.getResponseCode () != 200 ) {
+                        throw new RuntimeException ( "Failed : HTTP error code : "
+                                + connection.getResponseCode () );
+                    }
+
+                    connection.disconnect ();
+
+                } catch ( Exception e ) {
+                    e.printStackTrace ();
+                    Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );
+                }
             }
-        });
+        } );
     }
 
 
@@ -89,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         final String friendId = getIntent ().getStringExtra ( "friendId" );
         String friendName = "";
-        float friendLat = 0, friendLong = 0;
+
 
         try {
             URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + friendId );
@@ -136,6 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i ( "MapsActivity" , "Setting own location to " + ownLocation.toString () );
         Log.i ( "MapsActivity" , "Setting friend location to " + friendLocation.toString () );
 
+        // TODO: get own location
         /*if ( network_enabled ) {
 
             if ( ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -154,7 +192,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }*/
         // Add a marker in Sydney and move the camera
         //LatLng westpark = new LatLng(50.771758, 6.068255);
-        // TODO: set map marker for friend
 
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
