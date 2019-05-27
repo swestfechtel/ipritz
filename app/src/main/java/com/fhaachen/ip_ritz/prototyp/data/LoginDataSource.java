@@ -18,14 +18,15 @@ import java.net.URL;
  */
 public class LoginDataSource {
 
+    public static String serverAddress = "http://192.168.178.20/app/api";
+
     public Result < LoggedInUser > login ( String username , String password ) {
 
         try {
             Log.i ( "LoginDataSource" , "Trying to log in " + username + ":" + password );
-            String url = "http://192.168.178.20/app/api/login.php?email=" + username + "&pw=" + password;
+            String url = serverAddress + "/login.php?email=" + username + "&pw=" + password;
             Log.i ( "LoginDataSource" , "URL is " + url );
             URL server = new URL ( url );
-            //URL server = new URL ( "http://192.168.178.20/app/api/user.php" );
             Log.i ( "LoginDataSource" , "URL created. Open connection now.." );
             HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
             Log.i ( "LoginDataSource" , "Connection open." );
@@ -60,7 +61,7 @@ public class LoginDataSource {
 
             connection.disconnect ();
 
-            server = new URL ( "http://192.168.178.20/app/api/user.php?id=" + userId );
+            server = new URL ( serverAddress + "/user.php?id=" + userId );
             Log.i ( "LoginDataSource" , "URL created. Open connection now.." );
             connection = ( HttpURLConnection ) server.openConnection ();
             Log.i ( "LoginDataSource" , "Connected." );
@@ -77,6 +78,9 @@ public class LoginDataSource {
                     new LoggedInUser (
                             userId ,
                             jsonObject.get ( "firstName" ).getAsString () );
+
+            connection.disconnect ();
+
             return new Result.Success <> ( loggedInUser );
 
         } catch ( Exception e ) {
