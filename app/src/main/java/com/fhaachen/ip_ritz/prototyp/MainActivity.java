@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity
             Log.i("MainActivity", "Navigation item selected: Privacy");
         } else if (id == R.id.nav_logout) {
             Log.i("MainActivity", "Navigation item selected: Logout");
+            LoginActivity.loginViewModel.logout ();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

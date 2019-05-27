@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if ( loginViewModel.isLoggedIn () ) {
             Toast.makeText ( getApplicationContext () , loginViewModel.getLoggedInUser ().getDisplayName () + " is already logged in." , Toast.LENGTH_LONG ).show ();
+            finish ();
         }
 
         loginViewModel.getLoginFormState ().observe ( this , new Observer < LoginFormState > () {
