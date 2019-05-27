@@ -74,12 +74,16 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         flightTextFrom.setAdapter(adapter);
-
+        bookButton = findViewById(R.id.flight_button);
         flightTextTo = findViewById(R.id.flight_text_to);
         flightBackButton = findViewById(R.id.flightBackButton);
         bookButton = findViewById(R.id.flight_button);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getRoute = findViewById(R.id.search_route_flight);
+        if(getIntent().hasExtra("text") == true) {
+            String text = getIntent().getExtras().getString("text");
+            flightTextTo.setText(text);
+        }
         flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +92,13 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 startActivity(i);
             }
         });
-
+        bookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), WaitingActivity.class);
+                startActivity(i);
+            }
+        });
         getRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

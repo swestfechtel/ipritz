@@ -60,7 +60,7 @@
             android:layout_below="@id/btn_l">
             <EditText
                 android:id="@+id/order_text_from"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@color/colorSearchBar"
@@ -69,7 +69,7 @@
 
             <AutoCompleteTextView
                 android:id="@+id/order_text_to"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/colorSearchBar"
                 android:inputType="text"

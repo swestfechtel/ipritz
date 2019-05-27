@@ -75,7 +75,6 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         orderTextTo.setAdapter(adapter);
-
         orderTextFrom = findViewById(R.id.order_text_from);
         orderBackButton = findViewById(R.id.orderBackButton);
         orderButton = findViewById(R.id.order_button);
@@ -89,7 +88,17 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                 startActivity(i);
             }
         });
-
+        if(getIntent().hasExtra("text") == true) {
+            String text = getIntent().getExtras().getString("text");
+            orderTextFrom.setText(text);
+        }
+        orderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), WaitingActivity.class);
+                startActivity(i);
+            }
+        });
         getRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

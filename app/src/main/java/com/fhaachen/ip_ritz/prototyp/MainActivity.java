@@ -139,14 +139,14 @@ public class MainActivity extends AppCompatActivity
                     Log.i("NewFlightActivity", "Flight is pressed");
                     Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
                     i.putExtra("type", chosenTime);
-                    i.putExtra("text", searchText.getText());
+                    i.putExtra("text", searchText.getText().toString());
                     startActivity(i);
                 }
                 if (chosenType == "Order") {
                     Log.i("NewOrderActivity", "Order is pressed");
                     Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
                     i.putExtra("type", chosenTime);
-                    i.putExtra("text", searchText.getText());
+                    i.putExtra("text", searchText.getText().toString());
                     startActivity(i);
                 }
 
@@ -162,12 +162,14 @@ public class MainActivity extends AppCompatActivity
                     Log.i("NewFlightActivity", "Flight is pressed");
                     Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
                     i.putExtra("type", chosenType);
+                    i.putExtra("text", searchText.getText().toString());
                     startActivity(i);
                 }
                 if (chosenType == "Order") {
                     Log.i("NewOrderActivity", "Order is pressed");
                     Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
                     i.putExtra("type", chosenType);
+                    i.putExtra("text", searchText.getText().toString());
                     startActivity(i);
                 }
             }
