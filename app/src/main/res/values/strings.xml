@@ -35,5 +35,7 @@
     <string name="title_activity_accept_booking">Map</string>
     <string name="title_activity_waiting">Map</string>
     <!-- Friends Group -->
-
+    <string-array name="locations">
+        <item>My location</item>
+    </string-array>
 </resources>

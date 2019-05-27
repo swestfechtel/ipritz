@@ -38,19 +38,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyCallback {
+public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public double latitudeFrom;
     public double longitudeFrom;
     public double latitudeTo;
     public double longitudeTo;
 
-    private ImageButton orderBackButton;
-    private Button orderButton;
-    private EditText orderTextTo;
-    private AutoCompleteTextView orderTextFrom;
+    private ImageButton flightBackButton;
+    private Button bookButton;
+    private EditText flightTextTo;
+    private AutoCompleteTextView flightTextFrom;
 
     private boolean mLocationPermissionGranted = false;
     private boolean aRouteIsShown = false;
@@ -61,48 +59,48 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     private static final String[] LOCATIONS = new String[]{
             "My location"
     };
-    private static final String TAG = "BookingOrderActivity";
+    private static final String TAG = "BookingFlightActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_order);
+        setContentView(R.layout.activity_new_flight);
 
         String[] locations = getResources().getStringArray(R.array.locations);
-        orderTextFrom = (AutoCompleteTextView)findViewById(R.id.order_text_from);
+        flightTextFrom = (AutoCompleteTextView)findViewById(R.id.flight_text_to);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
-        orderTextFrom.setAdapter(adapter);
+        flightTextFrom.setAdapter(adapter);
 
-        orderTextTo = findViewById(R.id.order_text_to);
-        orderBackButton = findViewById(R.id.orderBackButton);
-        orderButton = findViewById(R.id.order_button);
+        flightTextTo = findViewById(R.id.flight_text_to);
+        flightBackButton = findViewById(R.id.flightBackButton);
+        bookButton = findViewById(R.id.flight_button);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        orderBackButton.setOnClickListener(new View.OnClickListener() {
+        flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("BookingOrderActivity", "Go to MainActivity");
+                Log.i("BookingFlightActivity", "Go to MainActivity");
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
         });
 
-        orderButton.setOnClickListener(new View.OnClickListener() {
+        bookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
 
-                if(orderTextFrom.getText().toString().equals("My location")){
+                if(flightTextFrom.getText().toString().equals("My location")){
                     //get current location
                     getLastKnownLocation();
 
                 }else{
 
                     //find the location of the start address
-                    geoLocateFrom(orderTextFrom);
+                    geoLocateFrom(flightTextFrom);
                     //find the lcation of the destination address
-                    geoLocateTo(orderTextTo);
+                    geoLocateTo(flightTextTo);
                 }
 
                 if(aRouteIsShown){
@@ -113,7 +111,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(NewOrderAcitivity.this);
+                mapFragment.getMapAsync(NewFlightActivity.this);
 
             }
         });
@@ -129,7 +127,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         if(searchString != null) {
 
-            Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+            Geocoder geocoder = new Geocoder(NewFlightActivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);
@@ -162,7 +160,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         if(searchString != null) {
 
-            Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+            Geocoder geocoder = new Geocoder(NewFlightActivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);

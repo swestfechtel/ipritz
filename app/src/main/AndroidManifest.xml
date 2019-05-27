@@ -52,6 +52,7 @@
         <activity android:name=".FriendsActivity" />
         <activity android:name=".ShowBookingActivity" />
         <activity android:name=".NewOrderAcitivity"></activity>
+        <activity android:name=".NewFlightActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_test"

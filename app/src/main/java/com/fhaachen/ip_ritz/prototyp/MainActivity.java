@@ -110,10 +110,14 @@ public class MainActivity extends AppCompatActivity
                 Time.setVisibility(View.GONE);
                 Type.setVisibility(View.GONE);
                 if(chosenType == "Flight"){
-                    //auf neue Activity verweisen
+                    Log.i("NewFlightActivity", "Flight is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                    startActivity(i);
                 }
                 if(chosenType == "Order"){
-                    //auf neue Activity verweisen
+                    Log.i("NewOrderActivity", "Order is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                    startActivity(i);
                 }
 
             }
@@ -125,10 +129,14 @@ public class MainActivity extends AppCompatActivity
                 Time.setVisibility(View.GONE);
                 Type.setVisibility(View.GONE);
                 if(chosenType == "Flight"){
-                    //auf neue Activity verweisen
+                    Log.i("NewFlightActivity", "Flight is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                    startActivity(i);
                 }
                 if(chosenType == "Order"){
-                    //auf neue Activity verweisen
+                    Log.i("NewOrderActivity", "Order is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                    startActivity(i);
                 }
             }
         });

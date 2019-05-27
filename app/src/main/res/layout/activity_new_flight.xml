@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageButton
-            android:id="@+id/orderBackButton"
+            android:id="@+id/flightBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFFFF"
@@ -146,7 +146,7 @@
 
     </LinearLayout>
     <Button
-        android:id="@+id/order_button"
+        android:id="@+id/flight_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/price_title"

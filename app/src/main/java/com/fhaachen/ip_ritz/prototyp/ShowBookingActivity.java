@@ -75,9 +75,7 @@ public class ShowBookingActivity extends AppCompatActivity {
         newFlight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("NewOrderActivity", "new Flight");
-                Intent i = new Intent(view.getContext(), NewFlightAcitivity.class);
-                startActivity(i);
+
             }
         });
         newOrder.setOnClickListener(new View.OnClickListener() {
