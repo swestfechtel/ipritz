@@ -75,5 +75,41 @@
         android:layout_alignParentBottom="true" y="bottom"
         android:src="@drawable/ic_add"
         android:backgroundTint="@color/colorButton"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
+
+
+    <LinearLayout
+        android:id="@+id/timetype"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/roundedcorner_darkblue"
+        android:orientation="vertical"
+        android:padding="20dp"
+        tools:visibility="gone">
+
+        <TextView
+            style="@style/h5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="How fast?"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/normal"
+            style="@style/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Normal" />
+
+        <Button
+            android:id="@+id/fast"
+            style="@style/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fast" />
+
+    </LinearLayout>
 </RelativeLayout>

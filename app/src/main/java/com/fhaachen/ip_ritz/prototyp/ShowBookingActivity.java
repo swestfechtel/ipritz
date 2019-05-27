@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,9 +26,15 @@ public class ShowBookingActivity extends AppCompatActivity {
     private TextView BookingButton;
     private TextView OrderButton;
     private ListView bookings;
+    private LinearLayout Time;
+    private Button Normal;
+    private Button Fast;
     private ListView orders;
     private FloatingActionButton newFlight;
     private FloatingActionButton newOrder;
+
+    protected String chosenTime;
+    protected String chosenType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +52,9 @@ public class ShowBookingActivity extends AppCompatActivity {
         orders = findViewById(R.id.ordersListView);
         newFlight = findViewById(R.id.newBooking);
         newOrder = findViewById(R.id.newOrder);
+        Time = findViewById(R.id.timetype);
+        Normal = findViewById(R.id.normal);
+        Fast = findViewById(R.id.fast);
         BookingButton = findViewById(R.id.bookingHeader);
         BookingButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
@@ -75,15 +86,54 @@ public class ShowBookingActivity extends AppCompatActivity {
         newFlight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                chosenType="Flight";
+                Time.setVisibility(View.VISIBLE);
             }
         });
         newOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("NewOrderActivity", "new Order");
-                Intent i = new Intent(view.getContext(), NewOrderAcitivity.class);
-                startActivity(i);
+                chosenType="Order";
+                Time.setVisibility(View.VISIBLE);
+            }
+        });
+        Normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenTime = "Normal";
+                Time.setVisibility(View.GONE);
+                if(chosenType == "Flight"){
+                    Log.i("NewFlightActivity", "Flight is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                    i.putExtra("time", chosenTime);
+                    startActivity(i);
+                }
+                if(chosenType == "Order"){
+                    Log.i("NewOrderActivity", "Order is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                    i.putExtra("time", chosenTime);
+                    startActivity(i);
+                }
+
+            }
+        });
+        Fast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenTime = "Fast";
+                Time.setVisibility(View.GONE);
+                 if(chosenType == "Flight"){
+                    Log.i("NewFlightActivity", "Flight is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                    i.putExtra("ime", chosenType);
+                    startActivity(i);
+                }
+                if(chosenType == "Order"){
+                    Log.i("NewOrderActivity", "Order is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                    i.putExtra("ime", chosenType);
+                    startActivity(i);
+                }
             }
         });
         final ListView listViewb = findViewById(R.id.bookingListView);

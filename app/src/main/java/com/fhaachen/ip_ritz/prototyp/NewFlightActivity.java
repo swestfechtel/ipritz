@@ -1,6 +1,7 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -12,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -46,6 +48,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     public double longitudeTo;
 
     private ImageButton flightBackButton;
+    private ImageButton getRoute;
     private Button bookButton;
     private EditText flightTextTo;
     private AutoCompleteTextView flightTextFrom;
@@ -59,7 +62,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     private static final String[] LOCATIONS = new String[]{
             "My location"
     };
-    private static final String TAG = "BookingFlightActivity";
+    private static final String TAG = "NewFlightActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.activity_new_flight);
 
         String[] locations = getResources().getStringArray(R.array.locations);
-        flightTextFrom = (AutoCompleteTextView)findViewById(R.id.flight_text_to);
+        flightTextFrom = (AutoCompleteTextView)findViewById(R.id.flight_text_from);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         flightTextFrom.setAdapter(adapter);
@@ -76,7 +79,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         flightBackButton = findViewById(R.id.flightBackButton);
         bookButton = findViewById(R.id.flight_button);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        getRoute = findViewById(R.id.search_route_flight);
         flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,14 +89,20 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-        bookButton.setOnClickListener(new View.OnClickListener() {
+        getRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
+//Keyboard weg
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
 
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
                 if(flightTextFrom.getText().toString().equals("My location")){
                     //get current location
                     getLastKnownLocation();
+                    geoLocateTo(flightTextTo);
 
                 }else{
 

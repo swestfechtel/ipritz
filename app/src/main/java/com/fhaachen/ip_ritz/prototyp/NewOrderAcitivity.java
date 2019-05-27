@@ -1,6 +1,7 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -12,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -49,9 +51,9 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
     private ImageButton orderBackButton;
     private Button orderButton;
-    private EditText orderTextTo;
-    private AutoCompleteTextView orderTextFrom;
-
+    private EditText orderTextFrom;
+    private AutoCompleteTextView orderTextTo;
+    private ImageButton getRoute;
     private boolean mLocationPermissionGranted = false;
     private boolean aRouteIsShown = false;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -61,7 +63,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     private static final String[] LOCATIONS = new String[]{
             "My location"
     };
-    private static final String TAG = "BookingOrderActivity";
+    private static final String TAG = "NewOrderActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,34 +71,39 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         setContentView(R.layout.activity_new_order);
 
         String[] locations = getResources().getStringArray(R.array.locations);
-        orderTextFrom = (AutoCompleteTextView)findViewById(R.id.order_text_from);
+        orderTextTo = (AutoCompleteTextView)findViewById(R.id.order_text_to);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
-        orderTextFrom.setAdapter(adapter);
+        orderTextTo.setAdapter(adapter);
 
-        orderTextTo = findViewById(R.id.order_text_to);
+        orderTextFrom = findViewById(R.id.order_text_from);
         orderBackButton = findViewById(R.id.orderBackButton);
         orderButton = findViewById(R.id.order_button);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        getRoute = findViewById(R.id.search_route_order);
         orderBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("BookingOrderActivity", "Go to MainActivity");
+                Log.i("NewOrderActivity", "Go to MainActivity");
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
         });
 
-        orderButton.setOnClickListener(new View.OnClickListener() {
+        getRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
+//Keyboard weg
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                if(orderTextFrom.getText().toString().equals("My location")){
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                if(orderTextTo.getText().toString().equals("My location")){
                     //get current location
                     getLastKnownLocation();
-
+                    geoLocateFrom(orderTextFrom);
                 }else{
 
                     //find the location of the start address
@@ -199,8 +206,8 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    latitudeFrom = geoPoint.getLatitude(); //myLocationLatitude
-                    longitudeFrom = geoPoint.getLongitude(); //myLocatonLongitude
+                    latitudeTo = geoPoint.getLatitude(); //myLocationLatitude
+                    longitudeTo = geoPoint.getLongitude(); //myLocatonLongitude
 
                     Log.d(TAG, "onComplete: latitude: " + geoPoint.getLatitude());
                     Log.d(TAG, "onComplete: longitude: " + geoPoint.getLongitude());
