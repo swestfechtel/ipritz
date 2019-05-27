@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Log.i("BookingActivity", "Go to SearchLocationActivity");
-                Intent i = new Intent(getApplicationContext(), SearchLocationActivity.class);
+                Intent i = new Intent(getApplicationContext(), MyBookingsActivity.class);
                 startActivity(i);
             }
         });

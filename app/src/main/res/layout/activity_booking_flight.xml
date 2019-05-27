@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".BookingFlightActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_flight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <ImageButton
+            android:id="@+id/flightBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFF"
+            android:src="@drawable/ic_arrow_back_black_24dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="70dp">
+
+            <TextView
+                android:id="@+id/flight_from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_from"
+                style="@style/h6" />
+
+            <TextView
+                android:id="@+id/flight_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="@string/order_to"
+                style="@style/h6" />
+
+            <TextView
+                android:id="@+id/flight_abfahrt_uhrzeit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Abfahrt um:"
+                style="@style/h6" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="70dp"
+            android:layout_marginLeft="75dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/flight_text_from"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/colorSearchBar"
+                android:inputType="text"
+                android:completionThreshold="1"
+                android:popupBackground="@color/colorPrimary"
+                android:hint="Enter a start address"/>
+
+            <EditText
+                android:id="@+id/flight_text_to"
+                android:layout_width="290dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorSearchBar"
+                android:inputType="text"
+                android:hint="Enter a destination address"/>
+
+            <TextView
+                android:id="@+id/flight_text_abfahrt_uhrzeit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:layout_marginLeft="110dp"
+                android:text="10:45"
+                android:textStyle="bold"
+                style="@style/h6" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_weight="0.6"
+            android:layout_marginTop="190dp">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="350dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/h6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/order_price" />
+
+            <Button
+                android:id="@+id/book_button"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="33dp"
+                android:layout_marginTop="10dp"
+                android:text="book now"
+                android:textSize="20dp"
+                android:backgroundTint="@color/colorSecondary"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="350dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="21.50 €"
+                android:textStyle="bold"
+                style="@style/h6"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

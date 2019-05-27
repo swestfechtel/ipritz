@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bookingart_popup"
+    android:layout_width="350dp"
+    android:layout_height="250dp"
+    android:layout_gravity="center"
+    android:background="@drawable/roundedcorner_darkblue"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+
+    <ImageButton
+        android:id="@+id/close_popup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="280dp"
+        android:layout_alignParentEnd="true"
+        android:color="#FFFFFF"
+        app:srcCompat="@drawable/ic_close_black_24dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:textAlignment="center"
+            android:text="@string/bookingart_popup_message"
+            android:textColor="#FFFFFF"
+            style="@style/h4"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="340dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/button_flight"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="35dp"
+            android:background="@color/colorSecondary"
+            android:text="flight"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/button_order"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="180dp"
+            android:layout_marginTop="35dp"
+            android:background="@color/colorSecondary"
+            android:text="order"
+            android:textColor="#FFFFFF" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

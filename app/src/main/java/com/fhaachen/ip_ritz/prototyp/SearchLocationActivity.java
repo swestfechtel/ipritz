@@ -75,9 +75,9 @@ import static com.fhaachen.ip_ritz.prototyp.Constants.PERMISSIONS_REQUEST_ENABLE
 
 
 
-public class SearchLocationActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback {
+public class SearchLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private static final String TAG = "DeliveryActivity";
+    private static final String TAG = "SearchLocationActivity";
     private double destinationLatitude;
     private double destinationLongitude;
     private double myLocationLatitude;
@@ -131,9 +131,9 @@ public class SearchLocationActivity extends AppCompatActivity implements View.On
                     mMap.clear();
                 }
                 aRouteIsShown = true;
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(SearchLocationActivity.this);
+                mapFragment.getMapAsync(SearchLocationActivity.this);*/
 
                 //Show options to select
                 SelectOptionFragment fragment = new SelectOptionFragment();
@@ -309,40 +309,6 @@ public class SearchLocationActivity extends AppCompatActivity implements View.On
 
         }
     }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-
-            case R.id.delivery_search_button:{
-                Log.i("SearchLocationActivity", "Show route on map");
-                //Get current location
-                getLastKnownLocation();
-
-                //find location of destination
-                geoLocate(this.searchText);
-
-                //show route on map
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(this);
-
-                //Show options to select
-                Fragment fragment = new SelectOptionFragment();
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.select_option_fragment, fragment);
-                transaction.commit();
-            }
-
-            case R.id.delivery_back_button:{
-                Log.i("DeliveryActivity", "Go Back to MainActivity");
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
-            }
-        }
-    }
-
 
 
     @Override

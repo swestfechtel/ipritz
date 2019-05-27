@@ -9,4 +9,5 @@
     <color name="colorButton">#76ff03</color>
     <color name="colorBlack">#000000</color>
     <color name="background_popup">#2C3E50</color>
+    <color name="colorSecondary">#A5E600</color>
 </resources>

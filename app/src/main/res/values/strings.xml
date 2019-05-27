@@ -36,12 +36,27 @@
     <string name="title_activity_accept_booking">Map</string>
     <string name="title_activity_waiting">Map</string>
     <string name="title_activity_delivery">Delivery</string>
+    <string name="title_activity_order">Order</string>
+    <string name="title_activity_flight">Flight</string>
+    <string name="title_activity_bookings">My Bookings</string>
     <!-- Friends Group -->
 
 
     <!-- Bookings part -->
     <string name="booking_popup_message">Would you like to book a flight for yourself or for somebody else?</string>
+    <string name="bookingart_popup_message">What?</string>
     <string name="title_activity_Booking">Booking</string>
     <!-- Bookings part -->
+    
+    <!-- Booking Order Part -->
+    <string name="order_from">From:</string>
+    <string name="order_to">To:</string>
+    <string name="order_ankommen_uhrzeit">Ankommen um:</string>
+    <string name="order_price">Price:</string>
+
+    <string-array name="locations">
+        <item>My location</item>
+    </string-array>
+    <!-- Booking Order Part -->
 
 </resources>
