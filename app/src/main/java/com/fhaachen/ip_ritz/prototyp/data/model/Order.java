@@ -1,6 +1,5 @@
 package com.fhaachen.ip_ritz.prototyp.data.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Order {
@@ -26,11 +25,11 @@ public class Order {
         this.purchaser = purchaser;
     }
 
-    public ArrayList < String > getPassengers () {
+    public String[] getPassengers () {
         return passengers;
     }
 
-    public void setPassengers ( ArrayList < String > passengers ) {
+    public void setPassengers ( String[] passengers ) {
         this.passengers = passengers;
     }
 
@@ -164,7 +163,7 @@ public class Order {
 
     private String id;
     private String purchaser;
-    private ArrayList < String > passengers;
+    private String[] passengers;
     private Date orderTime;
     private Date startTime;
     private Date arrivalTime;

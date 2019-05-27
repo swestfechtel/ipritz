@@ -38,12 +38,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RelativeLayout mFetchFetchCancelButtonContainer;
     private LinearLayout mFetchOptionButtonContainer;
 
+    private String friendId;
+
     private double friendLat = 0, friendLong = 0, ownLat = 50.771758, ownLong = 6.068255;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        friendId = getIntent ().getStringExtra ( "friendId" );
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -79,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String[] startLocation = new String[] { String.valueOf ( friendLat ) , String.valueOf ( friendLong ) };
                 String[] destinationLocation = new String[] { String.valueOf ( ownLat ) , String.valueOf ( ownLong ) };
                 Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().getUserId () , startLocation , destinationLocation );
+                order.setPassengers ( new String[] { friendId } );
 
                 try {
                     URL server = new URL ( LoginDataSource.serverAddress + "/orders.php" );
@@ -106,6 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace ();
                     Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );
                 }
+                finish ();
             }
         } );
     }
@@ -124,7 +130,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        final String friendId = getIntent ().getStringExtra ( "friendId" );
+
         String friendName = "";
 
 
