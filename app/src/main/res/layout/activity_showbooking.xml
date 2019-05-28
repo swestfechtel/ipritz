@@ -87,7 +87,7 @@
         android:background="@drawable/roundedcorner_darkblue"
         android:orientation="vertical"
         android:padding="20dp"
-        tools:visibility="gone">
+        android:visibility="gone">
 
         <TextView
             style="@style/h5"

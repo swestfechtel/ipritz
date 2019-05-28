@@ -23,11 +23,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -245,8 +247,11 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         mMap.addMarker(new MarkerOptions().position(from).title("Start point"));
         mMap.addMarker(new MarkerOptions().position(destination).title("Destination"));
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(from));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(from);
+        builder.include(destination);
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        mMap.animateCamera(cu);
     }
 }
