@@ -19,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,11 +26,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
-
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,23 +37,50 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-
-
+import android.view.inputmethod.InputMethodManager;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
+    private ImageButton searchButton;
+    private LinearLayout Type;
+    private LinearLayout Time;
+    private Button Flight;
+    private Button Order;
+    private Button Normal;
+    private Button Fast;
+    private EditText searchText;
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    protected String chosenType;
+    protected String chosenTime;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLocation;
+    private LocationManager mLocationManager;
+
+    private LocationRequest mLocationRequest;
+    private com.google.android.gms.location.LocationListener listener;
+    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+
+    private LocationManager locationManager;
+    public double latitudeNow;
+    public double longitudeNow;
 
     private TextView navHeaderName;
     private TextView navHeaderMail;
@@ -113,13 +137,25 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        Type = findViewById(R.id.bookingtype);
+        Time = findViewById(R.id.timetype);
+        Flight = findViewById(R.id.flight);
+        Order = findViewById(R.id.order);
+        Normal = findViewById(R.id.normal);
+        Fast = findViewById(R.id.fast);
+        searchText = findViewById(R.id.input_search);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
+        mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+
+        checkLocation(); //check whether location service is enable or not in your  phone
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-
     }
 
     @Override
@@ -136,38 +172,92 @@ public class MainActivity extends AppCompatActivity
             navHeaderMail.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getMailAddress () );
         }
 
+        searchText = findViewById(R.id.input_search);
+        searchButton = findViewById(R.id.delivery_search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Type.setVisibility(View.VISIBLE);
+                //Keyboard weg
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        });
+        Flight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenType = "Flight";
+                Type.setVisibility(View.GONE);
+                Time.setVisibility(View.VISIBLE);
+            }
+        });
+        Order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenType = "Order";
+                Type.setVisibility(View.GONE);
+                Time.setVisibility(View.VISIBLE);
+            }
+        });
+        Normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenTime = "Normal";
+                Time.setVisibility(View.GONE);
+                Type.setVisibility(View.GONE);
+                if (chosenType == "Flight") {
+                    Log.i("NewFlightActivity", "Flight is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                    i.putExtra("type", chosenTime);
+                    i.putExtra("text", searchText.getText().toString());
+                    startActivity(i);
+                }
+                if (chosenType == "Order") {
+                    Log.i("NewOrderActivity", "Order is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                    i.putExtra("type", chosenTime);
+                    i.putExtra("text", searchText.getText().toString());
+                    startActivity(i);
+                }
+
+            }
+        });
+        Fast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chosenTime = "Fast";
+                Time.setVisibility(View.GONE);
+                Type.setVisibility(View.GONE);
+                if (chosenType == "Flight") {
+                    Log.i("NewFlightActivity", "Flight is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                    i.putExtra("type", chosenType);
+                    i.putExtra("text", searchText.getText().toString());
+                    startActivity(i);
+                }
+                if (chosenType == "Order") {
+                    Log.i("NewOrderActivity", "Order is pressed");
+                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                    i.putExtra("type", chosenType);
+                    i.putExtra("text", searchText.getText().toString());
+                    startActivity(i);
+                }
+            }
+        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         // Construct a GeoDataClient.
-
-
-        LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        boolean network_enabled = locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        Location location;
-
-        if (network_enabled) {
-
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                return;
-            }
-            location = locManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-            if(location!=null) {
-                LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-                Log.i ( "MainActivity" , "Setting own location to " + loc.toString () );
-                mMap.addMarker(new MarkerOptions().position(loc).title("Current Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15) );
-
-            }
-        }
-
+        LatLng loc = new LatLng(latitudeNow, longitudeNow);
+        mMap.addMarker(new MarkerOptions().position(loc).title("Current Location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
     }
+
 
     @Override
     public void onBackPressed() {
@@ -183,23 +273,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                Log.i("Main Activity", s);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return true;
-            }
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -211,9 +284,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -275,18 +345,17 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             Log.i("MainActivity", "Navigation item selected: Home");
         } else if (id == R.id.nav_bookings) {
-            Log.i("MainActivity", "Navigation item selected: Bookings");
-            //Intent in = new Intent(getApplicationContext(), BookingActivity.class);
-            //startActivity(in);
-            showPopup();
+            Log.i("ShowBookingActivity", "Navigation item selected: Bookings");
+            Intent i = new Intent(getApplicationContext(), ShowBookingActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
         } else if(id == R.id.nav_delivery){
-
             Log.i("MainActivity", "Navigation item selected: Delivery");
             Intent i = new Intent(getApplicationContext(), DeliveryActivity.class);
-           startActivity(i);
-
+            startActivity(i);
+        } else if (id == R.id.nav_payments) {
+            Log.i("MainActivity", "Navigation item selected: Payments");
         } else if (id == R.id.nav_contact) {
             Log.i("MainActivity", "Navigation item selected: Contact");
         } else if (id == R.id.nav_friends) {
@@ -307,5 +376,113 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        startLocationUpdates();
+
+        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if(mLocation == null){
+            startLocationUpdates();
+        }
+        if (mLocation != null) {
+
+            // mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
+            //mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
+        } else {
+            Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("MainActivity", "Connection Suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i("MainActivity", "Connection failed. Error: " + connectionResult.getErrorCode());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+        Log.d("reque", "--->>>>");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        mMap.clear();
+
+        MarkerOptions mp = new MarkerOptions();
+
+        mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
+
+        mp.title("my position");
+
+        mMap.addMarker(mp);
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(location.getLatitude(), location.getLongitude()), 16));
+    }
+
+    private boolean checkLocation() {
+
+        return isLocationEnabled();
+    }
+
+
+
+    private boolean isLocationEnabled() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 }

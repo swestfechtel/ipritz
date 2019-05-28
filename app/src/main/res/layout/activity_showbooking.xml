@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ShowBookingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp">
+
+        <ImageButton
+            android:id="@+id/bookingBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFF"
+            android:src="@drawable/ic_arrow_back_black_24dp" />
+
+        <LinearLayout
+            android:id="@+id/showHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bookingBackButton">
+            <TextView
+                android:id="@+id/bookingHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Flights"
+                android:clickable="true"
+               android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                style="@style/h5" />
+            <TextView
+                android:id="@+id/shoppingHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Orders"
+                android:clickable="true"
+               android:layout_weight="1"
+                style="@style/h5" />
+        </LinearLayout>
+
+
+        <ListView
+            android:id="@+id/bookingListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/showHeader"
+            android:visibility="visible"></ListView>
+        <ListView
+            android:id="@+id/ordersListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/showHeader"
+            android:visibility="gone"></ListView>
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newBooking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:layout_margin="30dp"
+        android:layout_alignParentBottom="true" y="bottom"
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@color/colorButton"
+        android:layout_alignParentRight="true"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:layout_alignParentBottom="true" y="bottom"
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@color/colorButton"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
+
+
+    <LinearLayout
+        android:id="@+id/timetype"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/roundedcorner_darkblue"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/h5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="How fast?"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/normal"
+            style="@style/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Normal" />
+
+        <Button
+            android:id="@+id/fast"
+            style="@style/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fast" />
+
+    </LinearLayout>
+</RelativeLayout>

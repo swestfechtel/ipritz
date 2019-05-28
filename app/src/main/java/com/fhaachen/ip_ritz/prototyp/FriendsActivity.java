@@ -2,7 +2,9 @@ package com.fhaachen.ip_ritz.prototyp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,15 +18,18 @@ import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 
+import org.w3c.dom.Text;
+
 public class FriendsActivity extends AppCompatActivity {
 
     private ImageButton mBackButton;
-    private Button mUnfollowButton;
+
+    private ListView friends;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
-
+        friends = findViewById(R.id.friendsListView);
         mBackButton = findViewById(R.id.friendsBackButton);
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,12 +41,12 @@ public class FriendsActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onResume () {
         super.onResume ();
         final ListView listView = findViewById ( R.id.friendsListView );
 
-        /* Hier spaeter json object von rest api parsen */
         LoggedInUser loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
         String userId = loggedInUser.getUserId ();
 
@@ -49,24 +54,6 @@ public class FriendsActivity extends AppCompatActivity {
         FriendListNamesDataSource nameSource = new FriendListNamesDataSource ();
         final ArrayList < String > ids = idSource.doInBackground ( userId );
         final ArrayList < String > names = nameSource.doInBackground ( ids );
-
-
-
-
-
-        /* Jedes Listenelement muss spaeter eine eindeutige Id bekommen,
-         * um dann das entsprechende Profil zu laden
-         * => arraylist<int>, fuer jedes erhaltene json object die id
-         * in die arraylist packen, dann entspricht die position in der
-         * arraylist der position in der listview...
-         * */
-        /*final Integer[] ids = new Integer[]{
-                1, 2, 3
-        };*/
-
-        /*final ArrayList<String> list = new ArrayList<String>(friends.length);
-        for (String s : friends)
-            list.add(s);*/
 
         final CustomArrayAdapter adapter = new CustomArrayAdapter ( getApplicationContext () , names );
         listView.setAdapter ( adapter );
@@ -76,11 +63,12 @@ public class FriendsActivity extends AppCompatActivity {
             public void onItemClick ( AdapterView < ? > parent , View view , int position , long id ) {
                 Log.i ( "FriendsActivity" , "List item + " + position + " selected." );
                 String friendId = ids.get ( position );
-                /* hier dann spaeter das entsprechende Profil laden */
+
                 Intent i = new Intent ( view.getContext () , ProfileActivity.class );
                 i.putExtra ( "profileId" , friendId );
                 startActivity ( i );
             }
+
         } );
     }
 
@@ -99,9 +87,9 @@ public class FriendsActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.friends_list, parent, false);
-            TextView firstLine = rowView.findViewById(R.id.friendsItemFirstLine);
-            TextView secondLine = rowView.findViewById(R.id.friendsItemSecondLine);
-            ImageView profileImage = rowView.findViewById(R.id.friendsItemImage);
+            TextView firstLine = rowView.findViewById(R.id.ItemFirstLine);
+            TextView secondLine = rowView.findViewById(R.id.ItemSecondLine);
+            ImageView profileImage = rowView.findViewById(R.id.ItemImage);
 
             firstLine.setText ( values.get ( position ) );
             secondLine.setText("Location placeholder");

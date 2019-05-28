@@ -21,6 +21,14 @@
         <activity
                 android:name=".ui.login.LoginActivity"
                 android:label="@string/title_activity_login"></activity>
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+        <!--
+         Main music service, provides media browsing and media playback services to
+         consumers through MediaBrowserService and MediaSession. Consumers connect to it through
+         MediaBrowser (for browsing) and MediaController (for playback control)
+        -->
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -32,8 +40,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-
         <activity
             android:name=".MyBookingsActivity"
             android:label="@string/title_activity_bookings"></activity>
@@ -60,6 +66,9 @@
             android:label="@string/title_activity_maps" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FriendsActivity" />
+        <activity android:name=".ShowBookingActivity" />
+        <activity android:name=".NewOrderAcitivity"></activity>
+        <activity android:name=".NewFlightActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_test"

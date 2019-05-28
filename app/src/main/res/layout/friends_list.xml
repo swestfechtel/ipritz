@@ -6,36 +6,36 @@
     android:descendantFocusability="blocksDescendants">
 
     <ImageView
-        android:id="@+id/friendsItemImage"
+        android:id="@+id/ItemImage"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_margin="10dp"
         android:src="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:id="@+id/friendsItemFirstLine"
+        android:id="@+id/ItemFirstLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/friendsItemSecondLine"
+        android:layout_above="@id/ItemSecondLine"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/friendsItemImage"
+        android:layout_toRightOf="@id/ItemImage"
         android:gravity="center_vertical"
         android:text="Example application"
         android:textColor="#000000"
         style="@style/sub1" />
 
     <TextView
-        android:id="@+id/friendsItemSecondLine"
+        android:id="@+id/ItemSecondLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/friendsItemImage"
+        android:layout_toRightOf="@id/ItemImage"
         android:text="Description"
         android:textColor="#000000"
         style="@style/sub2" />
 
     <Button
-        android:id="@+id/friendsItemUnfollowButton"
+        android:id="@+id/ItemUnfollowButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
