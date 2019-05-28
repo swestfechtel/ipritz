@@ -86,7 +86,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 order.setPassengers ( new String[] { friendId } );
 
                 try {
-                    URL server = new URL ( LoginDataSource.serverAddress + "/orders.php" );
+                    //URL server = new URL ( LoginDataSource.serverAddress + "/orders.php" );
+                    URL server = new URL ( LoginDataSource.serverAddress + "/orders" );
                     //Log.i ( "ProfileActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + profileId );
                     HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
                     connection.setDoOutput ( true );
@@ -135,7 +136,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         try {
-            URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + friendId );
+            //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + friendId );
+            URL server = new URL ( LoginDataSource.serverAddress + "/user/" + friendId );
             Log.i ( "MapsActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + friendId );
             HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
 

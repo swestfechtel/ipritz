@@ -19,7 +19,8 @@ public class FriendListNamesDataSource extends AsyncTask < ArrayList < String >,
         final ArrayList < String > names = new ArrayList <> ( 0 );
         for ( String id : params[ 0 ] ) {
             try {
-                URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + id );
+                //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + id );
+                URL server = new URL ( LoginDataSource.serverAddress + "/user/" + id );
                 HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
 
                 if ( connection.getResponseCode () != 200 ) {

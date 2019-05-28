@@ -19,14 +19,15 @@ import java.net.URL;
  */
 public class LoginDataSource extends AsyncTask < String, Integer, Result > {
 
-    public static String serverAddress = "http://192.168.178.20/app/api";
+    public static String serverAddress = "http://149.201.48.86:8001/app/api";
 
     @Override
     public Result < LoggedInUser > doInBackground ( String... params ) {
 
         try {
             Log.i ( "LoginDataSource" , "Trying to log in " + params[ 0 ] + ":" + params[ 1 ] );
-            String url = serverAddress + "/login.php?email=" + params[ 0 ] + "&pw=" + params[ 1 ];
+            //String url = serverAddress + "/login.php?email=" + params[ 0 ] + "&pw=" + params[ 1 ];
+            String url = serverAddress + "/login/" + params[ 0 ] + "/" + params[ 1 ];
             Log.i ( "LoginDataSource" , "URL is " + url );
             URL server = new URL ( url );
             Log.i ( "LoginDataSource" , "URL created. Open connection now.." );
@@ -63,7 +64,8 @@ public class LoginDataSource extends AsyncTask < String, Integer, Result > {
 
             connection.disconnect ();
 
-            server = new URL ( serverAddress + "/user.php?id=" + userId );
+            //server = new URL ( serverAddress + "/user.php?id=" + userId );
+            server = new URL ( serverAddress + "/user/" + userId );
             Log.i ( "LoginDataSource" , "URL created. Open connection now.." );
             connection = ( HttpURLConnection ) server.openConnection ();
             Log.i ( "LoginDataSource" , "Connected." );
@@ -79,9 +81,9 @@ public class LoginDataSource extends AsyncTask < String, Integer, Result > {
             LoggedInUser loggedInUser =
                     new LoggedInUser (
                             userId ,
-                            jsonObject.get ( "firstName" ).getAsString () ,
-                            jsonObject.get ( "lastName" ).getAsString () ,
-                            jsonObject.get ( "email" ).getAsString () );
+                            ( !jsonObject.get ( "firstName" ).isJsonNull () ) ? jsonObject.get ( "firstName" ).getAsString () : "Empty name?" ,
+                            ( !jsonObject.get ( "lastName" ).isJsonNull () ) ? jsonObject.get ( "lastName" ).getAsString () : "Empty name?" ,
+                            ( !jsonObject.get ( "email" ).isJsonNull () ) ? jsonObject.get ( "email" ).getAsString () : "Empty name?" );
 
             connection.disconnect ();
 

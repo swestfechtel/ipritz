@@ -38,7 +38,8 @@ public class ProfileActivity extends AppCompatActivity {
         profileAge = findViewById ( R.id.profileAge );
 
         try {
-            URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + profileId );
+            //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + profileId );
+            URL server = new URL ( LoginDataSource.serverAddress + "/user/" + profileId );
             Log.i ( "ProfileActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + profileId );
             HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
 
