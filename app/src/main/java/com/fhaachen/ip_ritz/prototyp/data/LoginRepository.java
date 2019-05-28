@@ -59,6 +59,7 @@ public class LoginRepository {
             setLoggedInUser ( ( ( Result.Success < LoggedInUser > ) result ).getData () );
 
             // TODO: get current loc and write to database
+            // TODO: check for new rides
             /*timer = new Timer("updateLocationTimer");
 
             timer.scheduleAtFixedRate ( new TimerTask () {
