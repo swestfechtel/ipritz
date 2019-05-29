@@ -2,23 +2,19 @@ package com.fhaachen.ip_ritz.prototyp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.fhaachen.ip_ritz.prototyp.data.model.FriendListIdsDataSource;
-import com.fhaachen.ip_ritz.prototyp.data.model.FriendListNamesDataSource;
-import com.fhaachen.ip_ritz.prototyp.data.model.LoggedInUser;
+import com.fhaachen.ip_ritz.prototyp.data.FriendListIdsDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.FriendListNamesDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 
 import java.util.ArrayList;
-
-import org.w3c.dom.Text;
 
 public class FriendsActivity extends AppCompatActivity {
 
@@ -47,8 +43,8 @@ public class FriendsActivity extends AppCompatActivity {
         super.onResume ();
         final ListView listView = findViewById ( R.id.friendsListView );
 
-        LoggedInUser loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
-        String userId = loggedInUser.getUserId ();
+        User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+        String userId = loggedInUser.get_id ().get$oid ();
 
         FriendListIdsDataSource idSource = new FriendListIdsDataSource ();
         FriendListNamesDataSource nameSource = new FriendListNamesDataSource ();

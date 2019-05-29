@@ -11,14 +11,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.fhaachen.ip_ritz.prototyp.data.LoginDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
 import com.fhaachen.ip_ritz.prototyp.data.model.Order;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -82,7 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // TODO: order als model object -> json encode
                 String[] startLocation = new String[] { String.valueOf ( friendLat ) , String.valueOf ( friendLong ) };
                 String[] destinationLocation = new String[] { String.valueOf ( ownLat ) , String.valueOf ( ownLong ) };
-                Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().getUserId () , startLocation , destinationLocation );
+                Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().get_id ().get$oid () , startLocation , destinationLocation );
                 order.setPassengers ( new String[] { friendId } );
 
                 try {
@@ -100,6 +105,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     OutputStream os = connection.getOutputStream ();
                     os.write ( payload.getBytes () );
                     os.flush ();
+
+                    JsonParser jsonParser = new JsonParser ();
+                    JsonElement jsonElement = jsonParser.parse ( new InputStreamReader ( ( InputStream ) connection.getContent () ) );
+                    JsonObject rootObject = jsonElement.getAsJsonObject ();
+
+                    Log.i ( "MapsActivity" , rootObject.get ( "$oid" ).getAsString () );
 
                     if ( connection.getResponseCode () != 200 ) {
                         throw new RuntimeException ( "Failed : HTTP error code : "
@@ -135,7 +146,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String friendName = "";
 
 
-        try {
+        /*try {
             //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + friendId );
             URL server = new URL ( LoginDataSource.serverAddress + "/user/" + friendId );
             Log.i ( "MapsActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + friendId );
@@ -153,12 +164,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             friendName = jsonObject.get ( "firstName" ).getAsString ();
             fetchProfileName.setText ( friendName );
 
-            /*for ( JsonElement element : locationArray ) {*/
             JsonElement element = locationArray.get ( 0 );
             JsonObject latlong = element.getAsJsonObject ();
             friendLat = latlong.get ( "latitude" ).getAsFloat ();
             friendLong = latlong.get ( "longitude" ).getAsFloat ();
-            //}
 
             Log.i ( "MapsActivity" , String.valueOf ( friendLat ) );
             Log.i ( "MapsActivity" , String.valueOf ( friendLong ) );
@@ -168,7 +177,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch ( Exception e ) {
             Log.e ( "ProfileActivity" , "URL connection error" );
             Log.e ( "ProfileActivity" , e.getLocalizedMessage () );
-        }
+        }*/
+        UserDataSource dataSource = new UserDataSource ();
+        User friend = dataSource.doInBackground ( friendId );
+        friendLat = friend.getCurrentLocation ()[ 0 ].getLatitude ();
+        friendLong = friend.getCurrentLocation ()[ 0 ].getLongitude ();
 
 
         LocationManager locManager = ( LocationManager ) getSystemService ( LOCATION_SERVICE );

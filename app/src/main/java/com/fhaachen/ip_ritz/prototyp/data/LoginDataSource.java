@@ -2,7 +2,8 @@ package com.fhaachen.ip_ritz.prototyp.data;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import com.fhaachen.ip_ritz.prototyp.data.model.LoggedInUser;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,7 +23,7 @@ public class LoginDataSource extends AsyncTask < String, Integer, Result > {
     public static String serverAddress = "http://149.201.48.86:8001/app/api";
 
     @Override
-    public Result < LoggedInUser > doInBackground ( String... params ) {
+    public Result < User > doInBackground ( String... params ) {
 
         try {
             Log.i ( "LoginDataSource" , "Trying to log in " + params[ 0 ] + ":" + params[ 1 ] );
@@ -76,14 +77,16 @@ public class LoginDataSource extends AsyncTask < String, Integer, Result > {
 
             JsonParser jsonParser = new JsonParser ();
             JsonElement jsonElement = jsonParser.parse ( new InputStreamReader ( ( InputStream ) connection.getContent () ) );
-            JsonObject jsonObject = jsonElement.getAsJsonObject ();
+            JsonObject rootObject = jsonElement.getAsJsonObject ();
 
-            LoggedInUser loggedInUser =
-                    new LoggedInUser (
+            Gson gson = new Gson ();
+            User loggedInUser = gson.fromJson ( rootObject , User.class );
+                    /*new User (
                             userId ,
                             ( !jsonObject.get ( "firstName" ).isJsonNull () ) ? jsonObject.get ( "firstName" ).getAsString () : "Empty name?" ,
                             ( !jsonObject.get ( "lastName" ).isJsonNull () ) ? jsonObject.get ( "lastName" ).getAsString () : "Empty name?" ,
-                            ( !jsonObject.get ( "email" ).isJsonNull () ) ? jsonObject.get ( "email" ).getAsString () : "Empty name?" );
+                            ( !jsonObject.get ( "email" ).isJsonNull () ) ? jsonObject.get ( "email" ).getAsString () : "Empty name?" );*/
+
 
             connection.disconnect ();
 

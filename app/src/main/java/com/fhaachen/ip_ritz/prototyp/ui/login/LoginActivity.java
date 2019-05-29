@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar loadingProgressBar = findViewById ( R.id.loading );
 
         if ( loginViewModel.isLoggedIn () ) {
-            Toast.makeText ( getApplicationContext () , loginViewModel.getLoggedInUser ().getDisplayName () + " is already logged in." , Toast.LENGTH_LONG ).show ();
+            Toast.makeText ( getApplicationContext () , loginViewModel.getLoggedInUser ().getFirstName () + " is already logged in." , Toast.LENGTH_LONG ).show ();
             finish ();
         }
 

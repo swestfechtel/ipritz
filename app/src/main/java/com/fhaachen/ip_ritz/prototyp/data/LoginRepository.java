@@ -1,6 +1,6 @@
 package com.fhaachen.ip_ritz.prototyp.data;
 
-import com.fhaachen.ip_ritz.prototyp.data.model.LoggedInUser;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
 
 import java.util.Timer;
 
@@ -17,7 +17,7 @@ public class LoginRepository {
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
-    private LoggedInUser user = null;
+    private User user = null;
 
     // private constructor : singleton access
     private LoginRepository ( LoginDataSource dataSource ) {
@@ -35,7 +35,7 @@ public class LoginRepository {
         return this.user != null;
     }
 
-    public LoggedInUser getLoggedInUser () {
+    public User getLoggedInUser () {
         return this.user;
     }
 
@@ -46,51 +46,17 @@ public class LoginRepository {
         //timer.cancel ();
     }
 
-    private void setLoggedInUser ( LoggedInUser user ) {
+    private void setLoggedInUser ( User user ) {
         this.user = user;
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result < LoggedInUser > login ( String username , String password ) {
+    public Result < User > login ( String username , String password ) {
         // handle doInBackground
-        Result < LoggedInUser > result = dataSource.doInBackground ( username , password );
+        Result < User > result = dataSource.doInBackground ( username , password );
         if ( result instanceof Result.Success ) {
-            setLoggedInUser ( ( ( Result.Success < LoggedInUser > ) result ).getData () );
-
-            // TODO: get current loc and write to database
-            // TODO: check for new rides
-            /*timer = new Timer("updateLocationTimer");
-
-            timer.scheduleAtFixedRate ( new TimerTask () {
-                                            @Override
-                                            public void run () {
-                                                try {
-                                                    URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + user.getUserId ());
-                                                    HttpURLConnection connection = (HttpURLConnection)server.openConnection ();
-                                                    connection.setDoOutput ( true );
-                                                    connection.setRequestMethod ( "PUT" );
-                                                    connection.setRequestProperty ( "Content-Type" , "application/json" );
-
-                                                    String payload = "{\"_id\": null," +
-                                                            "\"latitude\": " + currentLocLat + "," +
-                                                            "\"longitude\": " + currentLocLong + "}";
-
-                                                    OutputStream os = connection.getOutputStream ();
-                                                    os.write ( payload.getBytes () );
-                                                    os.flush ();
-
-                                                    if ( connection.getResponseCode () != 200 ) {
-                                                        throw new RuntimeException ( "Failed : HTTP error code : "
-                                                                + connection.getResponseCode () );
-                                                    }
-
-                                                    connection.disconnect ();
-                                                } catch (Exception e){}
-
-                                            }
-                                        }
-                    , 30 , 1000 * 60 );*/
+            setLoggedInUser ( ( ( Result.Success < User > ) result ).getData () );
         }
         return result;
     }

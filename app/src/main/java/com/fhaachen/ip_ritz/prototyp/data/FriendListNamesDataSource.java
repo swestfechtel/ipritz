@@ -1,8 +1,7 @@
-package com.fhaachen.ip_ritz.prototyp.data.model;
+package com.fhaachen.ip_ritz.prototyp.data;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import com.fhaachen.ip_ritz.prototyp.data.LoginDataSource;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

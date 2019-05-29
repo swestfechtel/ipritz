@@ -147,8 +147,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         if ( LoginActivity.loginViewModel != null && LoginActivity.loginViewModel.getLoggedInUser () != null ) {
-            navHeaderName.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getDisplayName () + " " + LoginActivity.loginViewModel.getLoggedInUser ().getSurname () );
-            navHeaderMail.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getMailAddress () );
+            navHeaderName.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getFirstName () + " " + LoginActivity.loginViewModel.getLoggedInUser ().getLastName () );
+            navHeaderMail.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getEmail () );
         }
 
         searchText = findViewById(R.id.input_search);
@@ -450,6 +450,8 @@ public class MainActivity extends AppCompatActivity
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(), location.getLongitude()), 16));
+
+        //class UpdateLocation extends AsyncTask<>
     }
 
     private boolean checkLocation() {
