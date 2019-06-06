@@ -26,50 +26,27 @@ public class LoginDataSource extends AsyncTask < String, Integer, Result > {
     public Result < User > doInBackground ( String... params ) {
 
         try {
-            Log.i ( "LoginDataSource" , "Trying to log in " + params[ 0 ] + ":" + params[ 1 ] );
-            //String url = serverAddress + "/login.php?email=" + params[ 0 ] + "&pw=" + params[ 1 ];
             String url = serverAddress + "/login/" + params[ 0 ] + "/" + params[ 1 ];
-            Log.i ( "LoginDataSource" , "URL is " + url );
             URL server = new URL ( url );
-            Log.i ( "LoginDataSource" , "URL created. Open connection now.." );
             HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
-            Log.i ( "LoginDataSource" , "Connection open." );
-
 
             if ( connection.getResponseCode () != 200 ) {
-                Log.i ( "LoginDataSource" , "HTTP error" );
                 throw new RuntimeException ( "Failed: HTTP error code: " + connection.getResponseCode () );
             }
 
             BufferedReader br = new BufferedReader ( new InputStreamReader (
                     ( connection.getInputStream () ) ) );
 
-            Log.i ( "LoginDataSource" , "Read stream." );
-
-            /*String output;
-            while ((output = br.readLine()) != null) {
-                Log.i("LoginDataSource", output);
-            }*/
-
-
-            // TODO: handle loggedInUser authentication
-            // TODO: set id and display name
-
-
             String userId = "", output = "";
             while ( ( output = br.readLine () ) != null ) {
                 userId += output;
             }
-            Log.i ( "LoginDataSource" , "Got userId. " + userId );
             if ( userId.length () == 0 ) throw new RuntimeException ( "Failed: Login returned empty string." );
 
             connection.disconnect ();
 
-            //server = new URL ( serverAddress + "/user.php?id=" + userId );
             server = new URL ( serverAddress + "/user/" + userId );
-            Log.i ( "LoginDataSource" , "URL created. Open connection now.." );
             connection = ( HttpURLConnection ) server.openConnection ();
-            Log.i ( "LoginDataSource" , "Connected." );
 
             if ( connection.getResponseCode () != 200 ) {
                 throw new RuntimeException ( "Failed: HTTP error code: " + connection.getResponseCode () );
@@ -81,12 +58,6 @@ public class LoginDataSource extends AsyncTask < String, Integer, Result > {
 
             Gson gson = new Gson ();
             User loggedInUser = gson.fromJson ( rootObject , User.class );
-                    /*new User (
-                            userId ,
-                            ( !jsonObject.get ( "firstName" ).isJsonNull () ) ? jsonObject.get ( "firstName" ).getAsString () : "Empty name?" ,
-                            ( !jsonObject.get ( "lastName" ).isJsonNull () ) ? jsonObject.get ( "lastName" ).getAsString () : "Empty name?" ,
-                            ( !jsonObject.get ( "email" ).isJsonNull () ) ? jsonObject.get ( "email" ).getAsString () : "Empty name?" );*/
-
 
             connection.disconnect ();
 

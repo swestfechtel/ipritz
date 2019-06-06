@@ -59,23 +59,23 @@
             android:layout_toRightOf="@id/route_titles"
             android:layout_below="@id/btn_l">
             <EditText
-                android:id="@+id/order_text_from"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorSearchBar"
-                android:inputType="text"
-                android:hint="Enter a start address"/>
+                    android:id="@+id/order_text_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/colorSearchBar"
+                    android:inputType="text"
+                    android:hint="Enter a start addresses"/>
 
             <AutoCompleteTextView
-                android:id="@+id/order_text_to"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/colorSearchBar"
-                android:inputType="text"
-                android:completionThreshold="1"
-                android:popupBackground="@color/colorPrimary"
-                android:hint="Enter a destination address"/>
+                    android:id="@+id/order_text_to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorSearchBar"
+                    android:inputType="text"
+                    android:completionThreshold="1"
+                    android:popupBackground="@color/colorPrimary"
+                    android:hint="Enter a destination addresses"/>
 
 
             <LinearLayout

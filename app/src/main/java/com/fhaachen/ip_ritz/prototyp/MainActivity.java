@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -31,6 +32,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
@@ -135,6 +142,25 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        FirebaseInstanceId.getInstance ().getInstanceId ()
+                .addOnCompleteListener ( new OnCompleteListener < InstanceIdResult > () {
+                    @Override
+                    public void onComplete ( @NonNull Task < InstanceIdResult > task ) {
+                        if ( !task.isSuccessful () ) {
+                            Log.w ( TAG , "getInstanceId failed" , task.getException () );
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult ().getToken ();
+
+                        // Log and toast
+                        String msg = token;//getString(R.string.msg_token_fmt, token);
+                        Log.d ( TAG , "Token" + msg );
+                        //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                } );
     }
 
     @Override

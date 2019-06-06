@@ -1,5 +1,7 @@
 package com.fhaachen.ip_ritz.prototyp.data.model;
 
+import java.util.ArrayList;
+
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository
  */
@@ -8,26 +10,46 @@ public class User {
     private _id _id;
     private String firstName;
     private String lastName;
-    private Address address;
+    private Address addresses;
     private String job;
     private String language;
     private String passwordHash;
     private String email;
     private String telNumber;
-    private String[] journeys;
+    private ArrayList < String > journeys;
     private String birthdate;
     private boolean registered;
     private String authentificationCode;
-    private String[] friends;
-    private Location[] currentLocation;
-    private String[] prefferedLandingField;
-    private String[] lastDestinations;
+    private ArrayList < String > friends;
+    private ArrayList < Location > currentLocation;
+    private ArrayList < String > prefferedLandingField;
+    private ArrayList < String > lastDestinations;
 
-    public User ( com.fhaachen.ip_ritz.prototyp.data.model._id _id , String firstName , String lastName , Address address , String job , String language , String passwordHash , String email , String telNumber , String[] journeys , String birthdate , boolean registered , String authentificationCode , String[] friends , Location[] currentLocation , String[] prefferedLandingField , String[] lastDestinations ) {
+
+    public User ( com.fhaachen.ip_ritz.prototyp.data.model._id _id , String firstName , String lastName , Address addresses , String job , String language , String passwordHash , String email , String telNumber , ArrayList < String > journeys , String birthdate , boolean registered , String authentificationCode , ArrayList < String > friends , ArrayList < Location > currentLocation , ArrayList < String > prefferedLandingField , ArrayList < String > lastDestinations ) {
         this._id = _id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
+        this.addresses = addresses;
+        this.job = job;
+        this.language = language;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.telNumber = telNumber;
+        this.journeys = journeys;
+        this.birthdate = birthdate;
+        this.registered = registered;
+        this.authentificationCode = authentificationCode;
+        this.friends = friends;
+        this.currentLocation = currentLocation;
+        this.prefferedLandingField = prefferedLandingField;
+        this.lastDestinations = lastDestinations;
+    }
+
+    public User ( String firstName , String lastName , Address addresses , String job , String language , String passwordHash , String email , String telNumber , ArrayList < String > journeys , String birthdate , boolean registered , String authentificationCode , ArrayList < String > friends , ArrayList < Location > currentLocation , ArrayList < String > prefferedLandingField , ArrayList < String > lastDestinations ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.addresses = addresses;
         this.job = job;
         this.language = language;
         this.passwordHash = passwordHash;
@@ -67,12 +89,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public Address getAddress () {
-        return address;
+    public Address getAddresses () {
+        return addresses;
     }
 
-    public void setAddress ( Address address ) {
-        this.address = address;
+    public void setAddresses ( Address addresses ) {
+        this.addresses = addresses;
     }
 
     public String getJob () {
@@ -115,11 +137,11 @@ public class User {
         this.telNumber = telNumber;
     }
 
-    public String[] getJourneys () {
+    public ArrayList < String > getJourneys () {
         return journeys;
     }
 
-    public void setJourneys ( String[] journeys ) {
+    public void setJourneys ( ArrayList < String > journeys ) {
         this.journeys = journeys;
     }
 
@@ -147,35 +169,35 @@ public class User {
         this.authentificationCode = authentificationCode;
     }
 
-    public String[] getFriends () {
+    public ArrayList < String > getFriends () {
         return friends;
     }
 
-    public void setFriends ( String[] friends ) {
+    public void setFriends ( ArrayList < String > friends ) {
         this.friends = friends;
     }
 
-    public Location[] getCurrentLocation () {
+    public ArrayList < Location > getCurrentLocation () {
         return currentLocation;
     }
 
-    public void setCurrentLocation ( Location[] currentLocation ) {
+    public void setCurrentLocation ( ArrayList < Location > currentLocation ) {
         this.currentLocation = currentLocation;
     }
 
-    public String[] getPrefferedLandingField () {
+    public ArrayList < String > getPrefferedLandingField () {
         return prefferedLandingField;
     }
 
-    public void setPrefferedLandingField ( String[] prefferedLandingField ) {
+    public void setPrefferedLandingField ( ArrayList < String > prefferedLandingField ) {
         this.prefferedLandingField = prefferedLandingField;
     }
 
-    public String[] getLastDestinations () {
+    public ArrayList < String > getLastDestinations () {
         return lastDestinations;
     }
 
-    public void setLastDestinations ( String[] lastDestinations ) {
+    public void setLastDestinations ( ArrayList < String > lastDestinations ) {
         this.lastDestinations = lastDestinations;
     }
 }

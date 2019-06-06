@@ -4,22 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
+import com.fhaachen.ip_ritz.prototyp.data.OrderDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.model.Order;
+import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
+
+import java.util.ArrayList;
 
 public class MyBookingsActivity extends AppCompatActivity {
 
@@ -38,64 +34,29 @@ public class MyBookingsActivity extends AppCompatActivity {
     PopupWindow popupWindow;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acitivity_my_bookings);
 
         mBackButton = findViewById(R.id.bookingsBackButton);
-        mBackButton.setOnClickListener(new View.OnClickListener() {
+        mBackButton.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), MainActivity.class);
-                startActivity(i);
+            public void onClick( View v) {
+                finish ();
             }
         });
 
         addBooking = findViewById(R.id.add_booking_button);
-        addBooking.setOnClickListener(new View.OnClickListener() {
+        addBooking.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick( View v) {
                 //show popup window
                 showPopupBookingArt();
             }
         });
 
 
-        final ListView listView = findViewById(R.id.bookingsListView);
 
-        /* Hier spaeter json object von rest api parsen */
-        String[] bookings = new String[]{
-                "Booking 1", "Booking 2", "Booking 3", "Booking 4"
-        };
-        /* Jedes Listenelement muss spaeter eine eindeutige Id bekommen,
-         * um dann das entsprechende Profil zu laden
-         * => arraylist<int>, fuer jedes erhaltene json object die id
-         * in die arraylist packen, dann entspricht die position in der
-         * arraylist der position in der listview...
-         * */
-        final Integer[] ids = new Integer[]{
-                1, 2, 3, 4
-        };
-
-        /*final ArrayList<String> list = new ArrayList<String>(friends.length);
-        for (String s : friends)
-            list.add(s);*/
-
-        final CustomArrayAdapter adapter = new CustomArrayAdapter(getApplicationContext(), bookings);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("MyBookingsActivity", "List item + " + position + " selected.");
-                int bookingId = ids[position];
-
-                //hier später info zum Booking anzeigen
-                /* hier dann spaeter das entsprechende Profil laden */
-                //Intent i = new Intent(view.getContext(), ProfileActivity.class);
-                //startActivity(i);
-            }
-        });
 
         /*mCancelButton = findViewById(R.id.bookingItemCancelButton);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -107,42 +68,41 @@ public class MyBookingsActivity extends AppCompatActivity {
         });*/
     }
 
-    class CustomArrayAdapter extends ArrayAdapter<String> {
-        private final Context context;
-        private final String[] values;
+    @Override
+    public void onResume () {
+        super.onResume ();
+        final ListView listView = findViewById(R.id.bookingsListView);
 
-        public CustomArrayAdapter(Context context, String[] values) {
-            super(context, -1, values);
-            this.context = context;
-            this.values = values;
+        final ArrayList < String > journeys = LoginActivity.loginViewModel.getLoggedInUser ().getJourneys ();
+        ArrayList < Order > orders = new ArrayList <> ();
+        OrderDataSource orderDataSource = new OrderDataSource ();
+
+        for ( String id : journeys ) {
+            orders.add ( orderDataSource.doInBackground ( id ) );
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.bookings_list, parent, false);
-            TextView firstLine = rowView.findViewById(R.id.bookingsItemFirstLine);
-            TextView secondLine = rowView.findViewById(R.id.bookingsItemSecondLine);
-            //ImageView profileImage = rowView.findViewById(R.id.friendsItemImage);
+        final CustomArrayAdapter adapter = new CustomArrayAdapter ( getApplicationContext () , orders );
+        listView.setAdapter(adapter);
 
-            firstLine.setText(values[position]);
-            secondLine.setText("Location placeholder");
-           // profileImage.setImageResource(R.mipmap.ic_launcher_round);
-
-            return rowView;
-        }
+        listView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick( AdapterView<?> parent, View view, int position, long id) {
+                Log.i("MyBookingsActivity", "List item + " + position + " selected.");
+                String bookingId = journeys.get ( position );
+            }
+        });
     }
 
     private void showPopupBookingArt(){
 
-        myBookingsLayout = (RelativeLayout) findViewById(R.id.my_bookings_layout);
+        myBookingsLayout = findViewById ( R.id.my_bookings_layout );
 
 
         //instantiate the popup.xml layout file
         LayoutInflater layoutInflater = (LayoutInflater) MyBookingsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = layoutInflater.inflate(R.layout.bookingart_popup,null);
 
-        closePopupButton = (ImageButton) customView.findViewById(R.id.close_popup_button);
+        closePopupButton = customView.findViewById ( R.id.close_popup_button );
 
         //instantiate popup window
         popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -181,17 +141,16 @@ public class MyBookingsActivity extends AppCompatActivity {
 
     }
 
-
     private void showPopupBookingSpeed(final String bookChoice){
 
-        myBookingsLayout = (RelativeLayout) findViewById(R.id.my_bookings_layout);
+        myBookingsLayout = findViewById ( R.id.my_bookings_layout );
 
 
         //instantiate the popup.xml layout file
         LayoutInflater layoutInflater = (LayoutInflater) MyBookingsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = layoutInflater.inflate(R.layout.bookingspeed_popup,null);
 
-        closePopupButton = (ImageButton) customView.findViewById(R.id.close_popup_button);
+        closePopupButton = customView.findViewById ( R.id.close_popup_button );
 
         //instantiate popup window
         popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -244,6 +203,30 @@ public class MyBookingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    class CustomArrayAdapter extends ArrayAdapter < Order > {
+        private final Context context;
+        private final ArrayList < Order > values;
+
+        public CustomArrayAdapter ( Context context , ArrayList < Order > values ) {
+            super ( context , -1 , values );
+            this.context = context;
+            this.values = values;
+        }
+
+        @Override
+        public View getView ( int position , View convertView , ViewGroup parent ) {
+            LayoutInflater inflater = ( LayoutInflater ) context.getSystemService ( Context.LAYOUT_INFLATER_SERVICE );
+            View rowView = inflater.inflate ( R.layout.booking_list , parent , false );
+            TextView firstLine = rowView.findViewById ( R.id.ItemStart );
+            TextView secondLine = rowView.findViewById ( R.id.ItemEnd );
+
+            firstLine.setText ( values.get ( position ).getStartAddress () );
+            secondLine.setText ( values.get ( position ).getDestinationAddress () );
+
+            return rowView;
+        }
     }
 
 }

@@ -10,8 +10,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.fhaachen.ip_ritz.prototyp.data.LoginDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
 import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
 import com.fhaachen.ip_ritz.prototyp.data.model.Order;
 import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
@@ -20,16 +21,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -81,48 +74,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mNormalButton.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick ( View v ) {
-                /* wie schicke ich die map daten an das andere handy? */
-                /*Intent i = new Intent(v.getContext(), AcceptBookingActivity.class);
-                startActivity(i);*/
-                // TODO: order als model object -> json encode
-                String[] startLocation = new String[] { String.valueOf ( friendLat ) , String.valueOf ( friendLong ) };
-                String[] destinationLocation = new String[] { String.valueOf ( ownLat ) , String.valueOf ( ownLong ) };
+                ArrayList < String > startLocation = new ArrayList < String > ();
+                startLocation.add ( String.valueOf ( friendLat ) );
+                startLocation.add ( String.valueOf ( friendLong ) );
+                ArrayList < String > destinationLocation = new ArrayList < String > ();
+                destinationLocation.add ( String.valueOf ( ownLat ) );
+                destinationLocation.add ( String.valueOf ( ownLong ) );
+                ArrayList < String > passengers = new ArrayList < String > ();
+                passengers.add ( friendId );
                 Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().get_id ().get$oid () , startLocation , destinationLocation );
-                order.setPassengers ( new String[] { friendId } );
+                order.setPassengers ( passengers );
 
-                try {
-                    //URL server = new URL ( LoginDataSource.serverAddress + "/orders.php" );
-                    URL server = new URL ( LoginDataSource.serverAddress + "/orders" );
-                    //Log.i ( "ProfileActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + profileId );
-                    HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
-                    connection.setDoOutput ( true );
-                    connection.setRequestMethod ( "POST" );
-                    connection.setRequestProperty ( "Content-Type" , "application/json" );
+                OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();
+                String orderId = dataTarget.doInBackground ( order );
 
-                    Gson gson = new Gson ();
-                    String payload = gson.toJson ( order );
+                UserDataSource dataSource = new UserDataSource ();
+                User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                User friend = dataSource.doInBackground ( friendId );
 
-                    OutputStream os = connection.getOutputStream ();
-                    os.write ( payload.getBytes () );
-                    os.flush ();
-
-                    JsonParser jsonParser = new JsonParser ();
-                    JsonElement jsonElement = jsonParser.parse ( new InputStreamReader ( ( InputStream ) connection.getContent () ) );
-                    JsonObject rootObject = jsonElement.getAsJsonObject ();
-
-                    Log.i ( "MapsActivity" , rootObject.get ( "$oid" ).getAsString () );
-
-                    if ( connection.getResponseCode () != 200 ) {
-                        throw new RuntimeException ( "Failed : HTTP error code : "
-                                + connection.getResponseCode () );
-                    }
-
-                    connection.disconnect ();
-
-                } catch ( Exception e ) {
-                    e.printStackTrace ();
-                    Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );
+                ArrayList < String > journeys;
+                if ( ( journeys = loggedInUser.getJourneys () ) == null ) {
+                    journeys = new ArrayList <> ();
                 }
+                journeys.add ( orderId );
+                loggedInUser.setJourneys ( journeys );
+
+                if ( ( journeys = friend.getJourneys () ) == null ) {
+                    journeys = new ArrayList <> ();
+                }
+                journeys.add ( orderId );
+                friend.setJourneys ( journeys );
+
+                UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
+                userDataUpdateTarget.doInBackground ( loggedInUser , friend );
+
                 finish ();
             }
         } );
@@ -145,44 +130,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         String friendName = "";
 
-
-        /*try {
-            //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + friendId );
-            URL server = new URL ( LoginDataSource.serverAddress + "/user/" + friendId );
-            Log.i ( "MapsActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + friendId );
-            HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
-
-            if ( connection.getResponseCode () != 200 ) {
-                throw new RuntimeException ( "Failed: HTTP error code: " + connection.getResponseCode () );
-            }
-
-            JsonParser jsonParser = new JsonParser ();
-            JsonElement jsonElement = jsonParser.parse ( new InputStreamReader ( ( InputStream ) connection.getContent () ) );
-            JsonObject jsonObject = jsonElement.getAsJsonObject ();
-            JsonArray locationArray = jsonObject.get ( "currentLocation" ).getAsJsonArray ();
-
-            friendName = jsonObject.get ( "firstName" ).getAsString ();
-            fetchProfileName.setText ( friendName );
-
-            JsonElement element = locationArray.get ( 0 );
-            JsonObject latlong = element.getAsJsonObject ();
-            friendLat = latlong.get ( "latitude" ).getAsFloat ();
-            friendLong = latlong.get ( "longitude" ).getAsFloat ();
-
-            Log.i ( "MapsActivity" , String.valueOf ( friendLat ) );
-            Log.i ( "MapsActivity" , String.valueOf ( friendLong ) );
-
-            connection.disconnect ();
-            //TODO: get location information from friend
-        } catch ( Exception e ) {
-            Log.e ( "ProfileActivity" , "URL connection error" );
-            Log.e ( "ProfileActivity" , e.getLocalizedMessage () );
-        }*/
         UserDataSource dataSource = new UserDataSource ();
         User friend = dataSource.doInBackground ( friendId );
-        friendLat = friend.getCurrentLocation ()[ 0 ].getLatitude ();
-        friendLong = friend.getCurrentLocation ()[ 0 ].getLongitude ();
-
+        friendLat = friend.getCurrentLocation ().get ( 0 ).getLatitude ();
+        friendLong = friend.getCurrentLocation ().get ( 0 ).getLongitude ();
 
         LocationManager locManager = ( LocationManager ) getSystemService ( LOCATION_SERVICE );
 

@@ -7,15 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import com.fhaachen.ip_ritz.prototyp.data.LoginDataSource;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -32,41 +25,18 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onResume () {
         super.onResume ();
         final String profileId = getIntent ().getStringExtra ( "profileId" );
+        Log.i ( "ProfileActivity" , "Got profileId " + profileId );
 
         profileName = findViewById ( R.id.profileName );
         profileLocation = findViewById ( R.id.profileLocation );
         profileAge = findViewById ( R.id.profileAge );
 
-        try {
-            //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + profileId );
-            URL server = new URL ( LoginDataSource.serverAddress + "/user/" + profileId );
-            Log.i ( "ProfileActivity" , "URL is " + LoginDataSource.serverAddress + "/user.php?id=" + profileId );
-            HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
-
-            if ( connection.getResponseCode () != 200 ) {
-                throw new RuntimeException ( "Failed: HTTP error code: " + connection.getResponseCode () );
-            }
-
-            JsonParser jsonParser = new JsonParser ();
-            JsonElement jsonElement = jsonParser.parse ( new InputStreamReader ( ( InputStream ) connection.getContent () ) );
-            JsonObject jsonObject = jsonElement.getAsJsonObject ();
-
-            String name = "", firstName = jsonObject.get ( "firstName" ).getAsString (), lastName = jsonObject.get ( "lastName" ).getAsString ();
-            name = firstName + " " + lastName;
-            Log.i ( "ProfileActivity" , jsonObject.get ( "firstName" ).getAsString () );
-            Log.i ( "ProfileActivity" , jsonObject.get ( "lastName" ).getAsString () );
-            Log.i ( "ProfileActivity" , name );
-            Log.i ( "ProfileActivity" , jsonObject.get ( "addresses" ).getAsJsonObject ().get ( "city" ).getAsString () );
-            profileName.setText ( name );
-            profileLocation.setText ( jsonObject.get ( "addresses" ).getAsJsonObject ().get ( "city" ).getAsString () );
+        UserDataSource dataSource = new UserDataSource ();
+        User user = dataSource.doInBackground ( profileId );
+        profileName.setText ( user.getFirstName () + " " + user.getLastName () );
+        profileLocation.setText ( user.getAddresses ().getCity () );
             profileAge.setText ( "TODO" );
 
-            connection.disconnect ();
-
-        } catch ( Exception e ) {
-            e.printStackTrace ();
-            Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );
-        }
 
         locationButton = findViewById ( R.id.profileLocationButton );
         locationButton.setOnClickListener ( new View.OnClickListener () {

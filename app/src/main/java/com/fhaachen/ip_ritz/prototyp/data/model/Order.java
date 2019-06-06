@@ -1,9 +1,52 @@
 package com.fhaachen.ip_ritz.prototyp.data.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Order {
-    public Order ( String purchaser , String[] startLocation , String[] destinationLocation ) {
+    private String id;
+    private String purchaser;
+    private ArrayList < String > passengers;
+    private Date orderTime;
+    private Date startTime;
+    private Date arrivalTime;
+    private float price;
+    private ArrayList < String > startLocation;
+    private ArrayList < String > destinationLocation;
+    private String startAddress;
+    private String destinationAddress;
+    private boolean cancelled;
+    private String complaints;
+    private boolean paid;
+    private boolean confirmed;
+    private String paymentMethod;
+    private int priority;
+    private String droneId;
+    private boolean completed;
+
+    public Order ( String id , String purchaser , ArrayList < String > passengers , Date orderTime , Date startTime , Date arrivalTime , float price , ArrayList < String > startLocation , ArrayList < String > destinationLocation , String startAddress , String destinationAddress , boolean cancelled , String complaints , boolean paid , boolean confirmed , String paymentMethod , int priority , String droneId , boolean completed ) {
+        this.id = id;
+        this.purchaser = purchaser;
+        this.passengers = passengers;
+        this.orderTime = orderTime;
+        this.startTime = startTime;
+        this.arrivalTime = arrivalTime;
+        this.price = price;
+        this.startLocation = startLocation;
+        this.destinationLocation = destinationLocation;
+        this.startAddress = startAddress;
+        this.destinationAddress = destinationAddress;
+        this.cancelled = cancelled;
+        this.complaints = complaints;
+        this.paid = paid;
+        this.confirmed = confirmed;
+        this.paymentMethod = paymentMethod;
+        this.priority = priority;
+        this.droneId = droneId;
+        this.completed = completed;
+    }
+
+    public Order ( String purchaser , ArrayList < String > startLocation , ArrayList < String > destinationLocation ) {
         this.purchaser = purchaser;
         this.startLocation = startLocation;
         this.destinationLocation = destinationLocation;
@@ -25,11 +68,11 @@ public class Order {
         this.purchaser = purchaser;
     }
 
-    public String[] getPassengers () {
+    public ArrayList < String > getPassengers () {
         return passengers;
     }
 
-    public void setPassengers ( String[] passengers ) {
+    public void setPassengers ( ArrayList < String > passengers ) {
         this.passengers = passengers;
     }
 
@@ -65,19 +108,19 @@ public class Order {
         this.price = price;
     }
 
-    public String[] getStartLocation () {
+    public ArrayList < String > getStartLocation () {
         return startLocation;
     }
 
-    public void setStartLocation ( String[] startLocation ) {
+    public void setStartLocation ( ArrayList < String > startLocation ) {
         this.startLocation = startLocation;
     }
 
-    public String[] getDestinationLocation () {
+    public ArrayList < String > getDestinationLocation () {
         return destinationLocation;
     }
 
-    public void setDestinationLocation ( String[] destinationLocation ) {
+    public void setDestinationLocation ( ArrayList < String > destinationLocation ) {
         this.destinationLocation = destinationLocation;
     }
 
@@ -160,24 +203,4 @@ public class Order {
     public void setCompleted ( boolean completed ) {
         this.completed = completed;
     }
-
-    private String id;
-    private String purchaser;
-    private String[] passengers;
-    private Date orderTime;
-    private Date startTime;
-    private Date arrivalTime;
-    private float price;
-    private String[] startLocation;
-    private String[] destinationLocation;
-    private String startAddress;
-    private String destinationAddress;
-    private boolean cancelled;
-    private String complaints;
-    private boolean paid;
-    private boolean confirmed;
-    private String paymentMethod;
-    private int priority;
-    private String droneId;
-    private boolean completed;
 }

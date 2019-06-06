@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "550587440853",
+    "firebase_url": "https://ipritz-4f7b7.firebaseio.com",
+    "project_id": "ipritz-4f7b7",
+    "storage_bucket": "ipritz-4f7b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550587440853:android:3f9d30b7d7c83150",
+        "android_client_info": {
+          "package_name": "com.fhaachen.ip_ritz.prototyp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550587440853-fck5452vmpdpq1njlm8s7cutvln9g7fq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC72ueKvUwL25DigQg2B9ezTtjk7APo0J8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550587440853-fck5452vmpdpq1njlm8s7cutvln9g7fq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

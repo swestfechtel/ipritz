@@ -30,8 +30,6 @@ public class FriendsActivity extends AppCompatActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent i = new Intent(v.getContext(), MainActivity.class);
-                startActivity(i);*/
                 finish ();
             }
         });

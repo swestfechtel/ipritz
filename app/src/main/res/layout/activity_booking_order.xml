@@ -58,23 +58,23 @@
             android:layout_marginLeft="75dp">
 
             <AutoCompleteTextView
-                android:id="@+id/order_text_from"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:background="@color/colorSearchBar"
-                android:inputType="text"
-                android:completionThreshold="1"
-                android:popupBackground="@color/colorPrimary"
-                android:hint="Enter a start address"/>
+                    android:id="@+id/order_text_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@color/colorSearchBar"
+                    android:inputType="text"
+                    android:completionThreshold="1"
+                    android:popupBackground="@color/colorPrimary"
+                    android:hint="Enter a start addresses"/>
 
             <EditText
-                android:id="@+id/order_text_to"
-                android:layout_width="290dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorSearchBar"
-                android:inputType="text"
-                android:hint="Enter a destination address"/>
+                    android:id="@+id/order_text_to"
+                    android:layout_width="290dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/colorSearchBar"
+                    android:inputType="text"
+                    android:hint="Enter a destination addresses"/>
 
             <TextView
                 android:id="@+id/order_text_ankommen_uhrzeit"
