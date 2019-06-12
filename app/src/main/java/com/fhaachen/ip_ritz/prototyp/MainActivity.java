@@ -303,10 +303,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
-        } else if(id == R.id.nav_delivery){
-            Log.i("MainActivity", "Navigation item selected: Delivery");
-            Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
         } else if (id == R.id.nav_contact) {

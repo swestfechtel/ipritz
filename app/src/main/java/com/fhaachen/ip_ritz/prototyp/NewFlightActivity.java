@@ -89,7 +89,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("BookingFlightActivity", "Go to MainActivity");
+                Log.i("NewFlightActivity", "Go to MainActivity");
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
@@ -104,7 +104,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         getRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("BookingOrderActivity", "Show route startlocation to destination");
+                Log.i("NewOrderActivity", "Show route startlocation to destination");
                 //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
