@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="20dp"
-    tools:context=".NewFlightAcitivity">
+    tools:context=".NewFlightActivity">
 
     <LinearLayout
         android:id="@+id/btn_l"
@@ -59,23 +59,24 @@
         android:orientation="vertical"
         android:layout_toRightOf="@id/route_titles"
         android:layout_below="@id/btn_l">
+
         <AutoCompleteTextView
-                android:id="@+id/flight_text_from"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/colorSearchBar"
-                android:completionThreshold="1"
-                android:layout_marginTop="8dp"
-                android:hint="Enter a destination addresses"
-                android:inputType="text"
-                android:popupBackground="@color/colorPrimary" />
+            android:id="@+id/flight_text_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorSearchBar"
+            android:completionThreshold="1"
+            android:hint="Enter a start address"
+            android:inputType="text"
+            android:popupBackground="@color/colorPrimary" />
         <EditText
                 android:id="@+id/flight_text_to"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:layout_marginTop="7dp"
                 android:background="@color/colorSearchBar"
-                android:hint="Enter a start addresses"
+                android:hint="Enter a destination address"
                 android:inputType="text" />
 
 
