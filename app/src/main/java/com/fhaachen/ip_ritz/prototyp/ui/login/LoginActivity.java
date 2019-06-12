@@ -9,11 +9,14 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.fhaachen.ip_ritz.prototyp.R;
+import com.fhaachen.ip_ritz.prototyp.data.TokenUpdateTarget;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -118,6 +121,19 @@ public class LoginActivity extends AppCompatActivity {
         String welcome = getString ( R.string.welcome ) + model.getDisplayName ();
         // TODO : initiate successful logged in experience
         Toast.makeText ( getApplicationContext () , welcome , Toast.LENGTH_LONG ).show ();
+
+        /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences (this );
+        String token = preferences.getString ( "token", null );*/
+        //String token = MyFirebaseMessagingService.token;
+
+        String token = FirebaseInstanceId.getInstance ().getToken ();
+
+        Log.i ( "LoginActivity" , " " + token );
+
+        TokenUpdateTarget tokenUpdateTarget = new TokenUpdateTarget ();
+        String userId = loginViewModel.getLoggedInUser ().get_id ().get$oid ();
+        String[] params = new String[] { userId , token };
+        tokenUpdateTarget.doInBackground ( params );
     }
 
     private void showLoginFailed ( @StringRes Integer errorString ) {

@@ -9,6 +9,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import static android.support.constraint.Constraints.TAG;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    public static String token;
     @Override
     public void onMessageReceived ( RemoteMessage remoteMessage ) {
         // ...
@@ -44,5 +46,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken ( String s ) {
         //super.onNewToken ( s );
         Log.d ( TAG , "New token: " + s );
+        // app/api/firebase/userid/token
+
+        /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences ( this );
+        SharedPreferences.Editor editor = preferences.edit ();
+
+        editor.putString ( "token", s );
+        editor.apply ();*/
+        token = s;
     }
 }

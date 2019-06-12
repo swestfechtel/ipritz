@@ -58,6 +58,7 @@ public class LoginRepository {
         if ( result instanceof Result.Success ) {
             setLoggedInUser ( ( ( Result.Success < User > ) result ).getData () );
         }
+
         return result;
     }
 }
