@@ -52,13 +52,13 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     public double latitudeTo;
     public double longitudeTo;
 
+    private TextView price;
     private ImageButton flightBackButton;
     private ImageButton getRoute;
     private Button bookButton;
     private EditText flightTextTo;
     private AutoCompleteTextView flightTextFrom;
 
-    private boolean mLocationPermissionGranted = false;
     private boolean aRouteIsShown = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
@@ -84,6 +84,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         flightBackButton = findViewById(R.id.flightBackButton);
         bookButton = findViewById(R.id.flight_button);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        price = findViewById(R.id.price);
         getRoute = findViewById(R.id.search_route_flight);
         if(getIntent().hasExtra("text") == true) {
             String text = getIntent().getExtras().getString("text");
@@ -123,7 +124,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
                     //find the location of the start address
                     geoLocateFrom(flightTextFrom);
-                    //find the lcation of the destination address
+                    //find the location of the destination address
                     geoLocateTo(flightTextTo);
                 }
 
@@ -132,7 +133,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     mMap.clear();
                 }
                 aRouteIsShown = true;
-
+                price.setText("11,50 €");
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(NewFlightActivity.this);
@@ -169,7 +170,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         mMap.clear();
                     }
                     aRouteIsShown = true;
-
+                    price.setText(getPrice());
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
                     mapFragment.getMapAsync(NewFlightActivity.this);
@@ -299,5 +300,11 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         mMap.animateCamera(cu);
 
+    }
+
+    private String getPrice(){
+        String price = "11,50 €";
+
+        return price;
     }
 }
