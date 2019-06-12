@@ -105,7 +105,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
-//Keyboard weg
+                //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 

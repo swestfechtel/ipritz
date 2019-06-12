@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private ImageButton searchButton;
     private EditText searchText;
-    private FusedLocationProviderClient mFusedLocationClient;
 
     protected String chosenType;
     protected String chosenTime;
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity
     private LocationManager mLocationManager;
 
     private LocationRequest mLocationRequest;
-    private com.google.android.gms.location.LocationListener listener;
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
@@ -69,15 +67,7 @@ public class MainActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
-    private FrameLayout flSearch;
-    private ImageButton imageButton;
-    //private EditText searchText;
-    private ImageButton closePopupButton;
-    private Button buttonMyself;
-    private Button buttonSomebody;
 
-    DrawerLayout drawerLayout;
-    PopupWindow popupWindow;
 
 
     @Override
@@ -297,53 +287,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void showPopup(){
 
-        drawerLayout = findViewById ( R.id.drawer_layout );
-
-
-        //instantiate the popup.xml layout file
-        LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View customView = layoutInflater.inflate(R.layout.booking_popup,null);
-
-        closePopupButton = customView.findViewById ( R.id.close_popup_button );
-
-        //instantiate popup window
-        popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        //display the popup window
-        popupWindow.showAtLocation(drawerLayout, Gravity.CENTER, 0, 0);
-
-        //close the popup window on button click
-        closePopupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        buttonMyself = customView.findViewById(R.id.btn_myself);
-        buttonSomebody = customView.findViewById(R.id.btn_somebody);
-
-        buttonMyself.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("BookingActivity", "Go to SearchLocationActivity");
-                Intent i = new Intent(getApplicationContext(), MyBookingsActivity.class);
-                startActivity(i);
-            }
-        });
-
-        buttonSomebody.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("BookingActivity", "Go to SearchLocationActivity");
-                Intent i = new Intent(getApplicationContext(), SearchLocationActivity.class);
-                startActivity(i);
-            }
-        });
-
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -361,7 +305,7 @@ public class MainActivity extends AppCompatActivity
             Log.i("MainActivity", "Navigation item selected: Payments");
         } else if(id == R.id.nav_delivery){
             Log.i("MainActivity", "Navigation item selected: Delivery");
-            Intent i = new Intent(getApplicationContext(), DeliveryActivity.class);
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
