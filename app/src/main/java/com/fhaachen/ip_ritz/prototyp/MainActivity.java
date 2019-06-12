@@ -2,6 +2,7 @@ package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -14,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -44,12 +46,6 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private ImageButton searchButton;
-    private LinearLayout Type;
-    private LinearLayout Time;
-    private Button Flight;
-    private Button Order;
-    private Button Normal;
-    private Button Fast;
     private EditText searchText;
     private FusedLocationProviderClient mFusedLocationClient;
 
@@ -123,12 +119,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        Type = findViewById(R.id.bookingtype);
-        Time = findViewById(R.id.timetype);
-        Flight = findViewById(R.id.flight);
-        Order = findViewById(R.id.order);
-        Normal = findViewById(R.id.normal);
-        Fast = findViewById(R.id.fast);
+
         searchText = findViewById(R.id.input_search);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -181,8 +172,81 @@ public class MainActivity extends AppCompatActivity
         searchButton = findViewById(R.id.delivery_search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Type.setVisibility(View.VISIBLE);
+            public void onClick(final View view) {
+
+                new AlertDialog.Builder(view.getContext())
+                        .setTitle("New Booking")
+                        .setMessage("What do you want to receive?")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton("Flight", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                chosenType = "Flight";
+                                new AlertDialog.Builder(view.getContext())
+                                        .setTitle("New Booking")
+                                        .setMessage("How fast?")
+
+                                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                                        // The dialog is automatically dismissed when a dialog button is clicked.
+
+                                        .setPositiveButton("Fast", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                chosenTime = "Fast";
+                                                Log.i("NewFlightActivity", "Flight is pressed");
+                                                Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                                                i.putExtra("type", chosenTime);
+                                                i.putExtra("text", searchText.getText().toString());
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .setNeutralButton("Normal", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                chosenTime = "Normal";
+                                                Log.i("NewFlightActivity", "Flight is pressed");
+                                                Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                                                i.putExtra("type", chosenTime);
+                                                i.putExtra("text", searchText.getText().toString());
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .show();
+                            }
+                        })
+
+                        .setNeutralButton("Order", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                chosenType= "Order";
+                                new AlertDialog.Builder(view.getContext())
+                                        .setTitle("New Order")
+                                        .setMessage("How fast?")
+
+                                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                                        // The dialog is automatically dismissed when a dialog button is clicked.
+                                        .setPositiveButton("Normal", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                chosenTime = "Normal";
+                                                Log.i("NewOrderActivity", "Order is pressed");
+                                                Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                                                i.putExtra("type", chosenTime);
+                                                i.putExtra("text", searchText.getText().toString());
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .setNeutralButton("Fast", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                chosenTime = "Fast";
+                                                Log.i("NewOrderActivity", "Order is pressed");
+                                                Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                                                i.putExtra("type", chosenTime);
+                                                i.putExtra("text", searchText.getText().toString());
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .show();
+                            }
+                        })
+                        .show();
                 //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -191,67 +255,7 @@ public class MainActivity extends AppCompatActivity
                         InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
-        Flight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chosenType = "Flight";
-                Type.setVisibility(View.GONE);
-                Time.setVisibility(View.VISIBLE);
-            }
-        });
-        Order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chosenType = "Order";
-                Type.setVisibility(View.GONE);
-                Time.setVisibility(View.VISIBLE);
-            }
-        });
-        Normal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chosenTime = "Normal";
-                Time.setVisibility(View.GONE);
-                Type.setVisibility(View.GONE);
-                if (chosenType == "Flight") {
-                    Log.i("NewFlightActivity", "Flight is pressed");
-                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
-                    i.putExtra("type", chosenTime);
-                    i.putExtra("text", searchText.getText().toString());
-                    startActivity(i);
-                }
-                if (chosenType == "Order") {
-                    Log.i("NewOrderActivity", "Order is pressed");
-                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
-                    i.putExtra("type", chosenTime);
-                    i.putExtra("text", searchText.getText().toString());
-                    startActivity(i);
-                }
 
-            }
-        });
-        Fast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chosenTime = "Fast";
-                Time.setVisibility(View.GONE);
-                Type.setVisibility(View.GONE);
-                if (chosenType == "Flight") {
-                    Log.i("NewFlightActivity", "Flight is pressed");
-                    Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
-                    i.putExtra("type", chosenType);
-                    i.putExtra("text", searchText.getText().toString());
-                    startActivity(i);
-                }
-                if (chosenType == "Order") {
-                    Log.i("NewOrderActivity", "Order is pressed");
-                    Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
-                    i.putExtra("type", chosenType);
-                    i.putExtra("text", searchText.getText().toString());
-                    startActivity(i);
-                }
-            }
-        });
     }
 
     @Override

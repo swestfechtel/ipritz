@@ -19,7 +19,8 @@
         <ImageButton
             android:id="@+id/delivery_back_button"
             android:layout_width="5dp"
-            android:layout_height="45dp"            android:layout_weight="1"
+            android:layout_height="45dp"
+            android:layout_weight="1"
             android:background="@drawable/rounded_corner_white_left"
             app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
