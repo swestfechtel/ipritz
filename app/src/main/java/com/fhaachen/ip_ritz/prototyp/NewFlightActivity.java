@@ -75,7 +75,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.activity_new_flight);
 
         String[] locations = getResources().getStringArray(R.array.locations);
-        flightTextFrom = (AutoCompleteTextView)findViewById(R.id.flight_text_from);
+        flightTextFrom = findViewById(R.id.flight_text_from);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         flightTextFrom.setAdapter(adapter);
@@ -133,7 +133,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     mMap.clear();
                 }
                 aRouteIsShown = true;
-                price.setText("11,50 €");
+                price.setText(setDynamicPrice());
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(NewFlightActivity.this);
@@ -170,7 +170,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         mMap.clear();
                     }
                     aRouteIsShown = true;
-                    price.setText(getPrice());
+                    price.setText(setDynamicPrice());
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
                     mapFragment.getMapAsync(NewFlightActivity.this);
@@ -302,8 +302,32 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
-    private String getPrice(){
-        String price = "11,50 €";
+    private String setDynamicPrice(){
+        String price;
+
+
+        Location loc1 = new Location("from");
+        loc1.setLatitude(latitudeFrom);
+        loc1.setLongitude(longitudeFrom);
+
+        Location loc2 = new Location("to");
+        loc2.setLatitude(latitudeTo);
+        loc2.setLongitude(longitudeTo);
+
+        double distanceInKiloMeters = (loc1.distanceTo(loc2) / 1000);
+        Bundle extras = getIntent().getExtras();
+        String time = extras.getString("time" );
+        double p;
+        if(time == "Normal"){
+            p = distanceInKiloMeters * 5.2;
+
+        }
+        else{
+            p = distanceInKiloMeters * 6.2;
+
+        }
+        p = Math.round(p * 100.0) / 100.0;
+        price = p + " €";
 
         return price;
     }

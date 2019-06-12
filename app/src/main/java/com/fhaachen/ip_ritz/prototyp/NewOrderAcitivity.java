@@ -59,6 +59,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     private EditText orderTextFrom;
     private AutoCompleteTextView orderTextTo;
     private ImageButton getRoute;
+    private TextView price;
     private boolean mLocationPermissionGranted = false;
     private boolean aRouteIsShown = false;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -85,6 +86,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderButton = findViewById(R.id.order_button);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getRoute = findViewById(R.id.search_route_order);
+        price = findViewById(R.id.price_output);
         orderBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +124,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
                     //find the location of the start address
                     geoLocateFrom(orderTextFrom);
-                    //find the lcation of the destination address
+                    //find the location of the destination address
                     geoLocateTo(orderTextTo);
                 }
 
@@ -131,7 +133,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                     mMap.clear();
                 }
                 aRouteIsShown = true;
-
+                price.setText(setDynamicPrice());
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(NewOrderAcitivity.this);
@@ -167,7 +169,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                         mMap.clear();
                     }
                     aRouteIsShown = true;
-
+                    price.setText(setDynamicPrice());
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
                     mapFragment.getMapAsync(NewOrderAcitivity.this);
@@ -293,5 +295,34 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         LatLngBounds bounds = builder.build();
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         mMap.animateCamera(cu);
+    }
+    private String setDynamicPrice(){
+        String price;
+
+
+        Location loc1 = new Location("from");
+        loc1.setLatitude(latitudeFrom);
+        loc1.setLongitude(longitudeFrom);
+
+        Location loc2 = new Location("to");
+        loc2.setLatitude(latitudeTo);
+        loc2.setLongitude(longitudeTo);
+
+        double distanceInKiloMeters = (loc1.distanceTo(loc2) / 1000);
+        Bundle extras = getIntent().getExtras();
+        String time = extras.getString("time" );
+        double p;
+        if(time == "Normal"){
+            p = distanceInKiloMeters * 5.2;
+
+        }
+        else{
+            p = distanceInKiloMeters * 6.2;
+
+        }
+        p = Math.round(p * 100.0) / 100.0;
+        price = p + " €";
+
+        return price;
     }
 }

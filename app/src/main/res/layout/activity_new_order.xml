@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="70dp"
-                android:text="11.50 €"
+                android:text="-- €"
                 android:textStyle="bold"
                 style="@style/h6"/>
 
