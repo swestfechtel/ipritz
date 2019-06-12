@@ -12,13 +12,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -135,7 +138,44 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
             }
         });
+        orderTextTo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
+                    Log.i("BookingOrderActivity", "Show route startlocation to destination");
+//Keyboard weg
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                    if(orderTextTo.getText().toString().equals("My location")){
+                        //get current location
+                        getLastKnownLocation();
+                        geoLocateFrom(orderTextFrom);
+                    }else{
+
+                        //find the location of the start address
+                        geoLocateFrom(orderTextFrom);
+                        //find the lcation of the destination address
+                        geoLocateTo(orderTextTo);
+                    }
+
+                    if(aRouteIsShown){
+                        //Clear the map, if a route is already shown
+                        mMap.clear();
+                    }
+                    aRouteIsShown = true;
+
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.map);
+                    mapFragment.getMapAsync(NewOrderAcitivity.this);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 

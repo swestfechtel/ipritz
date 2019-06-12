@@ -12,13 +12,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -104,7 +107,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         getRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("NewOrderActivity", "Show route startlocation to destination");
+                Log.i("NewFlightActivity", "Show route startlocation to destination");
                 //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -134,6 +137,47 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(NewFlightActivity.this);
 
+            }
+        });
+        flightTextTo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+                    Log.i("NewFlightActivity", "Show route startlocation to destination");
+                    //Keyboard weg
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                    if(flightTextFrom.getText().toString().equals("My location")){
+                        //get current location
+                        getLastKnownLocation();
+                        geoLocateTo(flightTextTo);
+
+                    }else{
+
+                        //find the location of the start address
+                        geoLocateFrom(flightTextFrom);
+                        //find the location of the destination address
+                        geoLocateTo(flightTextTo);
+                    }
+
+                    if(aRouteIsShown){
+                        //Clear the map, if a route is already shown
+                        mMap.clear();
+                    }
+                    aRouteIsShown = true;
+
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.map);
+                    mapFragment.getMapAsync(NewFlightActivity.this);
+
+
+                    return true;
+                }
+                return false;
             }
         });
 

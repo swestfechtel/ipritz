@@ -77,6 +77,7 @@
                 android:layout_marginTop="7dp"
                 android:background="@color/colorSearchBar"
                 android:hint="Enter a destination address"
+                android:imeOptions="actionSearch"
                 android:inputType="text" />
 
 

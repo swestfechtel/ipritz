@@ -75,7 +75,8 @@
                     android:inputType="text"
                     android:completionThreshold="1"
                     android:popupBackground="@color/colorPrimary"
-                    android:hint="Enter a destination addresses"/>
+                    android:hint="Enter a destination addresses"
+                    android:imeOptions="actionSearch"/>
 
 
             <LinearLayout

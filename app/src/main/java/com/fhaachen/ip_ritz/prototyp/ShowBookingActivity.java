@@ -32,7 +32,6 @@ public class ShowBookingActivity extends AppCompatActivity {
     private FloatingActionButton newOrder;
 
     protected String chosenTime;
-    protected String chosenType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
@@ -80,7 +79,6 @@ public class ShowBookingActivity extends AppCompatActivity {
         newFlight.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick ( View view ) {
-                chosenType = "Flight";
                 new AlertDialog.Builder(view.getContext())
                         .setTitle("New Booking")
                         .setMessage("How fast?")
@@ -114,7 +112,6 @@ public class ShowBookingActivity extends AppCompatActivity {
         newOrder.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick ( View view ) {
-                chosenType = "Order";
                 new AlertDialog.Builder(view.getContext())
                         .setTitle("New Booking")
                         .setMessage("How fast?")

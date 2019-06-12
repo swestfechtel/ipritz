@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
@@ -163,86 +164,26 @@ public class MainActivity extends AppCompatActivity
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
+                //Alert Dialogs
+                popUp(view);
 
-                new AlertDialog.Builder(view.getContext())
-                        .setTitle("New Booking")
-                        .setMessage("What do you want to receive?")
-
-                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
-                        .setPositiveButton("Flight", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                chosenType = "Flight";
-                                new AlertDialog.Builder(view.getContext())
-                                        .setTitle("New Booking")
-                                        .setMessage("How fast?")
-
-                                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                                        // The dialog is automatically dismissed when a dialog button is clicked.
-
-                                        .setPositiveButton("Fast", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Fast";
-                                                Log.i("NewFlightActivity", "Flight is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .setNeutralButton("Normal", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Normal";
-                                                Log.i("NewFlightActivity", "Flight is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .show();
-                            }
-                        })
-
-                        .setNeutralButton("Order", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                chosenType= "Order";
-                                new AlertDialog.Builder(view.getContext())
-                                        .setTitle("New Order")
-                                        .setMessage("How fast?")
-
-                                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                                        // The dialog is automatically dismissed when a dialog button is clicked.
-                                        .setPositiveButton("Normal", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Normal";
-                                                Log.i("NewOrderActivity", "Order is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .setNeutralButton("Fast", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Fast";
-                                                Log.i("NewOrderActivity", "Order is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .show();
-                            }
-                        })
-                        .show();
                 //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        });
+        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                   //Alert Dialogs
+                    popUp(searchButton);
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -433,5 +374,81 @@ public class MainActivity extends AppCompatActivity
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private void popUp(final View view){
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("New Booking")
+                .setMessage("What do you want to receive?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Flight", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        chosenType = "Flight";
+                        new AlertDialog.Builder(view.getContext())
+                                .setTitle("New Booking")
+                                .setMessage("How fast?")
+
+                                // Specifying a listener allows you to take an action before dismissing the dialog.
+                                // The dialog is automatically dismissed when a dialog button is clicked.
+
+                                .setPositiveButton("Fast", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        chosenTime = "Fast";
+                                        Log.i("NewFlightActivity", "Flight is pressed");
+                                        Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                                        i.putExtra("type", chosenTime);
+                                        i.putExtra("text", searchText.getText().toString());
+                                        startActivity(i);
+                                    }
+                                })
+                                .setNeutralButton("Normal", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        chosenTime = "Normal";
+                                        Log.i("NewFlightActivity", "Flight is pressed");
+                                        Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
+                                        i.putExtra("type", chosenTime);
+                                        i.putExtra("text", searchText.getText().toString());
+                                        startActivity(i);
+                                    }
+                                })
+                                .show();
+                    }
+                })
+
+                .setNeutralButton("Order", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        chosenType= "Order";
+                        new AlertDialog.Builder(view.getContext())
+                                .setTitle("New Order")
+                                .setMessage("How fast?")
+
+                                // Specifying a listener allows you to take an action before dismissing the dialog.
+                                // The dialog is automatically dismissed when a dialog button is clicked.
+                                .setPositiveButton("Normal", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        chosenTime = "Normal";
+                                        Log.i("NewOrderActivity", "Order is pressed");
+                                        Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                                        i.putExtra("type", chosenTime);
+                                        i.putExtra("text", searchText.getText().toString());
+                                        startActivity(i);
+                                    }
+                                })
+                                .setNeutralButton("Fast", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        chosenTime = "Fast";
+                                        Log.i("NewOrderActivity", "Order is pressed");
+                                        Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
+                                        i.putExtra("type", chosenTime);
+                                        i.putExtra("text", searchText.getText().toString());
+                                        startActivity(i);
+                                    }
+                                })
+                                .show();
+                    }
+                })
+                .show();
     }
 }
