@@ -50,7 +50,7 @@ public class UserDataUpdateTarget extends AsyncTask < User, Float, Boolean > {
 
             } catch ( Exception e ) {
                 e.printStackTrace ();
-                Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );
+                Log.e ( "UserDataUpdateTarget" , "URL connection error. " + e.getMessage () );
                 return false;
             }
         }

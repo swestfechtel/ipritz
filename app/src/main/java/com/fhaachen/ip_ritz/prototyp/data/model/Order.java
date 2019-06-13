@@ -203,4 +203,8 @@ public class Order {
     public void setCompleted ( boolean completed ) {
         this.completed = completed;
     }
+
+    private void updateOrder () {
+
+    }
 }

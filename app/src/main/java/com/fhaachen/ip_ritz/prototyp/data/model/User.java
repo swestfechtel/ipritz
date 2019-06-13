@@ -1,5 +1,8 @@
 package com.fhaachen.ip_ritz.prototyp.data.model;
 
+import android.util.Log;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
+
 import java.util.ArrayList;
 
 /**
@@ -71,6 +74,7 @@ public class User {
 
     public void set_id ( com.fhaachen.ip_ritz.prototyp.data.model._id _id ) {
         this._id = _id;
+        this.updateUser ();
     }
 
     public String getFirstName () {
@@ -79,6 +83,7 @@ public class User {
 
     public void setFirstName ( String firstName ) {
         this.firstName = firstName;
+        this.updateUser ();
     }
 
     public String getLastName () {
@@ -87,6 +92,7 @@ public class User {
 
     public void setLastName ( String lastName ) {
         this.lastName = lastName;
+        this.updateUser ();
     }
 
     public Address getAddresses () {
@@ -95,6 +101,7 @@ public class User {
 
     public void setAddresses ( Address addresses ) {
         this.addresses = addresses;
+        this.updateUser ();
     }
 
     public String getJob () {
@@ -103,6 +110,7 @@ public class User {
 
     public void setJob ( String job ) {
         this.job = job;
+        this.updateUser ();
     }
 
     public String getLanguage () {
@@ -111,6 +119,7 @@ public class User {
 
     public void setLanguage ( String language ) {
         this.language = language;
+        this.updateUser ();
     }
 
     public String getPasswordHash () {
@@ -119,6 +128,7 @@ public class User {
 
     public void setPasswordHash ( String passwordHash ) {
         this.passwordHash = passwordHash;
+        this.updateUser ();
     }
 
     public String getEmail () {
@@ -127,6 +137,7 @@ public class User {
 
     public void setEmail ( String email ) {
         this.email = email;
+        this.updateUser ();
     }
 
     public String getTelNumber () {
@@ -135,6 +146,7 @@ public class User {
 
     public void setTelNumber ( String telNumber ) {
         this.telNumber = telNumber;
+        this.updateUser ();
     }
 
     public ArrayList < String > getJourneys () {
@@ -143,6 +155,7 @@ public class User {
 
     public void setJourneys ( ArrayList < String > journeys ) {
         this.journeys = journeys;
+        this.updateUser ();
     }
 
     public String getBirthdate () {
@@ -151,6 +164,7 @@ public class User {
 
     public void setBirthdate ( String birthdate ) {
         this.birthdate = birthdate;
+        this.updateUser ();
     }
 
     public boolean isRegistered () {
@@ -159,6 +173,7 @@ public class User {
 
     public void setRegistered ( boolean registered ) {
         this.registered = registered;
+        this.updateUser ();
     }
 
     public String getAuthentificationCode () {
@@ -167,6 +182,7 @@ public class User {
 
     public void setAuthentificationCode ( String authentificationCode ) {
         this.authentificationCode = authentificationCode;
+        this.updateUser ();
     }
 
     public ArrayList < String > getFriends () {
@@ -175,6 +191,7 @@ public class User {
 
     public void setFriends ( ArrayList < String > friends ) {
         this.friends = friends;
+        this.updateUser ();
     }
 
     public ArrayList < Location > getCurrentLocation () {
@@ -183,6 +200,7 @@ public class User {
 
     public void setCurrentLocation ( ArrayList < Location > currentLocation ) {
         this.currentLocation = currentLocation;
+        this.updateUser ();
     }
 
     public ArrayList < String > getPrefferedLandingField () {
@@ -191,6 +209,7 @@ public class User {
 
     public void setPrefferedLandingField ( ArrayList < String > prefferedLandingField ) {
         this.prefferedLandingField = prefferedLandingField;
+        this.updateUser ();
     }
 
     public ArrayList < String > getLastDestinations () {
@@ -199,5 +218,12 @@ public class User {
 
     public void setLastDestinations ( ArrayList < String > lastDestinations ) {
         this.lastDestinations = lastDestinations;
+        this.updateUser ();
+    }
+
+    private void updateUser () {
+        UserDataUpdateTarget updateTarget = new UserDataUpdateTarget ();
+        updateTarget.doInBackground ( this );
+        Log.i ( "User" , "User with id " + this._id.get$oid () + " updated." );
     }
 }

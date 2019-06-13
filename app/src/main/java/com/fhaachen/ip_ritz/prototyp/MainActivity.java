@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,6 +39,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.ArrayList;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -129,7 +132,7 @@ public class MainActivity extends AppCompatActivity
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
-        checkLocation(); //check whether location service is enable or not in your  phone
+        //checkLocation(); //check whether location service is enable or not in your  phone
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -398,16 +401,14 @@ public class MainActivity extends AppCompatActivity
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+            String[] permissions = new String[] { Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION };
+            ActivityCompat.requestPermissions ( this , permissions , 0 );
         }
 
         startLocationUpdates();
 
         mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if(mLocation == null){
-            startLocationUpdates();
-        }
         if (mLocation != null) {
 
             // mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
@@ -468,6 +469,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.i ( "MainActivity" , "Location changed" );
+
+        try {
+            User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+            com.fhaachen.ip_ritz.prototyp.data.model.Location userLocation = new com.fhaachen.ip_ritz.prototyp.data.model.Location ( ( float ) location.getLatitude () , ( float ) location.getLongitude () );
+            ArrayList < com.fhaachen.ip_ritz.prototyp.data.model.Location > currentLocation = loggedInUser.getCurrentLocation ();
+            currentLocation.add ( userLocation );
+            loggedInUser.setCurrentLocation ( currentLocation );
+        } catch ( Exception e ) {
+            e.printStackTrace ();
+        }
+
 
         mMap.clear();
 
@@ -483,16 +496,9 @@ public class MainActivity extends AppCompatActivity
                 new LatLng(location.getLatitude(), location.getLongitude()), 16));
     }
 
-    private boolean checkLocation() {
-
-        return isLocationEnabled();
-    }
-
-
-
-    private boolean isLocationEnabled() {
+    /*private boolean checkLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
+    }*/
 }
