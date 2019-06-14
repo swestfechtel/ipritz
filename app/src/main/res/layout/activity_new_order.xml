@@ -65,7 +65,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@color/colorSearchBar"
                     android:inputType="text"
-                    android:hint="Enter a start addresses"/>
+                    android:hint="Enter a start address"/>
 
             <AutoCompleteTextView
                     android:id="@+id/order_text_to"
@@ -75,7 +75,9 @@
                     android:inputType="text"
                     android:completionThreshold="1"
                     android:popupBackground="@color/colorPrimary"
-                    android:hint="Enter a destination addresses"/>
+                    android:hint="Enter a destination address"
+                    android:text="My location"
+                    android:imeOptions="actionSearch"/>
 
 
             <LinearLayout
@@ -147,14 +149,14 @@
             android:layout_toRightOf="@id/price_title">
 
             <TextView
-                android:id="@+id/price_output"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="70dp"
-                android:text="11.50 €"
-                android:textStyle="bold"
-                style="@style/h6"/>
+                    android:id="@+id/price_output"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="70dp"
+                    android:text="-- €"
+                    android:textStyle="bold"
+                    style="@style/h6"/>
 
 
 

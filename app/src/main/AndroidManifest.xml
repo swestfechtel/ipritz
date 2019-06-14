@@ -41,21 +41,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity
-            android:name=".MyBookingsActivity"
-            android:label="@string/title_activity_bookings"></activity>
-        <activity
-            android:name=".BookingFlightActivity"
-            android:label="@string/title_activity_flight"></activity>
-        <activity
-            android:name=".BookingOrderActivity"
-            android:label="@string/title_activity_order"></activity>
-        <activity
-            android:name=".SearchLocationActivity"
-            android:label="@string/title_activity_Booking"></activity>
-        <activity
-            android:name=".DeliveryActivity"
-            android:label="@string/title_activity_delivery"></activity>
+
+
         <activity
                 android:name=".WaitingActivity"
                 android:label="@string/title_activity_waiting"/>

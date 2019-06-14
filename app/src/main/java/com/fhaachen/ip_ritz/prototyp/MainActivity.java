@@ -6,12 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,16 +19,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import com.fhaachen.ip_ritz.prototyp.data.model.User;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -40,30 +42,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import java.util.ArrayList;
-
 import static android.support.constraint.Constraints.TAG;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ImageButton searchButton;
     private EditText searchText;
-    private FusedLocationProviderClient mFusedLocationClient;
 
     protected String chosenType;
     protected String chosenTime;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLocation;
-    private LocationManager mLocationManager;
-
-    private LocationRequest mLocationRequest;
-    private com.google.android.gms.location.LocationListener listener;
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
-    private LocationManager locationManager;
     public double latitudeNow;
     public double longitudeNow;
 
@@ -72,15 +64,10 @@ public class MainActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
-    private FrameLayout flSearch;
-    private ImageButton imageButton;
-    //private EditText searchText;
-    private ImageButton closePopupButton;
-    private Button buttonMyself;
-    private Button buttonSomebody;
 
-    DrawerLayout drawerLayout;
-    PopupWindow popupWindow;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
+
 
 
     @Override
@@ -124,15 +111,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         searchText = findViewById(R.id.input_search);
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
 
-        mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-
-        //checkLocation(); //check whether location service is enable or not in your  phone
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -155,6 +134,13 @@ public class MainActivity extends AppCompatActivity
                         //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 } );
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient ( this );
+
+        locationRequest = LocationRequest.create ();
+        locationRequest.setInterval ( UPDATE_INTERVAL );
+        locationRequest.setFastestInterval ( FASTEST_INTERVAL );
+        locationRequest.setPriority ( LocationRequest.PRIORITY_HIGH_ACCURACY );
     }
 
     @Override
@@ -176,80 +162,9 @@ public class MainActivity extends AppCompatActivity
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
+                //Alert Dialogs
+                popUp ( view );
 
-                new AlertDialog.Builder(view.getContext())
-                        .setTitle("New Booking")
-                        .setMessage("What do you want to receive?")
-
-                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
-                        .setPositiveButton("Flight", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                chosenType = "Flight";
-                                new AlertDialog.Builder(view.getContext())
-                                        .setTitle("New Booking")
-                                        .setMessage("How fast?")
-
-                                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                                        // The dialog is automatically dismissed when a dialog button is clicked.
-
-                                        .setPositiveButton("Fast", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Fast";
-                                                Log.i("NewFlightActivity", "Flight is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .setNeutralButton("Normal", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Normal";
-                                                Log.i("NewFlightActivity", "Flight is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewFlightActivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .show();
-                            }
-                        })
-
-                        .setNeutralButton("Order", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                chosenType= "Order";
-                                new AlertDialog.Builder(view.getContext())
-                                        .setTitle("New Order")
-                                        .setMessage("How fast?")
-
-                                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                                        // The dialog is automatically dismissed when a dialog button is clicked.
-                                        .setPositiveButton("Normal", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Normal";
-                                                Log.i("NewOrderActivity", "Order is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .setNeutralButton("Fast", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                chosenTime = "Fast";
-                                                Log.i("NewOrderActivity", "Order is pressed");
-                                                Intent i = new Intent(getApplicationContext(), NewOrderAcitivity.class);
-                                                i.putExtra("type", chosenTime);
-                                                i.putExtra("text", searchText.getText().toString());
-                                                startActivity(i);
-                                            }
-                                        })
-                                        .show();
-                            }
-                        })
-                        .show();
                 //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -258,13 +173,76 @@ public class MainActivity extends AppCompatActivity
                         InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
+        searchText.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
+            @Override
+            public boolean onEditorAction ( TextView v , int actionId , KeyEvent event ) {
+                if ( actionId == EditorInfo.IME_ACTION_SEARCH ) {
+                    //Alert Dialogs
+                    popUp ( searchButton );
+                    return true;
+                }
+                return false;
+            }
+        } );
+
+
+        if ( ContextCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            String[] permissions = new String[] { Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION };
+            ActivityCompat.requestPermissions ( this , permissions , 0 );
+        }
+
+
+        fusedLocationProviderClient.requestLocationUpdates ( locationRequest , new LocationCallback () {
+            Location lastLocation;
+
+            @Override
+            public void onLocationResult ( LocationResult locationResult ) {
+                if ( locationResult == null ) {
+                    return;
+                } else if ( locationResult.getLastLocation ().equals ( lastLocation ) ) {
+                    Log.i ( "MainActivity" , "No new location." );
+                } else {
+                    Location location = locationResult.getLastLocation ();
+                    lastLocation = location;
+
+                    try {
+                        /*User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                        com.fhaachen.ip_ritz.prototyp.data.model.Location userLocation = new com.fhaachen.ip_ritz.prototyp.data.model.Location ( (float)location.getLatitude (), (float)location.getLongitude () );
+                        ArrayList<com.fhaachen.ip_ritz.prototyp.data.model.Location> currentLocation = loggedInUser.getCurrentLocation ();
+                        currentLocation.add(userLocation);
+                        loggedInUser.setCurrentLocation ( currentLocation );*/
+                    } catch ( Exception e ) {
+                        e.printStackTrace ();
+                    }
+
+                    Log.i ( "MainActivity" , "Location updated." );
+
+                    mMap.clear ();
+                    MarkerOptions mp = new MarkerOptions ();
+                    mp.position ( new LatLng ( location.getLatitude () , location.getLongitude () ) );
+                    mp.title ( "my position" );
+                    mMap.addMarker ( mp );
+                    mMap.animateCamera ( CameraUpdateFactory.newLatLngZoom (
+                            new LatLng ( location.getLatitude () , location.getLongitude () ) , 16 ) );
+                }
+            }
+        } , null );
+            /*fusedLocationProviderClient.getLastLocation ().addOnSuccessListener ( this , new OnSuccessListener < Location > () {
+                @Override
+                public void onSuccess ( Location location ) {
+                    if (location != null) {
+
+                    }
+                }
+            } )*/
+
 
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        // Construct a GeoDataClient.
         LatLng loc = new LatLng(latitudeNow, longitudeNow);
         mMap.addMarker(new MarkerOptions().position(loc).title("Current Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
@@ -300,53 +278,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void showPopup(){
 
-        drawerLayout = findViewById ( R.id.drawer_layout );
-
-
-        //instantiate the popup.xml layout file
-        LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View customView = layoutInflater.inflate(R.layout.booking_popup,null);
-
-        closePopupButton = customView.findViewById ( R.id.close_popup_button );
-
-        //instantiate popup window
-        popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        //display the popup window
-        popupWindow.showAtLocation(drawerLayout, Gravity.CENTER, 0, 0);
-
-        //close the popup window on button click
-        closePopupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        buttonMyself = customView.findViewById(R.id.btn_myself);
-        buttonSomebody = customView.findViewById(R.id.btn_somebody);
-
-        buttonMyself.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("BookingActivity", "Go to SearchLocationActivity");
-                Intent i = new Intent(getApplicationContext(), MyBookingsActivity.class);
-                startActivity(i);
-            }
-        });
-
-        buttonSomebody.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("BookingActivity", "Go to SearchLocationActivity");
-                Intent i = new Intent(getApplicationContext(), SearchLocationActivity.class);
-                startActivity(i);
-            }
-        });
-
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -362,10 +294,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
-        } else if(id == R.id.nav_delivery){
-            Log.i("MainActivity", "Navigation item selected: Delivery");
-            Intent i = new Intent(getApplicationContext(), DeliveryActivity.class);
-            startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
         } else if (id == R.id.nav_contact) {
@@ -390,115 +318,79 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void popUp ( final View view ) {
+        new AlertDialog.Builder ( view.getContext () )
+                .setTitle ( "New Booking" )
+                .setMessage ( "What do you want to receive?" )
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            String[] permissions = new String[] { Manifest.permission.ACCESS_COARSE_LOCATION , Manifest.permission.ACCESS_FINE_LOCATION };
-            ActivityCompat.requestPermissions ( this , permissions , 0 );
-        }
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton ( "Flight" , new DialogInterface.OnClickListener () {
+                    public void onClick ( DialogInterface dialog , int which ) {
+                        chosenType = "Flight";
+                        new AlertDialog.Builder ( view.getContext () )
+                                .setTitle ( "New Booking" )
+                                .setMessage ( "How fast?" )
 
-        startLocationUpdates();
+                                // Specifying a listener allows you to take an action before dismissing the dialog.
+                                // The dialog is automatically dismissed when a dialog button is clicked.
 
-        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                                .setPositiveButton ( "Fast" , new DialogInterface.OnClickListener () {
+                                    public void onClick ( DialogInterface dialog , int which ) {
+                                        chosenTime = "Fast";
+                                        Log.i ( "NewFlightActivity" , "Flight is pressed" );
+                                        Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                        i.putExtra ( "type" , chosenTime );
+                                        i.putExtra ( "text" , searchText.getText ().toString () );
+                                        startActivity ( i );
+                                    }
+                                } )
+                                .setNeutralButton ( "Normal" , new DialogInterface.OnClickListener () {
+                                    public void onClick ( DialogInterface dialog , int which ) {
+                                        chosenTime = "Normal";
+                                        Log.i ( "NewFlightActivity" , "Flight is pressed" );
+                                        Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                        i.putExtra ( "type" , chosenTime );
+                                        i.putExtra ( "text" , searchText.getText ().toString () );
+                                        startActivity ( i );
+                                    }
+                                } )
+                                .show ();
+                    }
+                } )
 
-        if (mLocation != null) {
+                .setNeutralButton ( "Order" , new DialogInterface.OnClickListener () {
+                    public void onClick ( DialogInterface dialog , int which ) {
+                        chosenType = "Order";
+                        new AlertDialog.Builder ( view.getContext () )
+                                .setTitle ( "New Order" )
+                                .setMessage ( "How fast?" )
 
-            // mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
-            //mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
-        } else {
-            Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
-        }
+                                // Specifying a listener allows you to take an action before dismissing the dialog.
+                                // The dialog is automatically dismissed when a dialog button is clicked.
+                                .setPositiveButton ( "Normal" , new DialogInterface.OnClickListener () {
+                                    public void onClick ( DialogInterface dialog , int which ) {
+                                        chosenTime = "Normal";
+                                        Log.i ( "NewOrderActivity" , "Order is pressed" );
+                                        Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
+                                        i.putExtra ( "type" , chosenTime );
+                                        i.putExtra ( "text" , searchText.getText ().toString () );
+                                        startActivity ( i );
+                                    }
+                                } )
+                                .setNeutralButton ( "Fast" , new DialogInterface.OnClickListener () {
+                                    public void onClick ( DialogInterface dialog , int which ) {
+                                        chosenTime = "Fast";
+                                        Log.i ( "NewOrderActivity" , "Order is pressed" );
+                                        Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
+                                        i.putExtra ( "type" , chosenTime );
+                                        i.putExtra ( "text" , searchText.getText ().toString () );
+                                        startActivity ( i );
+                                    }
+                                } )
+                                .show ();
+                    }
+                } )
+                .show ();
     }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i("MainActivity", "Connection Suspended");
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i("MainActivity", "Connection failed. Error: " + connectionResult.getErrorCode());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    protected void startLocationUpdates() {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
-        Log.d("reque", "--->>>>");
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.i ( "MainActivity" , "Location changed" );
-
-        try {
-            User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
-            com.fhaachen.ip_ritz.prototyp.data.model.Location userLocation = new com.fhaachen.ip_ritz.prototyp.data.model.Location ( ( float ) location.getLatitude () , ( float ) location.getLongitude () );
-            ArrayList < com.fhaachen.ip_ritz.prototyp.data.model.Location > currentLocation = loggedInUser.getCurrentLocation ();
-            currentLocation.add ( userLocation );
-            loggedInUser.setCurrentLocation ( currentLocation );
-        } catch ( Exception e ) {
-            e.printStackTrace ();
-        }
-
-
-        mMap.clear();
-
-        MarkerOptions mp = new MarkerOptions();
-
-        mp.position(new LatLng(location.getLatitude(), location.getLongitude()));
-
-        mp.title("my position");
-
-        mMap.addMarker(mp);
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(location.getLatitude(), location.getLongitude()), 16));
-    }
-
-    /*private boolean checkLocation() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }*/
 }

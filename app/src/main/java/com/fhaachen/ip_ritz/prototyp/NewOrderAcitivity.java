@@ -12,28 +12,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.RoundCap;
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.*;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.GeoPoint;
@@ -56,6 +43,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     private EditText orderTextFrom;
     private AutoCompleteTextView orderTextTo;
     private ImageButton getRoute;
+    private TextView price;
     private boolean mLocationPermissionGranted = false;
     private boolean aRouteIsShown = false;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -73,7 +61,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         setContentView(R.layout.activity_new_order);
 
         String[] locations = getResources().getStringArray(R.array.locations);
-        orderTextTo = (AutoCompleteTextView)findViewById(R.id.order_text_to);
+        orderTextTo = findViewById ( R.id.order_text_to );
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         orderTextTo.setAdapter(adapter);
@@ -82,6 +70,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderButton = findViewById(R.id.order_button);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getRoute = findViewById(R.id.search_route_order);
+        price = findViewById ( R.id.price_output );
         orderBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,41 +90,78 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                 startActivity(i);
             }
         });
-        getRoute.setOnClickListener(new View.OnClickListener() {
+        getRoute.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick( View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
 //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
-                if(orderTextTo.getText().toString().equals("My location")){
+                inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
+                        InputMethodManager.HIDE_NOT_ALWAYS );
+                if ( orderTextTo.getText ().toString ().equals ( "My location" ) ) {
                     //get current location
-                    getLastKnownLocation();
-                    geoLocateFrom(orderTextFrom);
-                }else{
+                    getLastKnownLocation ();
+                    geoLocateFrom ( orderTextFrom );
+                } else {
 
                     //find the location of the start address
-                    geoLocateFrom(orderTextFrom);
-                    //find the lcation of the destination address
-                    geoLocateTo(orderTextTo);
+                    geoLocateFrom ( orderTextFrom );
+                    //find the location of the destination address
+                    geoLocateTo ( orderTextTo );
                 }
 
-                if(aRouteIsShown){
+                if ( aRouteIsShown ) {
                     //Clear the map, if a route is already shown
-                    mMap.clear();
+                    mMap.clear ();
                 }
                 aRouteIsShown = true;
-
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(NewOrderAcitivity.this);
+                price.setText ( setDynamicPrice () );
+                SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
+                        .findFragmentById ( R.id.map );
+                mapFragment.getMapAsync ( NewOrderAcitivity.this );
 
             }
-        });
+        } );
+        orderTextTo.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
+            @Override
+            public boolean onEditorAction ( TextView v , int actionId , KeyEvent event ) {
+                if ( actionId == EditorInfo.IME_ACTION_SEARCH ) {
 
+                    Log.i ( "BookingOrderActivity" , "Show route startlocation to destination" );
+//Keyboard weg
+                    InputMethodManager inputManager = ( InputMethodManager )
+                            getSystemService ( Context.INPUT_METHOD_SERVICE );
+
+                    inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
+                            InputMethodManager.HIDE_NOT_ALWAYS );
+                    if ( orderTextTo.getText ().toString ().equals ( "My location" ) ) {
+                        //get current location
+                        getLastKnownLocation ();
+                        geoLocateFrom ( orderTextFrom );
+                    } else {
+
+                        //find the location of the start address
+                        geoLocateFrom ( orderTextFrom );
+                        //find the lcation of the destination address
+                        geoLocateTo ( orderTextTo );
+                    }
+
+                    if ( aRouteIsShown ) {
+                        //Clear the map, if a route is already shown
+                        mMap.clear ();
+                    }
+                    aRouteIsShown = true;
+                    price.setText ( setDynamicPrice () );
+                    SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
+                            .findFragmentById ( R.id.map );
+                    mapFragment.getMapAsync ( NewOrderAcitivity.this );
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -253,5 +279,34 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         LatLngBounds bounds = builder.build();
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         mMap.animateCamera(cu);
+    }
+
+    private String setDynamicPrice () {
+        String price;
+
+
+        Location loc1 = new Location ( "from" );
+        loc1.setLatitude ( latitudeFrom );
+        loc1.setLongitude ( longitudeFrom );
+
+        Location loc2 = new Location ( "to" );
+        loc2.setLatitude ( latitudeTo );
+        loc2.setLongitude ( longitudeTo );
+
+        double distanceInKiloMeters = ( loc1.distanceTo ( loc2 ) / 1000 );
+        Bundle extras = getIntent ().getExtras ();
+        String time = extras.getString ( "time" );
+        double p;
+        if ( time == "Normal" ) {
+            p = distanceInKiloMeters * 5.2;
+
+        } else {
+            p = distanceInKiloMeters * 6.2;
+
+        }
+        p = Math.round ( p * 100.0 ) / 100.0;
+        price = p + " €";
+
+        return price;
     }
 }

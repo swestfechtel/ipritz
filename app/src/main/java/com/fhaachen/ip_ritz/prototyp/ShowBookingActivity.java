@@ -2,11 +2,13 @@ package com.fhaachen.ip_ritz.prototyp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,15 +27,11 @@ public class ShowBookingActivity extends AppCompatActivity {
     private TextView BookingButton;
     private TextView OrderButton;
     private ListView bookings;
-    private LinearLayout Time;
-    private Button Normal;
-    private Button Fast;
     private ListView orders;
     private FloatingActionButton newFlight;
     private FloatingActionButton newOrder;
 
     protected String chosenTime;
-    protected String chosenType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
@@ -50,9 +48,6 @@ public class ShowBookingActivity extends AppCompatActivity {
         orders = findViewById ( R.id.ordersListView );
         newFlight = findViewById ( R.id.newBooking );
         newOrder = findViewById ( R.id.newOrder );
-        Time = findViewById ( R.id.timetype );
-        Normal = findViewById ( R.id.normal );
-        Fast = findViewById ( R.id.fast );
         BookingButton = findViewById ( R.id.bookingHeader );
         BookingButton.setOnClickListener ( new View.OnClickListener () {
             @SuppressLint( "RestrictedApi" )
@@ -84,56 +79,68 @@ public class ShowBookingActivity extends AppCompatActivity {
         newFlight.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick ( View view ) {
-                chosenType = "Flight";
-                Time.setVisibility ( View.VISIBLE );
+                new AlertDialog.Builder ( view.getContext () )
+                        .setTitle ( "New Booking" )
+                        .setMessage ( "How fast?" )
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+
+                        .setPositiveButton ( "Fast" , new DialogInterface.OnClickListener () {
+                            public void onClick ( DialogInterface dialog , int which ) {
+                                chosenTime = "Fast";
+                                Log.i ( "NewFlightActivity" , "Flight is pressed" );
+                                Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                i.putExtra ( "type" , chosenTime );
+
+                                startActivity ( i );
+                            }
+                        } )
+                        .setNeutralButton ( "Normal" , new DialogInterface.OnClickListener () {
+                            public void onClick ( DialogInterface dialog , int which ) {
+                                chosenTime = "Normal";
+                                Log.i ( "NewFlightActivity" , "Flight is pressed" );
+                                Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                i.putExtra ( "type" , chosenTime );
+
+                                startActivity ( i );
+                            }
+                        } )
+                        .show ();
             }
         } );
         newOrder.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick ( View view ) {
-                chosenType = "Order";
-                Time.setVisibility ( View.VISIBLE );
-            }
-        } );
-        Normal.setOnClickListener ( new View.OnClickListener () {
-            @Override
-            public void onClick ( View view ) {
-                chosenTime = "Normal";
-                Time.setVisibility ( View.GONE );
-                if ( chosenType == "Flight" ) {
-                    Log.i ( "NewFlightActivity" , "Flight is pressed" );
-                    Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
-                    i.putExtra ( "time" , chosenTime );
-                    startActivity ( i );
-                }
-                if ( chosenType == "Order" ) {
-                    Log.i ( "NewOrderActivity" , "Order is pressed" );
-                    Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
-                    i.putExtra ( "time" , chosenTime );
-                    startActivity ( i );
-                }
+                new AlertDialog.Builder ( view.getContext () )
+                        .setTitle ( "New Booking" )
+                        .setMessage ( "How fast?" )
 
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+
+                        .setPositiveButton ( "Fast" , new DialogInterface.OnClickListener () {
+                            public void onClick ( DialogInterface dialog , int which ) {
+                                chosenTime = "Fast";
+                                Log.i ( "NewFlightActivity" , "Flight is pressed" );
+                                Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                i.putExtra ( "type" , chosenTime );
+                                startActivity ( i );
+                            }
+                        } )
+                        .setNeutralButton ( "Normal" , new DialogInterface.OnClickListener () {
+                            public void onClick ( DialogInterface dialog , int which ) {
+                                chosenTime = "Normal";
+                                Log.i ( "NewFlightActivity" , "Flight is pressed" );
+                                Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                i.putExtra ( "type" , chosenTime );
+                                startActivity ( i );
+                            }
+                        } )
+                        .show ();
             }
         } );
-        Fast.setOnClickListener ( new View.OnClickListener () {
-            @Override
-            public void onClick ( View view ) {
-                chosenTime = "Fast";
-                Time.setVisibility ( View.GONE );
-                if ( chosenType == "Flight" ) {
-                    Log.i ( "NewFlightActivity" , "Flight is pressed" );
-                    Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
-                    i.putExtra ( "ime" , chosenType );
-                    startActivity ( i );
-                }
-                if ( chosenType == "Order" ) {
-                    Log.i ( "NewOrderActivity" , "Order is pressed" );
-                    Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
-                    i.putExtra ( "ime" , chosenType );
-                    startActivity ( i );
-                }
-            }
-        } );
+
     }
 
     @Override

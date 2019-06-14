@@ -1,7 +1,5 @@
 package com.fhaachen.ip_ritz.prototyp;
 
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -38,7 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private String friendId;
 
-    private double friendLat = 0, friendLong = 0, ownLat = 50.771758, ownLong = 6.068255;
+    private double friendLat = 0, friendLong = 0, ownLat = 0, ownLong = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,44 +125,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-
-        String friendName = "";
-
         UserDataSource dataSource = new UserDataSource ();
         User friend = dataSource.doInBackground ( friendId );
-        friendLat = friend.getCurrentLocation ().get ( 0 ).getLatitude ();
-        friendLong = friend.getCurrentLocation ().get ( 0 ).getLongitude ();
+        friendLat = friend.getCurrentLocation ().get ( friend.getCurrentLocation ().size () - 1 ).getLatitude ();
+        friendLong = friend.getCurrentLocation ().get ( friend.getCurrentLocation ().size () - 1 ).getLongitude ();
+        String friendName = friend.getFirstName ();
+        ownLat = LoginActivity.loginViewModel.getLoggedInUser ().getCurrentLocation ().get ( LoginActivity.loginViewModel.getLoggedInUser ().getCurrentLocation ().size () - 1 ).getLatitude ();
+        ownLong = LoginActivity.loginViewModel.getLoggedInUser ().getCurrentLocation ().get ( LoginActivity.loginViewModel.getLoggedInUser ().getCurrentLocation ().size () - 1 ).getLongitude ();
 
-        LocationManager locManager = ( LocationManager ) getSystemService ( LOCATION_SERVICE );
-
-        boolean network_enabled = locManager.isProviderEnabled ( LocationManager.NETWORK_PROVIDER );
-
-        Location location;
-        LatLng ownLocation = new LatLng ( 50.771758 , 6.068255 );
+        LatLng ownLocation = new LatLng ( ownLat , ownLong );
         LatLng friendLocation = new LatLng ( friendLat , friendLong );
         Log.i ( "MapsActivity" , "Setting own location to " + ownLocation.toString () );
         Log.i ( "MapsActivity" , "Setting friend location to " + friendLocation.toString () );
-
-        // TODO: get own location
-        /*if ( network_enabled ) {
-
-            if ( ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission ( this , Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-
-                return;
-            }
-            location = locManager.getLastKnownLocation ( LocationManager.NETWORK_PROVIDER );
-
-            if ( location != null ) {
-                ownLocation = new LatLng ( location.getLatitude () , location.getLongitude () );
-                Log.i("MapsActivity", "Setting own location to " + ownLocation.toString ());
-                //mMap.addMarker(new MarkerOptions().position(westpark).title("Current Location"));
-                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(westpark, 15) );
-
-            }
-        }*/
-        // Add a marker in Sydney and move the camera
-        //LatLng westpark = new LatLng(50.771758, 6.068255);
-
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
                 .clickable(true)

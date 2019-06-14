@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_order"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="20dp"
-    tools:context=".NewFlightAcitivity">
+                android:id="@+id/layout_order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_margin="20dp"
+                tools:context=".NewFlightActivity">
 
     <LinearLayout
         android:id="@+id/btn_l"
@@ -59,23 +59,26 @@
         android:orientation="vertical"
         android:layout_toRightOf="@id/route_titles"
         android:layout_below="@id/btn_l">
+
         <AutoCompleteTextView
                 android:id="@+id/flight_text_from"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:background="@color/colorSearchBar"
                 android:completionThreshold="1"
-                android:layout_marginTop="8dp"
-                android:hint="Enter a destination addresses"
+                android:hint="Enter a start address"
                 android:inputType="text"
-                android:popupBackground="@color/colorPrimary" />
+                android:text="My location"
+                android:popupBackground="@color/colorPrimary"/>
         <EditText
                 android:id="@+id/flight_text_to"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:layout_marginTop="7dp"
                 android:background="@color/colorSearchBar"
-                android:hint="Enter a start addresses"
+                android:hint="Enter a destination address"
+                android:imeOptions="actionSearch"
                 android:inputType="text" />
 
 
@@ -150,13 +153,14 @@
         android:layout_toRightOf="@id/price_title">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="70dp"
-            android:text="11.50 €"
-            android:textStyle="bold"
-            style="@style/h6"/>
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="70dp"
+                android:text="-- €"
+                android:textStyle="bold"
+                style="@style/h6"/>
 
     </LinearLayout>
     <Button
