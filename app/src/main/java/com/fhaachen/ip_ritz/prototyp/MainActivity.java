@@ -29,6 +29,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.fhaachen.ip_ritz.prototyp.data.TokenUpdateTarget;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -155,6 +157,13 @@ public class MainActivity extends AppCompatActivity
         if ( LoginActivity.loginViewModel != null && LoginActivity.loginViewModel.getLoggedInUser () != null ) {
             navHeaderName.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getFirstName () + " " + LoginActivity.loginViewModel.getLoggedInUser ().getLastName () );
             navHeaderMail.setText ( LoginActivity.loginViewModel.getLoggedInUser ().getEmail () );
+
+            String token = FirebaseInstanceId.getInstance ().getToken ();
+            Log.i ( "MainActivity" , " " + token );
+            TokenUpdateTarget tokenUpdateTarget = new TokenUpdateTarget ();
+            String userId = LoginActivity.loginViewModel.getLoggedInUser ().get_id ().get$oid ();
+            String[] params = new String[] { userId , token };
+            tokenUpdateTarget.doInBackground ( params );
         }
 
         searchText = findViewById(R.id.input_search);

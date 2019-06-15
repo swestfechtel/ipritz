@@ -126,14 +126,9 @@ public class LoginActivity extends AppCompatActivity {
         String token = preferences.getString ( "token", null );*/
         //String token = MyFirebaseMessagingService.token;
 
-        String token = FirebaseInstanceId.getInstance ().getToken ();
 
-        Log.i ( "LoginActivity" , " " + token );
 
-        TokenUpdateTarget tokenUpdateTarget = new TokenUpdateTarget ();
-        String userId = loginViewModel.getLoggedInUser ().get_id ().get$oid ();
-        String[] params = new String[] { userId , token };
-        tokenUpdateTarget.doInBackground ( params );
+
     }
 
     private void showLoginFailed ( @StringRes Integer errorString ) {

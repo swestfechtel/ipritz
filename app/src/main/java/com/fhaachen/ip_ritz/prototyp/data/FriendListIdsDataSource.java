@@ -19,9 +19,6 @@ public class FriendListIdsDataSource extends AsyncTask < String, Integer, ArrayL
         String userId = params[ 0 ];
         final ArrayList < String > ids = new ArrayList <> ( 0 );
 
-        ids.add ( "5cea970061ba485d14002da9" );
-        ids.add ( "5ce7c9d6b84ce6277400640b" ); // stub weil noch keine Daten eingepflegt...
-
         try {
             //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + userId );
             URL server = new URL ( LoginDataSource.serverAddress + "/user/" + userId );

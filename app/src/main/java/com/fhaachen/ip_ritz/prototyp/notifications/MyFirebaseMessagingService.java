@@ -2,7 +2,10 @@ package com.fhaachen.ip_ritz.prototyp.notifications;
 
 //import com.google.firebase.*;
 
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import com.fhaachen.ip_ritz.prototyp.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -14,7 +17,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived ( RemoteMessage remoteMessage ) {
         // ...
-
+        Log.i("Message", "Got new message");
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d ( TAG , "From: " + remoteMessage.getFrom () );
@@ -40,6 +43,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+        /*NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle(textTitle)
+                .setContentText(textContent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);*/
     }
 
     @Override
