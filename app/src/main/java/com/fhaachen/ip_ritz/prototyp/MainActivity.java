@@ -29,8 +29,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.fhaachen.ip_ritz.prototyp.data.TokenUpdateTarget;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -43,6 +43,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.ArrayList;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -171,15 +173,19 @@ public class MainActivity extends AppCompatActivity
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                //Alert Dialogs
-                popUp ( view );
+                try {
+                    //Alert Dialogs
+                    popUp ( view );
 
-                //Keyboard weg
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                    //Keyboard weg
+                    InputMethodManager inputManager = ( InputMethodManager )
+                            getSystemService ( Context.INPUT_METHOD_SERVICE );
 
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
+                    inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
+                            InputMethodManager.HIDE_NOT_ALWAYS );
+                } catch ( Exception e ) {
+                    e.printStackTrace ();
+                }
             }
         });
         searchText.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
@@ -203,24 +209,24 @@ public class MainActivity extends AppCompatActivity
 
 
         fusedLocationProviderClient.requestLocationUpdates ( locationRequest , new LocationCallback () {
-            Location lastLocation;
+            Location lastLocation = null;
 
             @Override
             public void onLocationResult ( LocationResult locationResult ) {
                 if ( locationResult == null ) {
                     return;
-                } else if ( locationResult.getLastLocation ().equals ( lastLocation ) ) {
+                } else if ( lastLocation != null && locationResult.getLastLocation ().getLatitude () == lastLocation.getLatitude () && locationResult.getLastLocation ().getLongitude () == lastLocation.getLongitude () ) {
                     Log.i ( "MainActivity" , "No new location." );
                 } else {
                     Location location = locationResult.getLastLocation ();
                     lastLocation = location;
 
                     try {
-                        /*User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                        User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
                         com.fhaachen.ip_ritz.prototyp.data.model.Location userLocation = new com.fhaachen.ip_ritz.prototyp.data.model.Location ( (float)location.getLatitude (), (float)location.getLongitude () );
-                        ArrayList<com.fhaachen.ip_ritz.prototyp.data.model.Location> currentLocation = loggedInUser.getCurrentLocation ();
+                        ArrayList < com.fhaachen.ip_ritz.prototyp.data.model.Location > currentLocation = loggedInUser.getCurrentLocation ();
                         currentLocation.add(userLocation);
-                        loggedInUser.setCurrentLocation ( currentLocation );*/
+                        loggedInUser.setCurrentLocation ( currentLocation );
                     } catch ( Exception e ) {
                         e.printStackTrace ();
                     }

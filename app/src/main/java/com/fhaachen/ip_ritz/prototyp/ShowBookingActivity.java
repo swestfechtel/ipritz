@@ -153,9 +153,8 @@ public class ShowBookingActivity extends AppCompatActivity {
         OrderDataSource orderDataSource = new OrderDataSource ();
 
         for ( String id : journeys ) {
-            orders.add ( orderDataSource.doInBackground ( id ) );
+            if ( id != null ) orders.add ( orderDataSource.doInBackground ( id ) );
         }
-
         final ShowBookingActivity.CustomArrayAdapter adapter = new ShowBookingActivity.CustomArrayAdapter ( getApplicationContext () , orders );
         listView.setAdapter ( adapter );
 

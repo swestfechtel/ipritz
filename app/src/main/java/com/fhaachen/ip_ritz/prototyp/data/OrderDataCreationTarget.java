@@ -28,6 +28,12 @@ public class OrderDataCreationTarget extends AsyncTask < Order, Float, String > 
             os.write ( payload.getBytes () );
             os.flush ();
 
+            /*BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+            String str = "", tmp;
+            while ((tmp = br.readLine ()) != null) {
+                str += tmp;
+            }
+            Log.i("OrderDataCreation", str);*/
             JsonParser jsonParser = new JsonParser ();
             JsonElement jsonElement = jsonParser.parse ( new InputStreamReader ( ( InputStream ) connection.getContent () ) );
             JsonObject rootObject = jsonElement.getAsJsonObject ();
@@ -46,12 +52,12 @@ public class OrderDataCreationTarget extends AsyncTask < Order, Float, String > 
             if ( ( orderId = rootObject.get ( "$oid" ).getAsString () ).length () <= 0 ) {
                 throw new JsonParseException ( "Error fetching order id: $oid was empty string." );
             }
-
+            Log.i ( "OrderDataCreation" , orderId );
             connection.disconnect ();
             return orderId;
         } catch ( Exception e ) {
             e.printStackTrace ();
-            Log.e ( "ProfileActivity" , "URL connection error. " + e.getMessage () );
+            Log.e ( "OrderDataCreation" , "URL connection error. " + e.getMessage () );
             return null;
         }
     }

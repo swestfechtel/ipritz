@@ -200,7 +200,7 @@ public class User {
 
     public void setCurrentLocation ( ArrayList < Location > currentLocation ) {
         this.currentLocation = currentLocation;
-        //this.updateUser ();
+        this.updateUser ();
     }
 
     public ArrayList < String > getPrefferedLandingField () {

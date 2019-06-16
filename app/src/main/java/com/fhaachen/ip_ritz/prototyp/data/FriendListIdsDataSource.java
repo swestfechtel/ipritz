@@ -35,7 +35,7 @@ public class FriendListIdsDataSource extends AsyncTask < String, Integer, ArrayL
 
             for ( JsonElement element : friendsArray ) {
                 //JsonObject id = element.getAsJsonObject ();
-                ids.add ( element.toString () );
+                ids.add ( element.getAsString () );
                 Log.i ( "FriendsActivity" , "Added id to arraylist: " + element.toString () );
             }
             connection.disconnect ();

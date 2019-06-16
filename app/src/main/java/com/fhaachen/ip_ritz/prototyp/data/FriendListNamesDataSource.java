@@ -18,7 +18,7 @@ public class FriendListNamesDataSource extends AsyncTask < ArrayList < String >,
         final ArrayList < String > names = new ArrayList <> ( 0 );
         for ( String id : params[ 0 ] ) {
             try {
-                //URL server = new URL ( LoginDataSource.serverAddress + "/user.php?id=" + id );
+                Log.i ( "FriendListNames" , LoginDataSource.serverAddress + "/user/" + id );
                 URL server = new URL ( LoginDataSource.serverAddress + "/user/" + id );
                 HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();
 
@@ -37,7 +37,7 @@ public class FriendListNamesDataSource extends AsyncTask < ArrayList < String >,
                 //TODO: parse json file
             } catch ( Exception e ) {
                 e.printStackTrace ();
-                Log.e ( "FriendsActivity" , "URL connection error. " + e.getMessage () );
+                Log.e ( "FriendListNames" , "URL connection error. " + e.getMessage () );
                 return names;
             }
         }

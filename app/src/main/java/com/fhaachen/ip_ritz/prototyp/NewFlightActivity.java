@@ -17,6 +17,12 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
+import com.fhaachen.ip_ritz.prototyp.data.model.Order;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
+import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
@@ -28,6 +34,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -35,6 +42,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     public double longitudeFrom;
     public double latitudeTo;
     public double longitudeTo;
+    private Address startAddress, destAddress;
 
     private TextView price;
     private ImageButton flightBackButton;
@@ -70,66 +78,68 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         price = findViewById ( R.id.price );
         getRoute = findViewById(R.id.search_route_flight);
-        if(getIntent().hasExtra("text") == true) {
+        if ( getIntent ().hasExtra ( "text" ) ) {
             String text = getIntent().getExtras().getString("text");
             flightTextTo.setText(text);
         }
         flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i ( "NewFlightActivity" , "Go to MainActivity" );
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
+                finish ();
             }
         });
         bookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), WaitingActivity.class);
-                startActivity(i);
+                try {
+                    User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                    ArrayList < String > startLocation = new ArrayList < String > ();
+                    startLocation.add ( String.valueOf ( latitudeFrom ) );
+                    startLocation.add ( String.valueOf ( longitudeFrom ) );
+
+                    ArrayList < String > destinationLocation = new ArrayList < String > ();
+                    destinationLocation.add ( String.valueOf ( latitudeTo ) );
+                    destinationLocation.add ( String.valueOf ( longitudeTo ) );
+
+                    ArrayList < String > passengers = new ArrayList < String > ();
+                    passengers.add ( loggedInUser.get_id ().get$oid () );
+
+                    String startAddressString = startAddress.getAddressLine ( 0 );
+                    String destinationAddressString = destAddress.getAddressLine ( 0 );
+
+                    Order order = new Order ( loggedInUser.get_id ().get$oid () , startLocation , destinationLocation );
+                    order.setPassengers ( passengers );
+                    order.setStartAddress ( startAddressString );
+                    order.setDestinationAddress ( destinationAddressString );
+
+                    OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();
+                    String orderId = dataTarget.doInBackground ( order );
+                    Log.i ( "NewFlightActivity" , orderId );
+
+                    UserDataSource dataSource = new UserDataSource ();
+
+                    ArrayList < String > journeys;
+                    if ( ( journeys = loggedInUser.getJourneys () ) == null ) {
+                        journeys = new ArrayList <> ();
+                    }
+                    journeys.add ( orderId );
+                    loggedInUser.setJourneys ( journeys );
+
+                    UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
+                    userDataUpdateTarget.doInBackground ( loggedInUser );
+
+                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                    startActivity ( i );
+                } catch ( Exception e ) {
+                    e.printStackTrace ();
+                }
             }
         });
         getRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i ( "NewFlightActivity" , "Show route startlocation to destination" );
-                //Keyboard weg
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
-                if(flightTextFrom.getText().toString().equals("My location")){
-                    //get current location
-                    getLastKnownLocation();
-                    geoLocateTo(flightTextTo);
-
-                }else{
-
-                    //find the location of the start address
-                    geoLocateFrom(flightTextFrom);
-                    //find the location of the destination address
-                    geoLocateTo(flightTextTo);
-                }
-
-                if(aRouteIsShown){
-                    //Clear the map, if a route is already shown
-                    mMap.clear();
-                }
-                aRouteIsShown = true;
-                price.setText ( setDynamicPrice () );
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(NewFlightActivity.this);
-
-            }
-        });
-        flightTextTo.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
-            @Override
-            public boolean onEditorAction ( TextView v , int actionId , KeyEvent event ) {
-                if ( actionId == EditorInfo.IME_ACTION_SEARCH ) {
-
-                    Log.i ( "NewFlightActivity" , "Show route startlocation to destination" );
+                try {
+                    Log.i ( "NewFlightActivity" , "getRoute" );
                     //Keyboard weg
                     InputMethodManager inputManager = ( InputMethodManager )
                             getSystemService ( Context.INPUT_METHOD_SERVICE );
@@ -158,9 +168,51 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
                             .findFragmentById ( R.id.map );
                     mapFragment.getMapAsync ( NewFlightActivity.this );
+                } catch ( Exception e ) {
+                    e.printStackTrace ();
+                }
+            }
+        });
+        flightTextTo.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
+            @Override
+            public boolean onEditorAction ( TextView v , int actionId , KeyEvent event ) {
+                if ( actionId == EditorInfo.IME_ACTION_SEARCH ) {
+                    try {
+                        Log.i ( "NewFlightActivity" , "flightTextTo" );
+                        //Keyboard weg
+                        InputMethodManager inputManager = ( InputMethodManager )
+                                getSystemService ( Context.INPUT_METHOD_SERVICE );
+
+                        inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
+                                InputMethodManager.HIDE_NOT_ALWAYS );
+                        if ( flightTextFrom.getText ().toString ().equals ( "My location" ) ) {
+                            //get current location
+                            getLastKnownLocation ();
+                            geoLocateTo ( flightTextTo );
+
+                        } else {
+
+                            //find the location of the start address
+                            geoLocateFrom ( flightTextFrom );
+                            //find the location of the destination address
+                            geoLocateTo ( flightTextTo );
+                        }
+
+                        if ( aRouteIsShown ) {
+                            //Clear the map, if a route is already shown
+                            mMap.clear ();
+                        }
+                        aRouteIsShown = true;
+                        price.setText ( setDynamicPrice () );
+                        SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
+                                .findFragmentById ( R.id.map );
+                        mapFragment.getMapAsync ( NewFlightActivity.this );
 
 
-                    return true;
+                        return true;
+                    } catch ( Exception e ) {
+                        e.printStackTrace ();
+                    }
                 }
                 return false;
             }
@@ -187,11 +239,11 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
             if(list.size() > 0){
 
-                Address address = list.get(0);
+                startAddress = list.get ( 0 );
 
-                Log.d(TAG, "geoLocate: found a location: " + address.toString());
-                this.latitudeFrom= address.getLatitude();
-                this.longitudeFrom= address.getLongitude();
+                Log.d ( TAG , "geoLocate: found a location: " + startAddress.toString () );
+                this.latitudeFrom = startAddress.getLatitude ();
+                this.longitudeFrom = startAddress.getLongitude ();
                 //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             }
@@ -220,11 +272,11 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
             if(list.size() > 0){
 
-                Address address = list.get(0);
+                destAddress = list.get ( 0 );
 
-                Log.d(TAG, "geoLocate: found a location: " + address.toString());
-                this.latitudeTo= address.getLatitude();
-                this.longitudeTo= address.getLongitude();
+                Log.d ( TAG , "geoLocate: found a location: " + destAddress.toString () );
+                this.latitudeTo = destAddress.getLatitude ();
+                this.longitudeTo = destAddress.getLongitude ();
                 //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             }
@@ -249,6 +301,14 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                     latitudeFrom = geoPoint.getLatitude(); //myLocationLatitude
                     longitudeFrom = geoPoint.getLongitude(); //myLocatonLongitude
+
+                    try {
+                        Geocoder geocoder = new Geocoder ( getApplicationContext () , Locale.getDefault () );
+                        List < Address > addresses = geocoder.getFromLocation ( latitudeFrom , longitudeFrom , 1 );
+                        startAddress = addresses.get ( 0 );
+                    } catch ( Exception e ) {
+                        e.printStackTrace ();
+                    }
 
                     Log.d(TAG, "onComplete: latitude: " + geoPoint.getLatitude());
                     Log.d(TAG, "onComplete: longitude: " + geoPoint.getLongitude());

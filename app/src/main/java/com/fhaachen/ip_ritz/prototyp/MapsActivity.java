@@ -1,5 +1,7 @@
 package com.fhaachen.ip_ritz.prototyp;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -21,6 +23,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -72,41 +76,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mNormalButton.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick ( View v ) {
-                ArrayList < String > startLocation = new ArrayList < String > ();
-                startLocation.add ( String.valueOf ( friendLat ) );
-                startLocation.add ( String.valueOf ( friendLong ) );
-                ArrayList < String > destinationLocation = new ArrayList < String > ();
-                destinationLocation.add ( String.valueOf ( ownLat ) );
-                destinationLocation.add ( String.valueOf ( ownLong ) );
-                ArrayList < String > passengers = new ArrayList < String > ();
-                passengers.add ( friendId );
-                Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().get_id ().get$oid () , startLocation , destinationLocation );
-                order.setPassengers ( passengers );
+                try {
+                    ArrayList < String > startLocation = new ArrayList < String > ();
+                    startLocation.add ( String.valueOf ( friendLat ) );
+                    startLocation.add ( String.valueOf ( friendLong ) );
 
-                OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();
-                String orderId = dataTarget.doInBackground ( order );
+                    ArrayList < String > destinationLocation = new ArrayList < String > ();
+                    destinationLocation.add ( String.valueOf ( ownLat ) );
+                    destinationLocation.add ( String.valueOf ( ownLong ) );
 
-                UserDataSource dataSource = new UserDataSource ();
-                User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
-                User friend = dataSource.doInBackground ( friendId );
+                    ArrayList < String > passengers = new ArrayList < String > ();
+                    passengers.add ( friendId );
 
-                ArrayList < String > journeys;
-                if ( ( journeys = loggedInUser.getJourneys () ) == null ) {
-                    journeys = new ArrayList <> ();
+                    Geocoder geocoder = new Geocoder ( getApplicationContext () , Locale.getDefault () );
+                    List < Address > addresses = geocoder.getFromLocation ( friendLat , friendLong , 1 );
+                    String startAddress = addresses.get ( 0 ).getAddressLine ( 0 );
+                    addresses = geocoder.getFromLocation ( ownLat , ownLong , 1 );
+                    String destinationAddress = addresses.get ( 0 ).getAddressLine ( 0 );
+
+                    Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().get_id ().get$oid () , startLocation , destinationLocation );
+                    order.setPassengers ( passengers );
+                    order.setStartAddress ( startAddress );
+                    order.setDestinationAddress ( destinationAddress );
+
+                    OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();
+                    String orderId = dataTarget.doInBackground ( order );
+                    Log.i ( "MapsActivity" , orderId );
+
+                    UserDataSource dataSource = new UserDataSource ();
+                    User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                    User friend = dataSource.doInBackground ( friendId );
+
+                    ArrayList < String > journeys;
+                    if ( ( journeys = loggedInUser.getJourneys () ) == null ) {
+                        journeys = new ArrayList <> ();
+                    }
+                    journeys.add ( orderId );
+                    loggedInUser.setJourneys ( journeys );
+
+                    if ( ( journeys = friend.getJourneys () ) == null ) {
+                        journeys = new ArrayList <> ();
+                    }
+                    journeys.add ( orderId );
+                    friend.setJourneys ( journeys );
+
+                    UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
+                    userDataUpdateTarget.doInBackground ( loggedInUser , friend );
+
+                    finish ();
+                } catch ( Exception e ) {
+                    e.printStackTrace ();
                 }
-                journeys.add ( orderId );
-                loggedInUser.setJourneys ( journeys );
-
-                if ( ( journeys = friend.getJourneys () ) == null ) {
-                    journeys = new ArrayList <> ();
-                }
-                journeys.add ( orderId );
-                friend.setJourneys ( journeys );
-
-                UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
-                userDataUpdateTarget.doInBackground ( loggedInUser , friend );
-
-                finish ();
             }
         } );
     }
