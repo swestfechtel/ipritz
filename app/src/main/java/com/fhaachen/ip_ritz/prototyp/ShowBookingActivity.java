@@ -123,7 +123,7 @@ public class ShowBookingActivity extends AppCompatActivity {
                             public void onClick ( DialogInterface dialog , int which ) {
                                 chosenTime = "Fast";
                                 Log.i ( "NewFlightActivity" , "Flight is pressed" );
-                                Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
                                 i.putExtra ( "type" , chosenTime );
                                 startActivity ( i );
                             }
@@ -132,7 +132,7 @@ public class ShowBookingActivity extends AppCompatActivity {
                             public void onClick ( DialogInterface dialog , int which ) {
                                 chosenTime = "Normal";
                                 Log.i ( "NewFlightActivity" , "Flight is pressed" );
-                                Intent i = new Intent ( getApplicationContext () , NewFlightActivity.class );
+                                Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
                                 i.putExtra ( "type" , chosenTime );
                                 startActivity ( i );
                             }
