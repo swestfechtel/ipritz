@@ -24,6 +24,13 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+
+import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
+import com.fhaachen.ip_ritz.prototyp.data.model.Order;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
+import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
@@ -47,6 +54,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     public double longitudeFrom;
     public double latitudeTo;
     public double longitudeTo;
+    private Address startAddress, destAddress;
+
 
     private TextView price;
     private ImageButton flightBackButton;
@@ -209,9 +218,51 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         bookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), WaitingActivity.class);
-                startActivity(i);
-                startService(view);
+                try {
+                    User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                    ArrayList < String > startLocation = new ArrayList < String > ();
+                    startLocation.add ( String.valueOf ( latitudeFrom ) );
+                    startLocation.add ( String.valueOf ( longitudeFrom ) );
+
+                    ArrayList < String > destinationLocation = new ArrayList < String > ();
+                    destinationLocation.add ( String.valueOf ( latitudeTo ) );
+                    destinationLocation.add ( String.valueOf ( longitudeTo ) );
+
+                    ArrayList < String > passengers = new ArrayList < String > ();
+                    passengers.add ( loggedInUser.get_id ().get$oid () );
+
+                    String startAddressString = startAddress.getAddressLine ( 0 );
+                    String destinationAddressString = destAddress.getAddressLine ( 0 );
+
+                    Order order = new Order ( loggedInUser.get_id ().get$oid () , startLocation , destinationLocation );
+                    order.setPassengers ( passengers );
+                    order.setStartAddress ( startAddressString );
+                    order.setDestinationAddress ( destinationAddressString );
+
+                    OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();
+                    String orderId = dataTarget.doInBackground ( order );
+                    Log.i ( "NewFlightActivity" , orderId );
+
+                    UserDataSource dataSource = new UserDataSource ();
+
+                    ArrayList < String > journeys;
+                    if ( ( journeys = loggedInUser.getJourneys () ) == null ) {
+                        journeys = new ArrayList <> ();
+                    }
+                    journeys.add ( orderId );
+                    loggedInUser.setJourneys ( journeys );
+
+                    UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
+                    userDataUpdateTarget.doInBackground ( loggedInUser );
+
+                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                    i.putExtra("startLat", latitudeFrom);
+                    i.putExtra("startLong", longitudeFrom);
+
+                    startActivity ( i );
+                } catch ( Exception e ) {
+                    e.printStackTrace ();
+                }
 
             }
         });
