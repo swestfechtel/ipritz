@@ -82,7 +82,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderTextStopover = (EditText) findViewById(R.id.order_text_stopover);
         orderStopover = (TextView) findViewById(R.id.order_stopover);
         orderAddStopover = (ImageButton) findViewById(R.id.order_add_stopover);
-        orderRemoveStopover = (ImageButton) findViewById(R.id.flight_remove_stopover);
+        orderRemoveStopover = (ImageButton) findViewById(R.id.order_remove_stopover);
         orderRemoveStopover.setVisibility(View.GONE);
         orderStopover.setVisibility(View.GONE);
         orderTextStopover.setVisibility(View.GONE);

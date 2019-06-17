@@ -395,9 +395,9 @@ public class MainActivity extends AppCompatActivity
 
                                 // Specifying a listener allows you to take an action before dismissing the dialog.
                                 // The dialog is automatically dismissed when a dialog button is clicked.
-                                .setPositiveButton ( "Normal" , new DialogInterface.OnClickListener () {
+                                .setPositiveButton ( "Fast" , new DialogInterface.OnClickListener () {
                                     public void onClick ( DialogInterface dialog , int which ) {
-                                        chosenTime = "Normal";
+                                        chosenTime = "Fast";
                                         Log.i ( "NewOrderActivity" , "Order is pressed" );
                                         Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
                                         i.putExtra ( "type" , chosenTime );
@@ -405,9 +405,9 @@ public class MainActivity extends AppCompatActivity
                                         startActivity ( i );
                                     }
                                 } )
-                                .setNeutralButton ( "Fast" , new DialogInterface.OnClickListener () {
+                                .setNeutralButton ( "Normal" , new DialogInterface.OnClickListener () {
                                     public void onClick ( DialogInterface dialog , int which ) {
-                                        chosenTime = "Fast";
+                                        chosenTime = "Normal";
                                         Log.i ( "NewOrderActivity" , "Order is pressed" );
                                         Intent i = new Intent ( getApplicationContext () , NewOrderAcitivity.class );
                                         i.putExtra ( "type" , chosenTime );
