@@ -2,8 +2,6 @@ package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +21,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
-
 import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
 import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
 import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
@@ -39,13 +35,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.GeoPoint;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCallback, DatePickerDialog.OnDateSetListener,  TimePickerFragment.TimePickerListener {
@@ -123,20 +118,20 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         bookButton = findViewById(R.id.flight_button);
 
         //Insert Stopover
-        flightTextStopover = (EditText) findViewById(R.id.flight_text_stopover);
-        flightStopover = (TextView) findViewById(R.id.flight_stopover);
-        flightAddStopover = (ImageButton) findViewById(R.id.flight_add_stopover);
-        flightRemoveStopover = (ImageButton) findViewById(R.id.flight_remove_stopover);
+        flightTextStopover = findViewById ( R.id.flight_text_stopover );
+        flightStopover = findViewById ( R.id.flight_stopover );
+        flightAddStopover = findViewById ( R.id.flight_add_stopover );
+        flightRemoveStopover = findViewById ( R.id.flight_remove_stopover );
         flightRemoveStopover.setVisibility(View.GONE);
         flightStopover.setVisibility(View.GONE);
         flightTextStopover.setVisibility(View.GONE);
         //Insert Stop over end
 
         //Pick date
-        flightTextDepartureDate = (EditText)findViewById(R.id.flight_text_departure_date);
+        flightTextDepartureDate = findViewById ( R.id.flight_text_departure_date );
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd/MM/yyyy");
         flightTextDepartureDate.setText(datumsformat.format(Calendar.getInstance().getTime()));
-        buttonDepartureDate = (ImageButton) findViewById(R.id.button_departure_date);
+        buttonDepartureDate = findViewById ( R.id.button_departure_date );
 
         buttonDepartureDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,10 +142,10 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         //Pick date end
 
         //Pick time
-        flightTextDepatureTime = (EditText)findViewById(R.id.flight_text_departure_time);
+        flightTextDepatureTime = findViewById ( R.id.flight_text_departure_time );
         SimpleDateFormat zeitformat = new SimpleDateFormat("HH:mm");
         flightTextDepatureTime.setText(zeitformat.format(Calendar.getInstance().getTime()));
-        buttonDepatureTime = (ImageButton) findViewById(R.id.button_departure_time);
+        buttonDepatureTime = findViewById ( R.id.button_departure_time );
         buttonDepatureTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +157,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         //pick time end
 
         //Adjust arrival time
-        flightTextArrivalTime = (TextView) findViewById(R.id.flight_text_arrival_time);
+        flightTextArrivalTime = findViewById ( R.id.flight_text_arrival_time );
         //Adjust arrival time end
 
         //Send notification
@@ -472,11 +467,11 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
             if(list.size() > 0){
 
-                Address address = list.get(0);
+                startAddress = list.get ( 0 );
 
-                Log.d(TAG, "geoLocate: found a location: " + address.toString());
-                this.latitudeFrom= address.getLatitude();
-                this.longitudeFrom= address.getLongitude();
+                Log.d ( TAG , "geoLocate: found a location: " + startAddress.toString () );
+                this.latitudeFrom = startAddress.getLatitude ();
+                this.longitudeFrom = startAddress.getLongitude ();
                 //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             }
@@ -505,20 +500,20 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
             if(list.size() > 0){
 
-                Address address = list.get(0);
+                destAddress = list.get ( 0 );
 
-                Log.d(TAG, "geoLocate: found a location: " + address.toString());
+                Log.d ( TAG , "geoLocate: found a location: " + destAddress.toString () );
 
                 //search the location for the given stopover
                 if(stopoverIsDemanded){
 
-                    this.latitudeStopover = address.getLatitude();
-                    this.longitudeStopover = address.getLongitude();
+                    this.latitudeStopover = destAddress.getLatitude ();
+                    this.longitudeStopover = destAddress.getLongitude ();
 
                 }else{
 
-                    this.latitudeTo = address.getLatitude();
-                    this.longitudeTo = address.getLongitude();
+                    this.latitudeTo = destAddress.getLatitude ();
+                    this.longitudeTo = destAddress.getLongitude ();
                 }
 
                 //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
@@ -545,7 +540,13 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                     latitudeFrom = geoPoint.getLatitude(); //myLocationLatitude
                     longitudeFrom = geoPoint.getLongitude(); //myLocatonLongitude
-
+                    try {
+                        Geocoder geocoder = new Geocoder ( getApplicationContext () , Locale.getDefault () );
+                        List < Address > addresses = geocoder.getFromLocation ( latitudeFrom , longitudeFrom , 1 );
+                        startAddress = addresses.get ( 0 );
+                    } catch ( Exception e ) {
+                        e.printStackTrace ();
+                    }
                     Log.d(TAG, "onComplete: latitude: " + geoPoint.getLatitude());
                     Log.d(TAG, "onComplete: longitude: " + geoPoint.getLongitude());
                 }
@@ -701,7 +702,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
         //Calculate the flight duration
         String flightDurationText = depaturetime.getText().toString();
-        String time [] = flightDurationText.split(":");
+        String[] time = flightDurationText.split ( ":" );
         Log.d(TAG, "hour: " + time[0]);
         Log.d(TAG, "hour: " + time[1]);
         int hour = Integer.parseInt(time[0]);
