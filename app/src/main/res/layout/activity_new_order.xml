@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_order"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -10,10 +11,12 @@
             android:id="@+id/btn_l"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageButton
                 android:id="@+id/orderBackButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/btn_l"
                 android:backgroundTint="#FFFFFF"
                 android:src="@drawable/ic_arrow_back_black_24dp" />
         </LinearLayout>
@@ -33,11 +36,20 @@
                 android:text="From: "
                 style="@style/h6" />
 
+
+            <TextView
+                android:id="@+id/order_stopover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:text="Stopover: "
+                style="@style/h6" />
+
             <TextView
                 android:id="@+id/order_to"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="10dp"
                 android:text="To: "
                 style="@style/h6" />
 
@@ -67,10 +79,21 @@
                     android:inputType="text"
                     android:hint="Enter a start address"/>
 
+
+            <EditText
+                android:id="@+id/order_text_stopover"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:background="@color/colorSearchBar"
+                android:inputType="text"
+                android:hint="Enter a stopover address"/>
+
             <AutoCompleteTextView
                     android:id="@+id/order_text_to"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@color/colorSearchBar"
                     android:inputType="text"
                     android:completionThreshold="1"
@@ -172,4 +195,27 @@
             android:textSize="20dp"
             android:layout_centerHorizontal="true"
             android:backgroundTint="@color/colorButton"/>
-    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/order_remove_stopover"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:backgroundTint="#FFFFFF"
+        android:layout_alignBottom="@+id/layout_destination_right"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="-1dp"
+        android:layout_marginBottom="123dp"
+        app:srcCompat="@drawable/ic_remove" />
+
+    <ImageButton
+        android:id="@+id/order_add_stopover"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignEnd="@+id/btn_l"
+        android:layout_alignBottom="@+id/layout_destination_right"
+        android:layout_marginEnd="-1dp"
+        android:layout_marginBottom="123dp"
+        android:backgroundTint="#FFFFFF"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+</RelativeLayout>

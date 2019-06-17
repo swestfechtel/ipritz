@@ -247,7 +247,6 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onSuccess ( Location location ) {
                     if (location != null) {
-
                     }
                 }
             } )*/

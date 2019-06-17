@@ -37,14 +37,23 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     public double longitudeFrom;
     public double latitudeTo;
     public double longitudeTo;
+    public double latitudeStopover;
+    public double longitudeStopover;
 
     private ImageButton orderBackButton;
     private Button orderButton;
     private EditText orderTextFrom;
     private AutoCompleteTextView orderTextTo;
     private ImageButton getRoute;
+    private ImageButton orderAddStopover;
+    private ImageButton orderRemoveStopover;
+
+    private EditText orderTextStopover;
+    private TextView orderStopover;
+
     private TextView price;
     private boolean mLocationPermissionGranted = false;
+    private boolean stopoverIsDemanded = false;
     private boolean aRouteIsShown = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
@@ -68,6 +77,17 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderTextFrom = findViewById(R.id.order_text_from);
         orderBackButton = findViewById(R.id.orderBackButton);
         orderButton = findViewById(R.id.order_button);
+
+        //Insert Stopover
+        orderTextStopover = (EditText) findViewById(R.id.order_text_stopover);
+        orderStopover = (TextView) findViewById(R.id.order_stopover);
+        orderAddStopover = (ImageButton) findViewById(R.id.order_add_stopover);
+        orderRemoveStopover = (ImageButton) findViewById(R.id.flight_remove_stopover);
+        orderRemoveStopover.setVisibility(View.GONE);
+        orderStopover.setVisibility(View.GONE);
+        orderTextStopover.setVisibility(View.GONE);
+        //Insert Stop over end
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getRoute = findViewById(R.id.search_route_order);
         price = findViewById ( R.id.price_output );
@@ -79,10 +99,40 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                 startActivity(i);
             }
         });
+
+
         if(getIntent().hasExtra("text") == true) {
             String text = getIntent().getExtras().getString("text");
             orderTextFrom.setText(text);
         }
+
+        //Insert Stopover
+        orderAddStopover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                orderAddStopover.setVisibility(View.GONE);
+                orderRemoveStopover.setVisibility(View.VISIBLE);
+                orderStopover.setVisibility(View.VISIBLE);
+                orderTextStopover.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        orderRemoveStopover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                stopoverIsDemanded = false;
+                orderRemoveStopover.setVisibility(View.GONE);
+                orderAddStopover.setVisibility(View.VISIBLE);
+                orderStopover.setVisibility(View.GONE);
+                orderTextStopover.setVisibility(View.GONE);
+            }
+        });
+        //Insert Stopver end
+
+
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,12 +154,31 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                     //get current location
                     getLastKnownLocation ();
                     geoLocateFrom ( orderTextFrom );
+
+                    //Check if a stopover is demanded and if the user entered an address
+                    if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
+
+                        stopoverIsDemanded = true;
+                        //get the location of th stopover
+                        geoLocateTo(orderTextStopover);
+
+                    }
+
                 } else {
 
                     //find the location of the start address
                     geoLocateFrom ( orderTextFrom );
                     //find the location of the destination address
                     geoLocateTo ( orderTextTo );
+
+                    //Check if a stopover is demanded and if the user entered an address
+                    if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
+
+                        stopoverIsDemanded = true;
+                        //get the location of th stopover
+                        geoLocateTo(orderTextStopover);
+
+                    }
                 }
 
                 if ( aRouteIsShown ) {
@@ -124,13 +193,15 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
             }
         } );
+
+
         orderTextTo.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
             @Override
             public boolean onEditorAction ( TextView v , int actionId , KeyEvent event ) {
                 if ( actionId == EditorInfo.IME_ACTION_SEARCH ) {
 
                     Log.i ( "BookingOrderActivity" , "Show route startlocation to destination" );
-//Keyboard weg
+                    //Keyboard weg
                     InputMethodManager inputManager = ( InputMethodManager )
                             getSystemService ( Context.INPUT_METHOD_SERVICE );
 
@@ -140,12 +211,31 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                         //get current location
                         getLastKnownLocation ();
                         geoLocateFrom ( orderTextFrom );
+
+                        //Check if a stopover is demanded and if the user entered an address
+                        if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
+
+                            stopoverIsDemanded = true;
+                            //get the location of th stopover
+                            geoLocateTo(orderTextStopover);
+
+                        }
+
                     } else {
 
                         //find the location of the start address
                         geoLocateFrom ( orderTextFrom );
                         //find the lcation of the destination address
                         geoLocateTo ( orderTextTo );
+
+                        //Check if a stopover is demanded and if the user entered an address
+                        if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
+
+                            stopoverIsDemanded = true;
+                            //get the location of th stopover
+                            geoLocateTo(orderTextStopover);
+
+                        }
                     }
 
                     if ( aRouteIsShown ) {
@@ -171,7 +261,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         String searchString = searchText.getText().toString();
 
-        if(searchString != null) {
+        if(!searchString.isEmpty()) {
 
             Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
             List<Address> list = new ArrayList<>();
@@ -186,8 +276,18 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                 Address address = list.get(0);
 
                 Log.d(TAG, "geoLocate: found a location: " + address.toString());
-                this.latitudeFrom= address.getLatitude();
-                this.longitudeFrom= address.getLongitude();
+
+                //search the location for the given stepover
+                if(stopoverIsDemanded){
+
+                    this.latitudeStopover = address.getLatitude();
+                    this.longitudeStopover = address.getLongitude();
+
+                }else{
+
+                    this.latitudeTo = address.getLatitude();
+                    this.longitudeTo = address.getLongitude();
+                }
                 //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             }
@@ -204,7 +304,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         String searchString = searchText.getText().toString();
 
-        if(searchString != null) {
+        if(!searchString.isEmpty()) {
 
             Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
             List<Address> list = new ArrayList<>();
@@ -259,26 +359,61 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
         // Add a marker in Sydney and move the camera
         LatLng from = new LatLng(this.latitudeFrom, this.longitudeFrom);
         LatLng destination = new LatLng(this.latitudeTo, this.longitudeTo);
 
-        Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
-                .clickable(true)
-                .add( from,  destination));
-        polyline1.setStartCap(new RoundCap());
-        polyline1.setEndCap(new RoundCap());
-        polyline1.setColor(R.color.colorPrimary);
+        //first check if a stopover is demanded
+        if(this.stopoverIsDemanded){
 
-        mMap.addMarker(new MarkerOptions().position(from).title("Start point"));
-        mMap.addMarker(new MarkerOptions().position(destination).title("Destination"));
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(from);
-        builder.include(destination);
+            LatLng stopover = new LatLng(this.latitudeStopover, this.longitudeStopover);
+
+            //show route from start point to stopover
+            Polyline polylineStartToStopover = mMap.addPolyline(new PolylineOptions()
+                    .clickable(true)
+                    .add( from,  stopover));
+            polylineStartToStopover.setStartCap(new RoundCap());
+            polylineStartToStopover.setEndCap(new RoundCap());
+            polylineStartToStopover.setColor(R.color.colorPrimary);
+
+            Polyline polylineStopoverToDestination = mMap.addPolyline(new PolylineOptions()
+                    .clickable(true)
+                    .add( stopover,  destination));
+            polylineStopoverToDestination.setStartCap(new RoundCap());
+            polylineStopoverToDestination.setEndCap(new RoundCap());
+            polylineStopoverToDestination.setColor(R.color.colorPrimary);
+
+            mMap.addMarker(new MarkerOptions().position(from).title("Start point"));
+            mMap.addMarker(new MarkerOptions().position(destination).title("Destination"));
+            mMap.addMarker(new MarkerOptions().position(destination).title("Stopover"));
+
+            builder.include(from);
+            builder.include(destination);
+            builder.include(stopover);
+        }else{
+
+            //show route from start point to destination
+            Polyline polylineStartToDestination = mMap.addPolyline(new PolylineOptions()
+                    .clickable(true)
+                    .add( from,  destination));
+            polylineStartToDestination.setStartCap(new RoundCap());
+            polylineStartToDestination.setEndCap(new RoundCap());
+            polylineStartToDestination.setColor(R.color.colorPrimary);
+
+            mMap.addMarker(new MarkerOptions().position(from).title("Start point"));
+            mMap.addMarker(new MarkerOptions().position(destination).title("Destination"));
+
+            builder.include(from);
+            builder.include(destination);
+
+        }
+
         LatLngBounds bounds = builder.build();
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         mMap.animateCamera(cu);
+
     }
 
     private String setDynamicPrice () {

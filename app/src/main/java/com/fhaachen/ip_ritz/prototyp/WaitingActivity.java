@@ -28,6 +28,10 @@ import static com.google.android.gms.maps.model.BitmapDescriptorFactory.fromReso
 public class WaitingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    public static double longitudeTo;
+    public static double latitufeTo;
+    public static double myLocationlatitude;
+    public static double myLocationlongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +57,11 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng freundin = new LatLng(50.785474, 6.052972);
-        LatLng drone = new LatLng(50.790208, 6.062671);
+        /*LatLng freundin = new LatLng(50.785474, 6.052972);
+        LatLng drone = new LatLng(50.790208, 6.062671);*/
+
+        LatLng freundin = new LatLng(myLocationlatitude, myLocationlongitude);
+        LatLng drone = new LatLng(latitufeTo, longitudeTo);
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
                 .clickable(true)
@@ -68,7 +75,7 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
         mMap.addMarker(new MarkerOptions().position(freundin).title("Freundin"));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(freundin));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
     }
 
     public void drawMarker(LatLng position, String title) {
