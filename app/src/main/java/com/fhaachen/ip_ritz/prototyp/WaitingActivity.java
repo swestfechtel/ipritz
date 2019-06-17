@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -28,10 +30,8 @@ import static com.google.android.gms.maps.model.BitmapDescriptorFactory.fromReso
 public class WaitingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    public static double longitudeTo;
-    public static double latitufeTo;
-    public static double myLocationlatitude;
-    public static double myLocationlongitude;
+    private double la;
+    private double lo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,26 +56,34 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if ( getIntent ().hasExtra ( "startLat" ) ) {
+            la = getIntent().getExtras().getDouble("startLat");
 
-        /*LatLng freundin = new LatLng(50.785474, 6.052972);
-        LatLng drone = new LatLng(50.790208, 6.062671);*/
+        }
+        if ( getIntent ().hasExtra ( "startLong" ) ) {
+            lo = getIntent().getExtras().getDouble("startLong");
 
-        LatLng freundin = new LatLng(myLocationlatitude, myLocationlongitude);
-        LatLng drone = new LatLng(latitufeTo, longitudeTo);
+        }
+        LatLng start = new LatLng(la, lo);
+        LatLng drone = new LatLng(la+0.0023, lo+0.0003);
 
         Polyline polyline1 = mMap.addPolyline(new PolylineOptions()
                 .clickable(true)
                 .add(
                         drone,
-                        freundin));
+                        start));
         polyline1.setStartCap(new RoundCap());
         polyline1.setEndCap(new RoundCap());
         polyline1.setColor(R.color.colorPrimary);
         drawMarker(drone, "Flugtaxi");
-        mMap.addMarker(new MarkerOptions().position(freundin).title("Freundin"));
+        mMap.addMarker(new MarkerOptions().position(start).title("start"));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(freundin));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(start);
+        builder.include(drone);
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        mMap.animateCamera(cu);
     }
 
     public void drawMarker(LatLng position, String title) {

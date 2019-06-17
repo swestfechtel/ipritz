@@ -214,6 +214,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View view) {
                 try {
+
                     User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
                     ArrayList < String > startLocation = new ArrayList < String > ();
                     startLocation.add ( String.valueOf ( latitudeFrom ) );
@@ -226,7 +227,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     ArrayList < String > passengers = new ArrayList < String > ();
                     passengers.add ( loggedInUser.get_id ().get$oid () );
 
-                    String startAddressString = startAddress.getAddressLine ( 0 );
+                    String startAddressString = startAddress.getAddressLine(0);
                     String destinationAddressString = destAddress.getAddressLine ( 0 );
 
                     Order order = new Order ( loggedInUser.get_id ().get$oid () , startLocation , destinationLocation );
@@ -251,8 +252,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     userDataUpdateTarget.doInBackground ( loggedInUser );
 
                     Intent i = new Intent ( view.getContext () , WaitingActivity.class );
-                    i.putExtra("startLat", latitudeFrom);
-                    i.putExtra("startLong", longitudeFrom);
+                    i.putExtra("startLat", startAddress.getLatitude());
+                    i.putExtra("startLong", startAddress.getLongitude());
+
 
                     startActivity ( i );
                 } catch ( Exception e ) {
