@@ -1,6 +1,7 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,6 +19,13 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+
+import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
+import com.fhaachen.ip_ritz.prototyp.data.model.Order;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
+import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
@@ -26,38 +35,59 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
 
-public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyCallback {
+public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyCallback,DatePickerDialog.OnDateSetListener, TimePickerFragment.TimePickerListener {
 
     public double latitudeFrom;
     public double longitudeFrom;
     public double latitudeTo;
     public double longitudeTo;
-    public double latitudeStopover;
-    public double longitudeStopover;
+    private Address startAddress, destAddress;
 
     private ImageButton orderBackButton;
     private Button orderButton;
     private EditText orderTextFrom;
     private AutoCompleteTextView orderTextTo;
     private ImageButton getRoute;
-    private ImageButton orderAddStopover;
-    private ImageButton orderRemoveStopover;
-
-    private EditText orderTextStopover;
-    private TextView orderStopover;
-
     private TextView price;
     private boolean mLocationPermissionGranted = false;
-    private boolean stopoverIsDemanded = false;
     private boolean aRouteIsShown = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
 
+    //Add Stopover option
+    public double latitudeStopover;
+    public double longitudeStopover;
+
+    private EditText orderTextStopover;
+    private TextView orderStopover;
+
+    private ImageButton orderAddStopover;
+    private ImageButton orderRemoveStopover;
+
+    private boolean stopoverIsDemanded = false;
+    //Add Stopover option end
+
+    //Pick date
+    private EditText orderTextDepartureDate;
+    private ImageButton buttonDepartureDate;
+    //Pick date end
+
+    //Pick time
+    private EditText orderTextDepatureTime;
+    private ImageButton buttonDepatureTime;
+    //pick time end
+
+    //Adjust arrival time
+    private double speed = 60; // MaxSpeed 60 km/h for Parrot Bebop 2
+    private TextView orderTextArrivalTime;
+    //Adjust arrival time end
 
     private static final String[] LOCATIONS = new String[]{
             "My location"
@@ -87,6 +117,39 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderStopover.setVisibility(View.GONE);
         orderTextStopover.setVisibility(View.GONE);
         //Insert Stop over end
+
+        //Pick date
+        orderTextDepartureDate = findViewById ( R.id.order_text_departure_date );
+        SimpleDateFormat datumsformat = new SimpleDateFormat("dd/MM/yyyy");
+        orderTextDepartureDate.setText(datumsformat.format(Calendar.getInstance().getTime()));
+        buttonDepartureDate = findViewById ( R.id.button_departure_date );
+
+        buttonDepartureDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+        //Pick date end
+
+        //Pick time
+        orderTextDepatureTime = findViewById ( R.id.order_text_departure_time );
+        SimpleDateFormat zeitformat = new SimpleDateFormat("HH:mm");
+        orderTextDepatureTime.setText(zeitformat.format(Calendar.getInstance().getTime()));
+        buttonDepatureTime = findViewById ( R.id.button_departure_time );
+        buttonDepatureTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment timePickerFragment = new TimePickerFragment();
+                timePickerFragment.setCancelable(false);
+                timePickerFragment.show(getSupportFragmentManager(), "timePicker");
+            }
+        });
+        //pick time end
+
+        //Adjust arrival time
+        orderTextArrivalTime = findViewById ( R.id.order_text_arrival_time );
+        //Adjust arrival time end
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getRoute = findViewById(R.id.search_route_order);
@@ -136,15 +199,64 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), WaitingActivity.class);
-                startActivity(i);
+                /*Intent i = new Intent(view.getContext(), WaitingActivity.class);
+                startActivity(i);*/
+
+                try {
+
+                    User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                    ArrayList < String > startLocation = new ArrayList < String > ();
+                    startLocation.add ( String.valueOf ( latitudeFrom ) );
+                    startLocation.add ( String.valueOf ( longitudeFrom ) );
+
+                    ArrayList < String > destinationLocation = new ArrayList < String > ();
+                    destinationLocation.add ( String.valueOf ( latitudeTo ) );
+                    destinationLocation.add ( String.valueOf ( longitudeTo ) );
+
+                    ArrayList < String > passengers = new ArrayList < String > ();
+                    passengers.add ( loggedInUser.get_id ().get$oid () );
+
+                    String startAddressString = startAddress.getAddressLine(0);
+                    String destinationAddressString = destAddress.getAddressLine ( 0 );
+
+                    Order order = new Order ( loggedInUser.get_id ().get$oid () , startLocation , destinationLocation );
+                    order.setPassengers ( passengers );
+                    order.setStartAddress ( startAddressString );
+                    order.setDestinationAddress ( destinationAddressString );
+
+                    OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();
+                    String orderId = dataTarget.doInBackground ( order );
+                    Log.i ( "NewFlightActivity" , orderId );
+
+                    UserDataSource dataSource = new UserDataSource ();
+
+                    ArrayList < String > journeys;
+                    if ( ( journeys = loggedInUser.getJourneys () ) == null ) {
+                        journeys = new ArrayList <> ();
+                    }
+                    journeys.add ( orderId );
+                    loggedInUser.setJourneys ( journeys );
+
+                    UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
+                    userDataUpdateTarget.doInBackground ( loggedInUser );
+
+                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                    i.putExtra("startLat", startAddress.getLatitude());
+                    i.putExtra("startLong", startAddress.getLongitude());
+
+
+                    startActivity ( i );
+                } catch ( Exception e ) {
+                    e.printStackTrace ();
+                }
             }
         });
+
         getRoute.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick( View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
-//Keyboard weg
+                //Keyboard weg
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -159,7 +271,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                     if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
 
                         stopoverIsDemanded = true;
-                        //get the location of th stopover
+                        //get the location of the stopover
                         geoLocateTo(orderTextStopover);
 
                     }
@@ -187,6 +299,11 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                 }
                 aRouteIsShown = true;
                 price.setText ( setDynamicPrice () );
+
+                //Adjust arrival time
+                setArrivalTime(orderTextDepatureTime);
+                //Adjust arrival time end
+
                 SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
                         .findFragmentById ( R.id.map );
                 mapFragment.getMapAsync ( NewOrderAcitivity.this );
@@ -255,6 +372,45 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     }
 
 
+    //Pick date
+    public void showDatePickerDialog(){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        String date = "" + dayOfMonth + "/" + month  + "/" + year;
+        orderTextDepartureDate.setText(date);
+    }
+    //Pick date end
+
+    //Pick time
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+        String hourText = "";
+        String minuteText = "";
+
+        if(hour < 10){
+            hourText = "0" + hour;
+        }else{
+            hourText = "" + hour;
+        }
+
+        if(minute < 10){
+            minuteText = "0" + minute;
+        }else{
+            minuteText = "" + minute;
+        }
+
+        orderTextDepatureTime.setText("" + hourText + ":" + minuteText);
+    }
+
     //search a location
     public void geoLocateFrom(EditText searchText){
         Log.d(TAG, "geoLocate: geolocating");
@@ -273,21 +429,12 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
             if(list.size() > 0){
 
-                Address address = list.get(0);
+                startAddress = list.get ( 0 );
 
-                Log.d(TAG, "geoLocate: found a location: " + address.toString());
+                Log.d(TAG, "geoLocate: found a location: " + startAddress.toString());
 
-                //search the location for the given stepover
-                if(stopoverIsDemanded){
-
-                    this.latitudeStopover = address.getLatitude();
-                    this.longitudeStopover = address.getLongitude();
-
-                }else{
-
-                    this.latitudeTo = address.getLatitude();
-                    this.longitudeTo = address.getLongitude();
-                }
+                this.latitudeFrom = startAddress.getLatitude ();
+                this.longitudeFrom = startAddress.getLongitude ();
                 //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             }
@@ -316,11 +463,22 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
             if(list.size() > 0){
 
-                Address address = list.get(0);
+                destAddress = list.get(0);
 
-                Log.d(TAG, "geoLocate: found a location: " + address.toString());
-                this.latitudeTo= address.getLatitude();
-                this.longitudeTo= address.getLongitude();
+                Log.d(TAG, "geoLocate: found a location: " + destAddress.toString());
+
+                //search the location for the given stopover
+                if(stopoverIsDemanded){
+
+                    this.latitudeStopover = destAddress.getLatitude ();
+                    this.longitudeStopover = destAddress.getLongitude ();
+
+                }else{
+
+                    this.latitudeTo = destAddress.getLatitude ();
+                    this.longitudeTo = destAddress.getLongitude ();
+                }
+
                 //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             }
@@ -370,7 +528,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
             LatLng stopover = new LatLng(this.latitudeStopover, this.longitudeStopover);
 
-            //show route from start point to stopover
+            //show route from start point to stopover and from stopover to destination
             Polyline polylineStartToStopover = mMap.addPolyline(new PolylineOptions()
                     .clickable(true)
                     .add( from,  stopover));
@@ -419,24 +577,44 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     private String setDynamicPrice () {
         String price;
 
+        double distanceFromToStopopver = 0.0;
+        double distanceStopopverToDestination = 0.0;
+        double distanceFromToDestination = 0.0; //in Km
 
-        Location loc1 = new Location ( "from" );
-        loc1.setLatitude ( latitudeFrom );
-        loc1.setLongitude ( longitudeFrom );
+        Location locFrom = new Location ( "from" );
+        locFrom .setLatitude ( latitudeFrom );
+        locFrom .setLongitude ( longitudeFrom );
 
-        Location loc2 = new Location ( "to" );
-        loc2.setLatitude ( latitudeTo );
-        loc2.setLongitude ( longitudeTo );
+        Location locDestination = new Location ( "to" );
+        locDestination .setLatitude ( latitudeTo );
+        locDestination .setLongitude ( longitudeTo );
 
-        double distanceInKiloMeters = ( loc1.distanceTo ( loc2 ) / 1000 );
+        Location locStopover = new Location ( "stopover" );
+        if(stopoverIsDemanded){
+
+            locStopover .setLatitude ( latitudeStopover);
+            locStopover .setLongitude ( longitudeStopover);
+
+            distanceFromToStopopver = ( locFrom.distanceTo (locStopover) / 1000 );
+            distanceStopopverToDestination = ( locStopover.distanceTo (locDestination) / 1000 );
+            distanceFromToDestination = distanceFromToStopopver + distanceStopopverToDestination;
+
+        }else{
+
+            distanceFromToDestination = ( locFrom.distanceTo (locDestination) / 1000 );
+
+        }
+
+
+
         Bundle extras = getIntent ().getExtras ();
         String time = extras.getString ( "time" );
         double p;
         if ( time == "Normal" ) {
-            p = distanceInKiloMeters * 5.2;
+            p =  distanceFromToDestination * 5.2;
 
         } else {
-            p = distanceInKiloMeters * 6.2;
+            p =  distanceFromToDestination * 6.2;
 
         }
         p = Math.round ( p * 100.0 ) / 100.0;
@@ -444,4 +622,83 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         return price;
     }
+
+    //Adjust arrival time
+    private void setArrivalTime (EditText depaturetime) {
+
+        double distanceFromToStopopver = 0.0;
+        double distanceStopopverToDestination = 0.0;
+        double distanceFromToDestination = 0.0; //in Km
+
+        Location locFrom = new Location ( "from" );
+        locFrom.setLatitude ( latitudeFrom );
+        locFrom.setLongitude ( longitudeFrom );
+
+        Location locDestination = new Location ( "to" );
+        locDestination.setLatitude ( latitudeTo );
+        locDestination.setLongitude ( longitudeTo );
+
+        Location locStopover = new Location ( "stopover" );
+        if(stopoverIsDemanded){
+
+            locStopover.setLatitude ( latitudeStopover);
+            locStopover.setLongitude ( longitudeStopover);
+
+            distanceFromToStopopver = ( locFrom.distanceTo (locStopover) / 1000 );
+            distanceStopopverToDestination = ( locStopover.distanceTo (locDestination) / 1000 );
+            distanceFromToDestination = distanceFromToStopopver + distanceStopopverToDestination;
+
+        }else{
+
+            distanceFromToDestination = ( locFrom.distanceTo (locDestination) / 1000 );
+
+        }
+
+        Log.d(TAG, "distanceFromToDestination : " + distanceFromToDestination);
+
+        //Calculate the flight duration
+        String flightDurationText = depaturetime.getText().toString();
+        String[] time = flightDurationText.split ( ":" );
+        Log.d(TAG, "hour: " + time[0]);
+        Log.d(TAG, "hour: " + time[1]);
+        int hour = Integer.parseInt(time[0]);
+        int min = Integer.parseInt(time[1]);
+
+        int flightDuration = (int)Math.ceil( distanceFromToDestination/(speed/60) ) ;//t = d/speed in min (aufgerundet)
+
+        if( (min + flightDuration) > 59){
+
+            hour = hour + (min + flightDuration)/60;
+            min = min - (int)Math.ceil( ((double)(min + flightDuration)%60) );
+            Log.d(TAG, "hour: " + hour);
+            Log.d(TAG, "min: " + min);
+
+        }else{
+
+            min = min + flightDuration;
+            Log.d(TAG, "hour: " + hour);
+            Log.d(TAG, "min: " + min);
+        }
+        //Calculate the flight duration end
+
+        // Adjust the arrival time
+        String hourText = "";
+        String minText = "";
+        if(hour < 10){
+            hourText = "0"+ hour;
+        }else{
+            hourText = ""+ hour;
+        }
+
+        if(min < 10){
+            minText = "0"+ min;
+        }else{
+            minText = ""+ min;
+        }
+        orderTextArrivalTime.setText("" + hourText + ":" + minText);
+        //Adjust the arrival time end
+
+    }
 }
+//Adjust arrival time
+

@@ -7,12 +7,12 @@
 
 
 <RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_order"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_margin="10dp"
-                tools:context=".NewFlightActivity"> <!--android:layout_margin="20dp"-->
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    tools:context=".NewFlightActivity"> <!--android:layout_margin="20dp"-->
 
     <LinearLayout
         android:id="@+id/btn_l"
@@ -51,7 +51,7 @@
                 android:id="@+id/flight_text_from"
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="35dp"
                 android:background="@color/colorSearchBar"
                 android:completionThreshold="1"
@@ -164,6 +164,7 @@
                 android:id="@+id/button_departure_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:backgroundTint="#FFFFFF"
                 app:srcCompat="@drawable/ic_date" />
         </LinearLayout>
@@ -196,6 +197,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginLeft="5dp"
                 android:backgroundTint="#FFFFFF"
                 app:srcCompat="@drawable/ic_time" />
 

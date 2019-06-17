@@ -285,7 +285,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
 
                         stopoverIsDemanded = true;
-                        //get the location of th stopover
+                        //get the location of the stopover
                         geoLocateTo(flightTextStopover);
 
                     }
@@ -317,7 +317,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 price.setText ( setDynamicPrice () );
 
                 //Adjust arrival time
-                setArivalTime(flightTextDepatureTime);
+                setArrivalTime(flightTextDepatureTime);
+                //Adjust arrival time end
 
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
@@ -573,7 +574,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
             LatLng stopover = new LatLng(this.latitudeStopover, this.longitudeStopover);
 
-            //show route from start point to stopover
+            //show route from start point to stopover and from stopover to destination
             Polyline polylineStartToStopover = mMap.addPolyline(new PolylineOptions()
                     .clickable(true)
                     .add( from,  stopover));
@@ -670,7 +671,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         return price;
     }
 
-    private void setArivalTime (EditText depaturetime) {
+    //Adjust arrival time
+    private void setArrivalTime (EditText depaturetime) {
 
         double distanceFromToStopopver = 0.0;
         double distanceStopopverToDestination = 0.0;
@@ -746,4 +748,5 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 }
+//Adjust arrival time
 
