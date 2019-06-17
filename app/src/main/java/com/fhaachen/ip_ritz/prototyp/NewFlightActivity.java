@@ -35,6 +35,7 @@ import com.google.firebase.firestore.GeoPoint;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -124,7 +125,10 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
         //Pick date
         flightTextDepartureDate = (EditText)findViewById(R.id.flight_text_departure_date);
+        SimpleDateFormat datumsformat = new SimpleDateFormat("dd/MM/yyyy");
+        flightTextDepartureDate.setText(datumsformat.format(Calendar.getInstance().getTime()));
         buttonDepartureDate = (ImageButton) findViewById(R.id.button_departure_date);
+
         buttonDepartureDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +139,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
         //Pick time
         flightTextDepatureTime = (EditText)findViewById(R.id.flight_text_departure_time);
+        SimpleDateFormat zeitformat = new SimpleDateFormat("HH:mm");
+        flightTextDepatureTime.setText(zeitformat.format(Calendar.getInstance().getTime()));
         buttonDepatureTime = (ImageButton) findViewById(R.id.button_departure_time);
         buttonDepatureTime.setOnClickListener(new View.OnClickListener() {
             @Override

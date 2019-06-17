@@ -297,6 +297,7 @@
         android:backgroundTint="@color/colorButton"
         android:paddingTop="15dp"
         android:paddingBottom="20dp"
+        android:layout_marginEnd="20dp"
         android:text="Order now"
         android:onClick="startService"
         android:textSize="20dp"
