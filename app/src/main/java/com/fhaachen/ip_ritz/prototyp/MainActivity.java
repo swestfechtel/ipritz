@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -88,6 +89,10 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
+        //Stop the notification
+        stopService( ((ViewGroup) (findViewById(android.R.id.content))).getChildAt(0) );
+        //Stop th notification end
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -145,6 +150,14 @@ public class MainActivity extends AppCompatActivity
         locationRequest.setInterval ( UPDATE_INTERVAL );
         locationRequest.setFastestInterval ( FASTEST_INTERVAL );
         locationRequest.setPriority ( LocationRequest.PRIORITY_HIGH_ACCURACY );
+    }
+
+
+    public void stopService(View v) {
+        Log.d(TAG, "Stopservice");
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        stopService(serviceIntent);
+        Log.d(TAG, "Stopservice end");
     }
 
     @Override
