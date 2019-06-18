@@ -2,6 +2,8 @@ package com.fhaachen.ip_ritz.prototyp.notifications;
 
 //import com.google.firebase.*;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -34,6 +36,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 //handleNow();
             }
 
+        }
+        try {
+            String url = remoteMessage.getData().get("click_action");
+            Log.i("Firebase", " "+url);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Check if message contains a notification payload.
