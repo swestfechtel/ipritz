@@ -55,7 +55,12 @@
             android:label="@string/title_activity_maps" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FriendsActivity" />
-        <activity android:name=".ShowBookingActivity" />
+        <activity android:name=".ShowBookingActivity">
+        <intent-filter>
+            <action android:name="OPEN_ACTIVITY_1"/>
+            <category android:name="android.intent.action.DEFAULT"/>
+        </intent-filter>
+        </activity>
         <activity android:name=".NewOrderAcitivity"></activity>
         <activity android:name=".NewFlightActivity"></activity>
         <activity
