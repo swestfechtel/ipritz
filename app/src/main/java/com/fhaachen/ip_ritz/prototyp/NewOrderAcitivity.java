@@ -54,6 +54,8 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     private Button orderButton;
     private EditText orderTextFrom;
     private AutoCompleteTextView orderTextTo;
+    private ImageButton switchButton;
+
     private ImageButton getRoute;
     private TextView price;
     private boolean mLocationPermissionGranted = false;
@@ -107,7 +109,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderTextFrom = findViewById(R.id.order_text_from);
         orderBackButton = findViewById(R.id.orderBackButton);
         orderButton = findViewById(R.id.order_button);
-
+        switchButton = findViewById(R.id.btn_switch_start_end_order);
         //Insert Stopover
         orderTextStopover = (EditText) findViewById(R.id.order_text_stopover);
         orderStopover = (TextView) findViewById(R.id.order_stopover);
@@ -194,7 +196,16 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             }
         });
         //Insert Stopver end
+        switchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String to = orderTextTo.getText().toString();
+                String from = orderTextFrom.getText().toString();
+                orderTextTo.setText(from);
+                orderTextFrom.setText(to);
 
+            }
+        });
 
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
