@@ -263,8 +263,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     userDataUpdateTarget.doInBackground ( loggedInUser );
                     String depDate =flightTextDepartureDate.getText().toString();
                     String curDate = datumsformat.format(Calendar.getInstance().getTime());
-                    if(curDate == depDate){
-                        Date deptime = (Date) flightTextDepatureTime.getText();
+                    if(curDate.equals(depDate)){
+                        Date deptime = zeitformat.parse(flightTextDepatureTime.getText().toString());
                         Date currentTime = Calendar.getInstance().getTime();
                         if( (deptime.getTime() - currentTime.getTime())/1000/60 <= 15){
                             Intent i = new Intent ( view.getContext () , WaitingActivity.class );

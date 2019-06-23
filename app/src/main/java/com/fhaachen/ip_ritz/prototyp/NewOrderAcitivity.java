@@ -137,7 +137,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         //Pick time
         orderTextDepatureTime = findViewById ( R.id.order_text_departure_time );
-        SimpleDateFormat zeitformat = new SimpleDateFormat("HH:mm");
+        final SimpleDateFormat zeitformat = new SimpleDateFormat("HH:mm");
         orderTextDepatureTime.setText(zeitformat.format(Calendar.getInstance().getTime()));
         buttonDepatureTime = findViewById ( R.id.button_departure_time );
         buttonDepatureTime.setOnClickListener(new View.OnClickListener() {
@@ -254,8 +254,8 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
                     String depDate =orderTextDepartureDate.getText().toString();
                     String curDate = datumsformat.format(Calendar.getInstance().getTime());
-                    if(curDate == depDate){
-                        Date deptime = (Date) orderTextDepatureTime.getText();
+                    if(curDate.equals(depDate)){
+                        Date deptime = zeitformat.parse(orderTextDepatureTime.getText().toString());
                         Date currentTime = Calendar.getInstance().getTime();
                         if( (deptime.getTime() - currentTime.getTime())/1000/60 <= 15){
                             Intent i = new Intent ( view.getContext () , WaitingActivity.class );
