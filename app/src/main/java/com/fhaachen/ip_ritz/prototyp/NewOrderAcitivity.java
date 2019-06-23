@@ -281,7 +281,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                             }
                         }
                     }
-                    else {
+
                         Intent i = new Intent ( view.getContext () , MainActivity.class );
                         Context context = getApplicationContext();
                         CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
@@ -293,7 +293,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
 
                         startActivity ( i );
-                    }
+
                 } catch ( Exception e ) {
                     e.printStackTrace ();
                 }

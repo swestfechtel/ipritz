@@ -277,7 +277,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                             }
 
                         }
-                        if (deptime.getHours() - currentTime.getHours() == 1){
+                        else if (deptime.getHours() - currentTime.getHours() == 1){
                             if(currentTime.getMinutes() > 45){
                                 if(deptime.getMinutes()- currentTime.getMinutes() >= - 45){
                                     Intent i = new Intent ( view.getContext () , WaitingActivity.class );
@@ -289,8 +289,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                                 }
                             }
                         }
+
                     }
-                    else {
+
                         Intent i = new Intent ( view.getContext () , MainActivity.class );
                         Context context = getApplicationContext();
                         CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
@@ -302,7 +303,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
 
                         startActivity ( i );
-                    }
+
 
                 } catch ( Exception e ) {
                     e.printStackTrace ();
