@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,6 +58,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     private ImageButton getRoute;
     private EditText flightTextTo;
     private Button bookButton;
+    private ImageButton switchButton;
 
     private AutoCompleteTextView flightTextFrom;
 
@@ -116,7 +118,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         flightTextTo = findViewById(R.id.flight_text_to);
         flightBackButton = findViewById(R.id.flightBackButton);
         bookButton = findViewById(R.id.flight_button);
-
+        switchButton = findViewById(R.id.btn_switch_start_end_flight);
         //Insert Stopover
         flightTextStopover = findViewById ( R.id.flight_text_stopover );
         flightStopover = findViewById ( R.id.flight_stopover );
@@ -129,7 +131,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
         //Pick date
         flightTextDepartureDate = findViewById ( R.id.flight_text_departure_date );
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd/MM/yyyy");
+        final SimpleDateFormat datumsformat = new SimpleDateFormat("dd/MM/yyyy");
         flightTextDepartureDate.setText(datumsformat.format(Calendar.getInstance().getTime()));
         buttonDepartureDate = findViewById ( R.id.button_departure_date );
 
@@ -143,7 +145,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
         //Pick time
         flightTextDepatureTime = findViewById ( R.id.flight_text_departure_time );
-        SimpleDateFormat zeitformat = new SimpleDateFormat("HH:mm");
+        final SimpleDateFormat zeitformat = new SimpleDateFormat("HH:mm");
         flightTextDepatureTime.setText(zeitformat.format(Calendar.getInstance().getTime()));
         buttonDepatureTime = findViewById ( R.id.button_departure_time );
         buttonDepatureTime.setOnClickListener(new View.OnClickListener() {
@@ -199,7 +201,16 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
         //Insert Stopver end
+        switchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String to = flightTextTo.getText().toString();
+                String from = flightTextFrom.getText().toString();
+                flightTextTo.setText(from);
+                flightTextFrom.setText(to);
 
+            }
+        });
         flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,13 +261,34 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
                     UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
                     userDataUpdateTarget.doInBackground ( loggedInUser );
+                    String depDate =flightTextDepartureDate.getText().toString();
+                    String curDate = datumsformat.format(Calendar.getInstance().getTime());
+                    if(curDate == depDate){
+                        Date deptime = (Date) flightTextDepatureTime.getText();
+                        Date currentTime = Calendar.getInstance().getTime();
+                        if( (deptime.getTime() - currentTime.getTime())/1000/60 <= 15){
+                            Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                            i.putExtra("startLat", startAddress.getLatitude());
+                            i.putExtra("startLong", startAddress.getLongitude());
 
-                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
-                    i.putExtra("startLat", startAddress.getLatitude());
-                    i.putExtra("startLong", startAddress.getLongitude());
+
+                            startActivity ( i );
+                        }
+                    }
+                    else {
+                        Intent i = new Intent ( view.getContext () , MainActivity.class );
+                        Context context = getApplicationContext();
+                        CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
 
 
-                    startActivity ( i );
+
+                        startActivity ( i );
+                    }
+
                 } catch ( Exception e ) {
                     e.printStackTrace ();
                 }

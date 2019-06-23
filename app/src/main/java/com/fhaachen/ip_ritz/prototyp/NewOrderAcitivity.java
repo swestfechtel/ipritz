@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -122,7 +123,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         //Pick date
         orderTextDepartureDate = findViewById ( R.id.order_text_departure_date );
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd/MM/yyyy");
+        final SimpleDateFormat datumsformat = new SimpleDateFormat("dd/MM/yyyy");
         orderTextDepartureDate.setText(datumsformat.format(Calendar.getInstance().getTime()));
         buttonDepartureDate = findViewById ( R.id.button_departure_date );
 
@@ -251,12 +252,33 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                     UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
                     userDataUpdateTarget.doInBackground ( loggedInUser );
 
-                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
-                    i.putExtra("startLat", startAddress.getLatitude());
-                    i.putExtra("startLong", startAddress.getLongitude());
+                    String depDate =orderTextDepartureDate.getText().toString();
+                    String curDate = datumsformat.format(Calendar.getInstance().getTime());
+                    if(curDate == depDate){
+                        Date deptime = (Date) orderTextDepatureTime.getText();
+                        Date currentTime = Calendar.getInstance().getTime();
+                        if( (deptime.getTime() - currentTime.getTime())/1000/60 <= 15){
+                            Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                            i.putExtra("startLat", startAddress.getLatitude());
+                            i.putExtra("startLong", startAddress.getLongitude());
 
 
-                    startActivity ( i );
+                            startActivity ( i );
+                        }
+                    }
+                    else {
+                        Intent i = new Intent ( view.getContext () , MainActivity.class );
+                        Context context = getApplicationContext();
+                        CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+
+
+
+                        startActivity ( i );
+                    }
                 } catch ( Exception e ) {
                     e.printStackTrace ();
                 }

@@ -132,6 +132,14 @@
                 android:hint="Enter a destination address"
                 android:text="My location"
                 android:imeOptions="actionSearch"/>
+            <ImageButton
+                android:id="@+id/btn_switch_start_end_order"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="#FFFFFF"
+                app:srcCompat="@drawable/ic_compare_arrows_black_24dp"/>
 
         </LinearLayout>
     </LinearLayout>
