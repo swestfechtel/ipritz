@@ -266,13 +266,28 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     if(curDate.equals(depDate)){
                         Date deptime = zeitformat.parse(flightTextDepatureTime.getText().toString());
                         Date currentTime = Calendar.getInstance().getTime();
-                        if( (deptime.getTime() - currentTime.getTime())/1000/60 <= 15){
-                            Intent i = new Intent ( view.getContext () , WaitingActivity.class );
-                            i.putExtra("startLat", startAddress.getLatitude());
-                            i.putExtra("startLong", startAddress.getLongitude());
+                        if( (deptime.getHours() - currentTime.getHours()) == 0){
+                            if(deptime.getMinutes() - currentTime.getMinutes() <= 15){
+                                Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                                i.putExtra("startLat", startAddress.getLatitude());
+                                i.putExtra("startLong", startAddress.getLongitude());
 
 
-                            startActivity ( i );
+                                startActivity ( i );
+                            }
+
+                        }
+                        if (deptime.getHours() - currentTime.getHours() == 1){
+                            if(currentTime.getMinutes() > 45){
+                                if(deptime.getMinutes()- currentTime.getMinutes() >= - 45){
+                                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                                    i.putExtra("startLat", startAddress.getLatitude());
+                                    i.putExtra("startLong", startAddress.getLongitude());
+
+
+                                    startActivity ( i );
+                                }
+                            }
                         }
                     }
                     else {
