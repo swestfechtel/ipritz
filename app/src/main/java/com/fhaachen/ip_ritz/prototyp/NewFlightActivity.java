@@ -1,8 +1,10 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -98,6 +100,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     private NotificationManagerCompat notificationManager;
     //Send Notification end
 
+    //Show popup to warn user about the entered start and destiantion Addresses
+    private AlertDialog.Builder builder;
+    //Show popup to warn user about the entered start and destiantion Addresses -- end
 
     private static final String[] LOCATIONS = new String[]{
             "My location"
@@ -324,38 +329,50 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
-                if(flightTextFrom.getText().toString().equals("My location")){
-                    //get current location
-                    getLastKnownLocation();
-                    geoLocateTo(flightTextTo);
+                //Show popup to warn user about the entered start and destiantion Addresses
+                if(flightTextFrom.getText().toString().isEmpty() || flightTextTo.getText().toString().isEmpty()) {
+                    showWarningMessage(v);
 
-                    //Check if a stopover is demanded and if the user entered an address
-                    if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
+                    //Show popup to warn user about the entered start and destiantion Addresses -- end
+                }else if(!flightTextFrom.getText().toString().isEmpty() && !flightTextTo.getText().toString().isEmpty()){
 
-                        stopoverIsDemanded = true;
-                        //get the location of the stopover
-                        geoLocateTo(flightTextStopover);
+                    if(flightTextFrom.getText().toString().equals("My location")){
+                        //get current location
+                        getLastKnownLocation();
+                        geoLocateTo(flightTextTo);
 
+                        //Check if a stopover is demanded and if the user entered an address
+                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
+
+                            stopoverIsDemanded = true;
+                            //get the location of the stopover
+                            geoLocateTo(flightTextStopover);
+
+                        }
+
+
+                    }else{
+
+                        //find the location of the start address
+                        geoLocateFrom(flightTextFrom);
+                        //find the location of the destination address
+                        geoLocateTo(flightTextTo);
+
+
+                        //Check if a stopover is demanded and if the user entered an address
+                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
+
+                            stopoverIsDemanded = true;
+                            //get the location of th stopover
+                            geoLocateTo(flightTextStopover);
+
+                        }
                     }
 
-
-                }else{
-
-                    //find the location of the start address
-                    geoLocateFrom(flightTextFrom);
-                    //find the location of the destination address
-                    geoLocateTo(flightTextTo);
-
-
-                    //Check if a stopover is demanded and if the user entered an address
-                    if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                        stopoverIsDemanded = true;
-                        //get the location of th stopover
-                        geoLocateTo(flightTextStopover);
-
-                    }
                 }
+
+
+
 
                 if(aRouteIsShown){
                     //Clear the map, if a route is already shown
@@ -436,6 +453,39 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         } );
 
     }
+
+
+    //Show popup to warn user about the entered start and destiantion Addresses
+    public void showWarningMessage(View view){
+
+        //Show popup to warn user about the entered start and destiantion Addresses
+        builder = new AlertDialog.Builder(this);
+        //Setting message manually and performing action on button click
+        builder.setMessage("Please insert a start and a destination address!")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                       // finish();
+                        Toast.makeText(getApplicationContext(),"you choose yes action for the warning popup",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+               /* .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Action for 'NO' Button
+                        dialog.cancel();
+                        Toast.makeText(getApplicationContext(),"you choose no action for for the warning popup",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } );*/
+        //Creating dialog box
+        AlertDialog alert = builder.create();
+        //Setting the title manually
+        alert.setTitle("WARNING!");
+        alert.show();
+    }
+    //Show popup to warn user about the entered start and destiantion Addresses -- end
+
 
     //Send notification
     public void startService(View v) {

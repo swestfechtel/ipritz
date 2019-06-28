@@ -1,8 +1,10 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -91,6 +93,11 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     private double speed = 60; // MaxSpeed 60 km/h for Parrot Bebop 2
     private TextView orderTextArrivalTime;
     //Adjust arrival time end
+
+    //Show popup to warn user about the entered start and destiantion Addresses
+    private AlertDialog.Builder builder;
+    //Show popup to warn user about the entered start and destiantion Addresses -- end
+
 
     private static final String[] LOCATIONS = new String[]{
             "My location"
@@ -310,41 +317,54 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
                 inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
                         InputMethodManager.HIDE_NOT_ALWAYS );
-                if ( orderTextTo.getText ().toString ().equals ( "My location" ) ) {
-                    //get current location
-                    getLastKnownLocation ();
-                    geoLocateFrom ( orderTextFrom );
 
-                    //Check if a stopover is demanded and if the user entered an address
-                    if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
+                //Show popup to warn user about the entered start and destiantion Addresses
+                if( orderTextFrom.getText().toString().isEmpty() || orderTextTo.getText().toString().isEmpty() ){
 
-                        stopoverIsDemanded = true;
-                        //get the location of the stopover
-                        geoLocateTo(orderTextStopover);
+                    showWarningMessage(v);
 
+                    //Show popup to warn user about the entered start and destiantion Addresses -- end
+                }else if( !orderTextFrom.getText().toString().isEmpty() && !orderTextTo.getText().toString().isEmpty() ){
+
+                    if ( orderTextTo.getText ().toString ().equals ( "My location" ) ) {
+                        //get current location
+                        getLastKnownLocation ();
+                        geoLocateFrom ( orderTextFrom );
+
+                        //Check if a stopover is demanded and if the user entered an address
+                        if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
+
+                            stopoverIsDemanded = true;
+                            //get the location of the stopover
+                            geoLocateTo(orderTextStopover);
+
+                        }
+
+                    } else {
+
+                        //find the location of the start address
+                        geoLocateFrom ( orderTextFrom );
+                        //find the location of the destination address
+                        geoLocateTo ( orderTextTo );
+
+                        //Check if a stopover is demanded and if the user entered an address
+                        if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
+
+                            stopoverIsDemanded = true;
+                            //get the location of th stopover
+                            geoLocateTo(orderTextStopover);
+
+                        }
                     }
 
-                } else {
-
-                    //find the location of the start address
-                    geoLocateFrom ( orderTextFrom );
-                    //find the location of the destination address
-                    geoLocateTo ( orderTextTo );
-
-                    //Check if a stopover is demanded and if the user entered an address
-                    if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
-
-                        stopoverIsDemanded = true;
-                        //get the location of th stopover
-                        geoLocateTo(orderTextStopover);
-
+                    if ( aRouteIsShown ) {
+                        //Clear the map, if a route is already shown
+                        mMap.clear ();
                     }
+
                 }
 
-                if ( aRouteIsShown ) {
-                    //Clear the map, if a route is already shown
-                    mMap.clear ();
-                }
+
                 aRouteIsShown = true;
                 price.setText ( setDynamicPrice () );
 
@@ -419,6 +439,36 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         });
     }
 
+    //Show popup to warn user about the entered start and destiantion Addresses
+    public void showWarningMessage(View view){
+
+        //Show popup to warn user about the entered start and destiantion Addresses
+        builder = new AlertDialog.Builder(this);
+        //Setting message manually and performing action on button click
+        builder.setMessage("Please insert a start and a destination address!")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // finish();
+                        Toast.makeText(getApplicationContext(),"you choose yes action for the warning popup",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+               /* .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Action for 'NO' Button
+                        dialog.cancel();
+                        Toast.makeText(getApplicationContext(),"you choose no action for for the warning popup",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } );*/
+        //Creating dialog box
+        AlertDialog alert = builder.create();
+        //Setting the title manually
+        alert.setTitle("WARNING!");
+        alert.show();
+    }
+    //Show popup to warn user about the entered start and destiantion Addresses -- end
 
     //Pick date
     public void showDatePickerDialog(){
