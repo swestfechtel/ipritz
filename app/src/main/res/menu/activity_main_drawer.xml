@@ -41,6 +41,10 @@
                 android:icon="@drawable/ic_fingerprint_black_24dp"
                 android:title="@string/menu_privacy" />
             <item
+                android:id="@+id/nav_stop"
+                android:icon="@drawable/ic_power_settings_new_black_24dp"
+                android:title="Not-Aus" />
+            <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_exit_to_app_black_24dp"
                 android:title="@string/menu_logout" />

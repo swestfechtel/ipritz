@@ -30,10 +30,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.fhaachen.ip_ritz.prototyp.data.TokenUpdateTarget;
 import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
-import com.google.android.gms.location.*;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -321,8 +326,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
         } else if (id == R.id.nav_payments) {
             Log.i("MainActivity", "Navigation item selected: Payments");
-        } else if (id == R.id.nav_payments) {
-            Log.i("MainActivity", "Navigation item selected: Payments");
         } else if (id == R.id.nav_contact) {
             Log.i("MainActivity", "Navigation item selected: Contact");
         } else if (id == R.id.nav_friends) {
@@ -331,6 +334,26 @@ public class MainActivity extends AppCompatActivity
             startActivity(in);
         } else if (id == R.id.nav_about) {
             Log.i("MainActivity", "Navigation item selected: About");
+
+            // Test
+            /*new AlertDialog.Builder ( this )
+                    .setTitle ( "Your drone has arrived!" )
+                    .setMessage ( "Your drone has arrived at your location. Please confirm its arrival to resume the ride." )
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton ( "Confirm" , new DialogInterface.OnClickListener () {
+                        public void onClick ( DialogInterface dialog , int which ) {
+                            Toast.makeText(getApplicationContext(), "Confirmed", Toast.LENGTH_SHORT);
+                        }
+                    } )
+
+                    .setNeutralButton ( "Deny" , new DialogInterface.OnClickListener () {
+                        public void onClick ( DialogInterface dialog , int which ) {
+                            Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT);
+                        }
+                    } )
+                    .show ();*/
         } else if (id == R.id.nav_privacy) {
             Log.i("MainActivity", "Navigation item selected: Privacy");
         } else if (id == R.id.nav_logout) {
@@ -338,6 +361,8 @@ public class MainActivity extends AppCompatActivity
             LoginActivity.loginViewModel.logout ();
             Intent i = new Intent ( getApplicationContext () , LoginActivity.class );
             startActivity ( i );
+        } else if (id == R.id.nav_stop) {
+            Log.i("MainActivity", "Navigation item selected: Not-Aus");
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
