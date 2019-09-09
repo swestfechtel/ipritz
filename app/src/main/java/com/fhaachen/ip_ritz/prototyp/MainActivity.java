@@ -1,9 +1,11 @@
 package com.fhaachen.ip_ritz.prototyp;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,9 +33,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fhaachen.ip_ritz.prototyp.data.TokenUpdateTarget;
-import com.fhaachen.ip_ritz.prototyp.data.model.User;
+import com.fhaachen.ip_ritz.prototyp.notifications.MyFirebaseMessagingService;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -49,8 +53,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
-import java.util.ArrayList;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -79,6 +81,12 @@ public class MainActivity extends AppCompatActivity
     private LocationRequest locationRequest;
 
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showDronePopup();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         navHeaderName = header.findViewById ( R.id.navHeaderName );
         navHeaderMail = header.findViewById ( R.id.navHeaderMail );
 
-        headerImage.setOnClickListener ( new View.OnClickListener () {
+        headerImage.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick ( View v ) {
 
@@ -131,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         FirebaseInstanceId.getInstance ().getInstanceId ()
-                .addOnCompleteListener ( new OnCompleteListener < InstanceIdResult > () {
+                .addOnCompleteListener (new OnCompleteListener < InstanceIdResult > () {
                     @Override
                     public void onComplete ( @NonNull Task < InstanceIdResult > task ) {
                         if ( !task.isSuccessful () ) {
@@ -155,6 +163,43 @@ public class MainActivity extends AppCompatActivity
         locationRequest.setInterval ( UPDATE_INTERVAL );
         locationRequest.setFastestInterval ( FASTEST_INTERVAL );
         locationRequest.setPriority ( LocationRequest.PRIORITY_HIGH_ACCURACY );
+
+        MyFirebaseMessagingService.context = this;
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("message-test"));
+    }
+
+    private void showDronePopup() {
+        try {
+            new AlertDialog.Builder(this)
+                    .setTitle("Your drone has arrived!")
+                    .setMessage("Your drone has arrived at your location. Please confirm its arrival to resume the ride.")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "Confirmed", Toast.LENGTH_SHORT);
+                        }
+                    })
+
+                    .setNeutralButton("Deny", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT);
+                        }
+                    })
+                    .show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
 
@@ -240,11 +285,11 @@ public class MainActivity extends AppCompatActivity
                     lastLocation = location;
 
                     try {
-                        User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
+                        /*User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
                         com.fhaachen.ip_ritz.prototyp.data.model.Location userLocation = new com.fhaachen.ip_ritz.prototyp.data.model.Location ( (float)location.getLatitude (), (float)location.getLongitude () );
                         ArrayList < com.fhaachen.ip_ritz.prototyp.data.model.Location > currentLocation = loggedInUser.getCurrentLocation ();
                         currentLocation.add(userLocation);
-                        loggedInUser.setCurrentLocation ( currentLocation );
+                        loggedInUser.setCurrentLocation ( currentLocation );*/
                     } catch ( Exception e ) {
                         e.printStackTrace ();
                     }
@@ -328,6 +373,8 @@ public class MainActivity extends AppCompatActivity
             Log.i("MainActivity", "Navigation item selected: Payments");
         } else if (id == R.id.nav_contact) {
             Log.i("MainActivity", "Navigation item selected: Contact");
+            Intent intent = new Intent("message-test");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         } else if (id == R.id.nav_friends) {
             Log.i("MainActivity", "Navigation item selected: Friends");
             Intent in = new Intent(getApplicationContext(), FriendsActivity.class);
@@ -336,7 +383,7 @@ public class MainActivity extends AppCompatActivity
             Log.i("MainActivity", "Navigation item selected: About");
 
             // Test
-            /*new AlertDialog.Builder ( this )
+            new AlertDialog.Builder(this)
                     .setTitle ( "Your drone has arrived!" )
                     .setMessage ( "Your drone has arrived at your location. Please confirm its arrival to resume the ride." )
 
@@ -353,7 +400,7 @@ public class MainActivity extends AppCompatActivity
                             Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT);
                         }
                     } )
-                    .show ();*/
+                    .show();
         } else if (id == R.id.nav_privacy) {
             Log.i("MainActivity", "Navigation item selected: Privacy");
         } else if (id == R.id.nav_logout) {

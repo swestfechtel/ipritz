@@ -2,12 +2,11 @@ package com.fhaachen.ip_ritz.prototyp.notifications;
 
 //import com.google.firebase.*;
 
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -17,6 +16,7 @@ import static android.support.constraint.Constraints.TAG;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     public static String token;
+    public static Context context;
     @Override
     public void onMessageReceived ( RemoteMessage remoteMessage ) {
         // ...
@@ -28,26 +28,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if ( remoteMessage.getData ().size () > 0 ) {
             Log.d ( TAG , "Message data payload: " + remoteMessage.getData () );
-
-            new AlertDialog.Builder(this)
-                    .setTitle("Your drone has arrived!")
-                    .setMessage("Your drone has arrived at your location. Please confirm its arrival to resume the ride.")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "Confirmed", Toast.LENGTH_SHORT);
-                        }
-                    })
-
-                    .setNeutralButton("Deny", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT);
-                        }
-                    })
-                    .show();
-
+            Intent intent = new Intent("message-test");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
         try {
             String url = remoteMessage.getData().get("click_action");
