@@ -1,13 +1,20 @@
 package com.fhaachen.ip_ritz.prototyp;
 
-import android.content.res.Resources;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
+import com.fhaachen.ip_ritz.prototyp.data.DroneConfirmationTarget;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,11 +28,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
-import com.google.android.gms.maps.model.Tile;
-
-import java.io.File;
-
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource;
 
 public class WaitingActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -33,15 +35,12 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
     private double la;
     private double lo;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_waiting);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver () {
+        @Override
+        public void onReceive ( Context context , Intent intent ) {
+            showDronePopup ();
+        }
+    };
 
 
     /**
@@ -104,5 +103,45 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         drawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    @Override
+    protected void onCreate ( Bundle savedInstanceState ) {
+        super.onCreate ( savedInstanceState );
+        setContentView ( R.layout.activity_waiting );
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
+                .findFragmentById ( R.id.map );
+        mapFragment.getMapAsync ( this );
+
+        LocalBroadcastManager.getInstance ( this ).registerReceiver ( mMessageReceiver ,
+                new IntentFilter ( "message-test" ) );
+    }
+
+    private void showDronePopup () {
+        try {
+            new AlertDialog.Builder ( this )
+                    .setTitle ( "Your drone has arrived!" )
+                    .setMessage ( "Your drone has arrived at your location. Please confirm its arrival to resume the ride." )
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton ( "Confirm" , new DialogInterface.OnClickListener () {
+                        public void onClick ( DialogInterface dialog , int which ) {
+                            Toast.makeText ( getApplicationContext () , "Confirmed" , Toast.LENGTH_SHORT );
+                            DroneConfirmationTarget droneConfirmationTarget = new DroneConfirmationTarget ();
+                            droneConfirmationTarget.doInBackground ();
+                        }
+                    } )
+
+                    .setNeutralButton ( "Deny" , new DialogInterface.OnClickListener () {
+                        public void onClick ( DialogInterface dialog , int which ) {
+                            Toast.makeText ( getApplicationContext () , "Denied" , Toast.LENGTH_SHORT );
+                        }
+                    } )
+                    .show ();
+        } catch ( Exception e ) {
+            e.printStackTrace ();
+        }
     }
 }

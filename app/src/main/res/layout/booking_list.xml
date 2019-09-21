@@ -1,60 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip"
-    android:descendantFocusability="blocksDescendants">
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:orientation="horizontal"
+        android:paddingBottom="?android:attr/listPreferredItemPaddingEnd">
 
-    <TextView
-        android:id="@+id/start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginBottom="1dp"
-        android:layout_alignParentTop="true"
-        android:text="From: "
-        style="@style/sub1"/>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/ItemStart"
-        style="@style/sub1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/ItemEnd"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="11dp"
-        android:layout_marginBottom="1dp"
-        android:layout_toRightOf="@id/start"
-        android:gravity="center_vertical"
-        android:text="Start Location"
-        android:textColor="#000000" />
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="1dp"
+                android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="To: "
-        style="@style/sub1"/>
+            <TextView
+                    android:id="@+id/start"
+                    style="@style/sub1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="From: "
+                    android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/ItemEnd"
-        style="@style/sub1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/end"
-        android:text="Goal Locaation"
-        android:textColor="#000000" />
+            <TextView
+                    android:id="@+id/ItemStart"
+                    style="@style/sub1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Location"
+                    android:textColor="#000000" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:id="@+id/end"
+                    style="@style/sub1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:text="To: "
+                    android:textStyle="bold" />
+
+            <TextView
+                    android:id="@+id/ItemEnd"
+                    style="@style/sub1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Goal Location"
+                    android:textColor="#000000" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <Button
-        android:id="@+id/ItemChancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="cancel"
-        style="@style/button" />
 
-</RelativeLayout>
+            android:id="@+id/ItemChancelButton"
+            style="@style/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="cancel" />
+</LinearLayout>

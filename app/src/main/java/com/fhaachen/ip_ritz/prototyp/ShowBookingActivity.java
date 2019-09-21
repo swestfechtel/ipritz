@@ -14,8 +14,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.fhaachen.ip_ritz.prototyp.data.OrderDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.OrderDeletionTarget;
 import com.fhaachen.ip_ritz.prototyp.data.model.Order;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 
@@ -163,6 +169,8 @@ public class ShowBookingActivity extends AppCompatActivity {
             public void onItemClick ( AdapterView < ? > parent , View view , int position , long id ) {
                 Log.i ( "MyBookingsActivity" , "List item + " + position + " selected." );
                 String bookingId = journeys.get ( position );
+                OrderDeletionTarget orderDeletionTarget = new OrderDeletionTarget ();
+                orderDeletionTarget.doInBackground ( bookingId );
             }
         } );
     }
