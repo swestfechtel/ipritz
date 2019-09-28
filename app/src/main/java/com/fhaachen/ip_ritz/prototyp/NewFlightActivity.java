@@ -366,24 +366,22 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
                     if(flightTextFrom.getText().toString().equals("My location")){
                         //get current location
-                        getLastKnownLocation();
-                        geoLocateTo(flightTextTo);
+                        getLastKnownLocation(0);
 
 
 
-                    }else{
+
+                    }else {
 
                         //find the location of the start address
                         geoLocateFrom(flightTextFrom);
-                        //find the location of the destination address
-                        if(flightTextTo.getText().toString().equals("My location")){
-                            getLastKnownLocation();
-                        }
-                        else {
-                            geoLocateTo(flightTextTo);
-                        }
-
-
+                    }
+                    //find the location of the destination address
+                    if(flightTextTo.getText().toString().equals("My location")){
+                        getLastKnownLocation(1);
+                    }
+                    else {
+                        geoLocateTo(flightTextTo);
                     }
                     //Check if a stopover is demanded and if the user entered an address
                     if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
@@ -417,71 +415,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-        flightTextTo.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
-            @Override
-            public boolean onEditorAction ( TextView v , int actionId , KeyEvent event ) {
-                if ( actionId == EditorInfo.IME_ACTION_SEARCH ) {
 
-                    Log.i ( "NewFlightActivity" , "Show route startlocation to destination" );
-                    //Keyboard weg
-                    InputMethodManager inputManager = ( InputMethodManager )
-                            getSystemService ( Context.INPUT_METHOD_SERVICE );
-
-                    inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
-                            InputMethodManager.HIDE_NOT_ALWAYS );
-                    if ( flightTextFrom.getText ().toString ().equals ( "My location" ) ) {
-                        //get current location
-                        getLastKnownLocation ();
-
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of th stopover
-                            geoLocateTo(flightTextStopover);
-
-                        }
-
-                    } else {
-
-                        //find the location of the start address
-                        geoLocateFrom ( flightTextFrom );
-                        //find the location of the destination address
-                        if(flightTextTo.getText().toString().equals("My Location")){
-                            getLastKnownLocation ();
-                        }
-                        else {
-                            geoLocateTo(flightTextTo);
-                        }
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of th stopover
-                            geoLocateTo(flightTextStopover);
-
-                        }
-                    }
-
-                    if ( aRouteIsShown ) {
-                        //Clear the map, if a route is already shown
-                        mMap.clear ();
-                    }
-                    aRouteIsShown = true;
-                    price.setText ( setDynamicPrice () );
-                    SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
-                            .findFragmentById ( R.id.map );
-                    mapFragment.getMapAsync ( NewFlightActivity.this );
-
-
-                    return true;
-                }
-                return false;
-            }
-        } );
 
     }
-
 
     //Show popup to warn user about the entered start and destiantion Addresses
     public void showWarningMessage(View view){
@@ -656,7 +592,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     //Get actual Location
-    private void getLastKnownLocation() {
+    private void getLastKnownLocation(final int i)  { //0 = Start, 1 = Destination
         Log.d(TAG, "getLastKnownLocation: called.");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -667,8 +603,14 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    latitudeFrom = geoPoint.getLatitude(); //myLocationLatitude
-                    longitudeFrom = geoPoint.getLongitude(); //myLocatonLongitude
+                    if(i == 0) {
+                        latitudeFrom = geoPoint.getLatitude(); //myLocationLatitude
+                        longitudeFrom = geoPoint.getLongitude(); //myLocatonLongitude
+                    }
+                    if(i == 1) {
+                        latitudeTo = geoPoint.getLatitude(); //myLocationLatitude
+                        longitudeTo = geoPoint.getLongitude(); //myLocatonLongitude
+                    }
                     try {
                         Geocoder geocoder = new Geocoder ( getApplicationContext () , Locale.getDefault () );
                         List < Address > addresses = geocoder.getFromLocation ( latitudeFrom , longitudeFrom , 1 );
