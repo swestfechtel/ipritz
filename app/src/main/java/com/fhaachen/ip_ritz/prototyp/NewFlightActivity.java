@@ -272,6 +272,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     String orderId = dataTarget.doInBackground ( order );
                     Log.i ( "NewFlightActivity" , orderId );
 
+                    Constants.CURRENT_ORDER = orderId;
+
                     UserDataSource dataSource = new UserDataSource ();
 
                     ArrayList < String > journeys;

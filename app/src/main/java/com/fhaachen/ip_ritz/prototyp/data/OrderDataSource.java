@@ -2,6 +2,7 @@ package com.fhaachen.ip_ritz.prototyp.data;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
 import com.fhaachen.ip_ritz.prototyp.data.model.Order;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -16,6 +17,7 @@ import java.net.URL;
 public class OrderDataSource extends AsyncTask < String, Float, Order > {
     @Override
     public Order doInBackground ( String... params ) {
+        Log.i("OrderDataSource", params[0]);
         try {
             URL server = new URL ( LoginDataSource.serverAddress + "/orders/" + params[ 0 ] );
             HttpURLConnection connection = ( HttpURLConnection ) server.openConnection ();

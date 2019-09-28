@@ -15,6 +15,9 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.fhaachen.ip_ritz.prototyp.data.DroneConfirmationTarget;
+import com.fhaachen.ip_ritz.prototyp.data.OrderDataSource;
+import com.fhaachen.ip_ritz.prototyp.data.OrderDataUpdateTarget;
+import com.fhaachen.ip_ritz.prototyp.data.model.Order;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,6 +45,12 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
         }
     };
 
+    private BroadcastReceiver getmMessageReceiverInterm = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showDronePopupInterm();
+        }
+    };
 
     /**
      * Manipulates the map once available.
@@ -116,26 +125,62 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
 
         LocalBroadcastManager.getInstance ( this ).registerReceiver ( mMessageReceiver ,
                 new IntentFilter ( "message-test" ) );
+        LocalBroadcastManager.getInstance(this).registerReceiver(getmMessageReceiverInterm, new IntentFilter("message-interm"));
     }
 
     private void showDronePopup () {
         try {
             new AlertDialog.Builder ( this )
                     .setTitle ( "Your drone has arrived!" )
-                    .setMessage ( "Your drone has arrived at your location. Please confirm its arrival to resume the ride." )
+                    .setMessage("Your drone has arrived at its final location. Please confirm its arrival to complete the ride.")
 
                     // Specifying a listener allows you to take an action before dismissing the dialog.
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton ( "Confirm" , new DialogInterface.OnClickListener () {
-                        public void onClick ( DialogInterface dialog , int which ) {
+                        public void onClick (DialogInterface dialog , int which ) {
                             Toast.makeText ( getApplicationContext () , "Confirmed" , Toast.LENGTH_SHORT );
                             DroneConfirmationTarget droneConfirmationTarget = new DroneConfirmationTarget ();
                             droneConfirmationTarget.doInBackground ();
                         }
                     } )
 
+                    .setNeutralButton("Deny", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT);
+                        }
+                    })
+                    .show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showDronePopupInterm() {
+        try {
+            new AlertDialog.Builder(this)
+                    .setTitle("Your drone has arrived!")
+                    .setMessage("Your drone has arrived at your location. Please confirm its arrival to resume the ride.")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            /*Toast.makeText ( getApplicationContext () , "Confirmed" , Toast.LENGTH_SHORT );
+                            DroneConfirmationTarget droneConfirmationTarget = new DroneConfirmationTarget ();
+                            droneConfirmationTarget.doInBackground ();*/
+                            // TODO:
+                            OrderDataSource orderDataSource = new OrderDataSource();
+                            Order order = orderDataSource.doInBackground(Constants.CURRENT_ORDER);
+                            if (order != null) {
+                                order.setConfirmed(true);
+                                OrderDataUpdateTarget orderDataUpdateTarget = new OrderDataUpdateTarget();
+                                orderDataUpdateTarget.doInBackground(order);
+                            }
+                        }
+                    })
+
                     .setNeutralButton ( "Deny" , new DialogInterface.OnClickListener () {
-                        public void onClick ( DialogInterface dialog , int which ) {
+                        public void onClick (DialogInterface dialog , int which ) {
                             Toast.makeText ( getApplicationContext () , "Denied" , Toast.LENGTH_SHORT );
                         }
                     } )
