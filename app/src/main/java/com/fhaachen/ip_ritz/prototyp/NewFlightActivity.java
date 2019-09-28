@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -142,7 +143,6 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         flightTextTo = findViewById(R.id.flight_text_to);
         flightTextTo.setAdapter(adapter);
         flightBackButton = findViewById(R.id.flightBackButton);
-        bookButton = findViewById(R.id.flight_button);
         switchButton = findViewById(R.id.btn_switch_start_end_flight);
         //Insert Stopover
         flightTextStopover = findViewById ( R.id.flight_text_stopover );
@@ -288,11 +288,12 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     userDataUpdateTarget.doInBackground ( loggedInUser );
                     String depDate =flightTextDepartureDate.getText().toString();
                     String curDate = datumsformat.format(Calendar.getInstance().getTime());
-                    /*if(curDate.equals(depDate)){
-                        Date deptime = zeitformat.parse(flightTextDepatureTime.getText().toString());
-                        Date currentTime = Calendar.getInstance().getTime();
-                        if( (deptime.getHours() - currentTime.getHours()) == 0){
-                            if(deptime.getMinutes() - currentTime.getMinutes() <= 15){
+                    if(curDate.equals(depDate)){
+                        String cTime = zeitformat.format(Calendar.getInstance().getTime());
+                        String deptime[] = flightTextDepatureTime.getText().toString().split(":");
+                        String currentTime[] = cTime.toString().split(":");
+                        if( ( Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 0){
+                            if((Integer.parseInt(deptime[1]) - Integer.parseInt(currentTime[1])) <= 15){
                                 Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                 i.putExtra("startLat", startAddress.getLatitude());
                                 i.putExtra("startLong", startAddress.getLongitude());
@@ -302,9 +303,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                             }
 
                         }
-                        else if (deptime.getHours() - currentTime.getHours() == 1){
-                            if(currentTime.getMinutes() > 45){
-                                if(deptime.getMinutes()- currentTime.getMinutes() >= - 45){
+                        else if ((Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 1){
+                            if(Integer.parseInt(currentTime[1]) > 45){
+                                if((Integer.parseInt(deptime[1])- Integer.parseInt(currentTime[1])) >= - 45){
                                     Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                     i.putExtra("startLat", startAddress.getLatitude());
                                     i.putExtra("startLong", startAddress.getLongitude());
@@ -316,10 +317,10 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         }
 
                     }
+                    else {
 
 
-
-                        Intent i = new Intent ( view.getContext () , MainActivity.class );
+                        Intent i = new Intent(view.getContext(), MainActivity.class);
                         Context context = getApplicationContext();
                         CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
                         int duration = Toast.LENGTH_LONG;
@@ -328,15 +329,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         toast.show();
 
 
-
-                        startActivity ( i );*/
-                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
-                    i.putExtra ( "startLat" , startAddress.getLatitude () );
-                    i.putExtra ( "startLong" , startAddress.getLongitude () );
-
-
-                    startActivity ( i );
-
+                    }
 
                 } catch ( Exception e ) {
                     e.printStackTrace ();
