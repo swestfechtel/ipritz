@@ -22,7 +22,16 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
 import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
 import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
 import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
@@ -31,8 +40,17 @@ import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.GeoPoint;
@@ -41,7 +59,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -268,7 +285,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     userDataUpdateTarget.doInBackground ( loggedInUser );
                     String depDate =flightTextDepartureDate.getText().toString();
                     String curDate = datumsformat.format(Calendar.getInstance().getTime());
-                    if(curDate.equals(depDate)){
+                    /*if(curDate.equals(depDate)){
                         Date deptime = zeitformat.parse(flightTextDepatureTime.getText().toString());
                         Date currentTime = Calendar.getInstance().getTime();
                         if( (deptime.getHours() - currentTime.getHours()) == 0){
@@ -297,6 +314,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
                     }
 
+
+
                         Intent i = new Intent ( view.getContext () , MainActivity.class );
                         Context context = getApplicationContext();
                         CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
@@ -307,7 +326,13 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
 
 
-                        startActivity ( i );
+                        startActivity ( i );*/
+                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
+                    i.putExtra ( "startLat" , startAddress.getLatitude () );
+                    i.putExtra ( "startLong" , startAddress.getLongitude () );
+
+
+                    startActivity ( i );
 
 
                 } catch ( Exception e ) {

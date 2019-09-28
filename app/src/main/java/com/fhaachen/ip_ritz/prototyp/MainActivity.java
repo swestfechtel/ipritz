@@ -376,34 +376,15 @@ public class MainActivity extends AppCompatActivity
             Log.i("MainActivity", "Navigation item selected: Payments");
         } else if (id == R.id.nav_contact) {
             Log.i("MainActivity", "Navigation item selected: Contact");
-            Intent intent = new Intent ( "message-test" );
-            LocalBroadcastManager.getInstance ( this ).sendBroadcast ( intent );
         } else if (id == R.id.nav_friends) {
             Log.i("MainActivity", "Navigation item selected: Friends");
             Intent in = new Intent(getApplicationContext(), FriendsActivity.class);
             startActivity(in);
+        } else if ( id == R.id.nav_settings ) {
+            Intent i = new Intent ( getApplicationContext () , SettingsActivity.class );
+            startActivity ( i );
         } else if (id == R.id.nav_about) {
             Log.i("MainActivity", "Navigation item selected: About");
-
-            // Test
-            new AlertDialog.Builder ( this )
-                    .setTitle ( "Your drone has arrived!" )
-                    .setMessage ( "Your drone has arrived at your location. Please confirm its arrival to resume the ride." )
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton ( "Confirm" , new DialogInterface.OnClickListener () {
-                        public void onClick ( DialogInterface dialog , int which ) {
-                            Toast.makeText(getApplicationContext(), "Confirmed", Toast.LENGTH_SHORT);
-                        }
-                    } )
-
-                    .setNeutralButton ( "Deny" , new DialogInterface.OnClickListener () {
-                        public void onClick ( DialogInterface dialog , int which ) {
-                            Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT);
-                        }
-                    } )
-                    .show ();
         } else if (id == R.id.nav_privacy) {
             Log.i("MainActivity", "Navigation item selected: Privacy");
         } else if (id == R.id.nav_logout) {
