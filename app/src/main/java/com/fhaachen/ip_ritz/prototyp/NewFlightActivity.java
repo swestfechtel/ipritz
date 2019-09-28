@@ -75,7 +75,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     private TextView price;
     private ImageButton flightBackButton;
     private ImageButton getRoute;
-    private EditText flightTextTo;
+    private AutoCompleteTextView flightTextTo;
     private Button bookButton;
     private ImageButton switchButton;
 
@@ -123,6 +123,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
     private static final String[] LOCATIONS = new String[]{
             "My location"
+            //hier Locations in FH Aachen Eup Str hinzufügen
     };
     private static final String TAG = "NewFlightActivity";
 
@@ -136,8 +137,10 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         flightTextFrom.setAdapter(adapter);
+
         bookButton = findViewById(R.id.flight_button);
         flightTextTo = findViewById(R.id.flight_text_to);
+        flightTextTo.setAdapter(adapter);
         flightBackButton = findViewById(R.id.flightBackButton);
         bookButton = findViewById(R.id.flight_button);
         switchButton = findViewById(R.id.btn_switch_start_end_flight);
@@ -354,11 +357,11 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
-                //Show popup to warn user about the entered start and destiantion Addresses
+                //Show popup to warn user about the entered start and destination Addresses
                 if(flightTextFrom.getText().toString().isEmpty() || flightTextTo.getText().toString().isEmpty()) {
                     showWarningMessage(v);
 
-                    //Show popup to warn user about the entered start and destiantion Addresses -- end
+                    //Show popup to warn user about the entered start and destination Addresses -- end
                 }else if(!flightTextFrom.getText().toString().isEmpty() && !flightTextTo.getText().toString().isEmpty()){
 
                     if(flightTextFrom.getText().toString().equals("My location")){
@@ -366,14 +369,6 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         getLastKnownLocation();
                         geoLocateTo(flightTextTo);
 
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of the stopover
-                            geoLocateTo(flightTextStopover);
-
-                        }
 
 
                     }else{
@@ -381,17 +376,22 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         //find the location of the start address
                         geoLocateFrom(flightTextFrom);
                         //find the location of the destination address
-                        geoLocateTo(flightTextTo);
-
-
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of th stopover
-                            geoLocateTo(flightTextStopover);
-
+                        if(flightTextTo.getText().toString().equals("My location")){
+                            getLastKnownLocation();
                         }
+                        else {
+                            geoLocateTo(flightTextTo);
+                        }
+
+
+                    }
+                    //Check if a stopover is demanded and if the user entered an address
+                    if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
+
+                        stopoverIsDemanded = true;
+                        //get the location of th stopover
+                        geoLocateTo(flightTextStopover);
+
                     }
 
                 }
@@ -432,7 +432,6 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     if ( flightTextFrom.getText ().toString ().equals ( "My location" ) ) {
                         //get current location
                         getLastKnownLocation ();
-                        geoLocateTo ( flightTextTo );
 
                         //Check if a stopover is demanded and if the user entered an address
                         if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
@@ -448,8 +447,12 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         //find the location of the start address
                         geoLocateFrom ( flightTextFrom );
                         //find the location of the destination address
-                        geoLocateTo ( flightTextTo );
-
+                        if(flightTextTo.getText().toString().equals("My Location")){
+                            getLastKnownLocation ();
+                        }
+                        else {
+                            geoLocateTo(flightTextTo);
+                        }
                         //Check if a stopover is demanded and if the user entered an address
                         if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
 

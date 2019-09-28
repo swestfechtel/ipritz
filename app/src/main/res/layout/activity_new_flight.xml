@@ -117,15 +117,17 @@
                 android:text="To: "
                 style="@style/h6" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/flight_text_to"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="60dp"
                 android:background="@color/colorSearchBar"
+                android:completionThreshold="1"
                 android:hint="Enter a destination address"
-                android:imeOptions="actionSearch"
+                android:text="My location"
+                android:popupBackground="@color/colorPrimary"
                 android:inputType="text" />
 
             <ImageButton

@@ -55,7 +55,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
     private ImageButton orderBackButton;
     private Button orderButton;
-    private EditText orderTextFrom;
+    private AutoCompleteTextView orderTextFrom;
     private AutoCompleteTextView orderTextTo;
     private ImageButton switchButton;
 
@@ -345,7 +345,12 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                         //find the location of the start address
                         geoLocateFrom ( orderTextFrom );
                         //find the location of the destination address
-                        geoLocateTo ( orderTextTo );
+                        if(orderTextTo.getText().toString().equals("My Location")){
+                            getLastKnownLocation ();
+                        }
+                        else {
+                            geoLocateTo(orderTextTo);
+                        }
 
                         //Check if a stopover is demanded and if the user entered an address
                         if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
