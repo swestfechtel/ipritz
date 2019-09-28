@@ -652,6 +652,11 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             Toast.makeText(this, "Enter the destination address for your order", Toast.LENGTH_SHORT).show();
 
         }
+
+        // FÜR TEST:
+       /* this.destAddress = "E"
+        this.latitudeTo = 50.7585445;
+        this.longitudeTo = 6.0824400;*/
     }
 
     //Get actual Location
@@ -680,9 +685,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         });
-
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

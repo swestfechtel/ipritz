@@ -30,7 +30,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.fhaachen.ip_ritz.prototyp.data.LoginDataSource;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -232,19 +231,17 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             @Override
             public void onClick(View view) {
                 try {
-                    URL server = new URL(LoginDataSource.serverAddress + "/moveby.php?d=" + Constants.SIM_MODE);
+                    URL server = new URL("http://149.201.48.86/moveby.php"/*?d=" + Constants.SIM_MODE*/);
                     Log.i("NewOrderActivity", server.toString());
                     HttpURLConnection connection = (HttpURLConnection) server.openConnection();
-                    /*connection.setDoOutput(true);
-                    connection.setRequestMethod("GET");
-                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setDoInput(false);
+                    connection.connect();
 
-                    String payload = " { \"status\": \"landed\" }";
-                    OutputStream os = connection.getOutputStream();
-                    os.write(payload.getBytes(), 0, payload.getBytes().length);
-                    os.flush();
-                    os.close();*/
-                    connection.disconnect();
+                    if (connection.getResponseCode() != 200) {
+                        throw new RuntimeException("Failed: HTTP error code: " + connection.getResponseCode());
+                    }
+
+                    Log.i("NewOrderActivity", connection.getResponseCode() + "");
 
                     // HIER: Fensterlieferung
                     // IP: /moveby.php?d=<SIMULATOR>

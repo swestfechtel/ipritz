@@ -27,13 +27,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if ( remoteMessage.getData ().size () > 0 ) {
-            if (remoteMessage.getData().toString().equalsIgnoreCase("---")) {
-                // bestätige Zwischenlandung
-            }
-            // sonst bestätige Endlandung
             Log.d ( TAG , "Message data payload: " + remoteMessage.getData () );
-            Intent intent = new Intent ( "message-test" );
-            LocalBroadcastManager.getInstance ( this ).sendBroadcast ( intent );
+            if (remoteMessage.getData().toString().equalsIgnoreCase("confirm=startingpoint")) {
+                // bestätige Zwischenlandung
+                Intent intent = new Intent("message-interm");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            } else if (remoteMessage.getData().toString().equalsIgnoreCase("confirm=destinationpoint")) {
+                Intent intent = new Intent("message-test");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }
         }
         try {
             String url = remoteMessage.getData().get("click_action");

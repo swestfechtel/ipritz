@@ -7,6 +7,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class SettingsActivity extends AppCompatActivity {
 
     private Switch mSwitch;
@@ -29,6 +32,14 @@ public class SettingsActivity extends AppCompatActivity {
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Constants.SIM_MODE = isChecked;
+                try {
+                    URL server = new URL("http://149.201.48.86/sim.php?d=" + isChecked);
+                    HttpURLConnection connection = (HttpURLConnection) server.openConnection();
+                    connection.connect();
+                    connection.disconnect();
+                } catch (Exception e) {
+                }
+
             }
         });
     }
