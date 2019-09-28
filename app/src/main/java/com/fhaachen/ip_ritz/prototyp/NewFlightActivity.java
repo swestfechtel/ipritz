@@ -327,7 +327,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
-
+                        startActivity(i);
 
                     }
 
