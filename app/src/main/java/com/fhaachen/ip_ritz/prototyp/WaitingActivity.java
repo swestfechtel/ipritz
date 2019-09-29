@@ -31,6 +31,9 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class WaitingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -118,7 +121,22 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
         landingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //landing Befehl
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            URL server = new URL("149.201.48.86/landing.php");
+                            HttpURLConnection connection = (HttpURLConnection) server.openConnection();
+                            connection.setDoOutput(false);
+                            connection.connect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
             }
         });
         cancelBtn.setOnClickListener(new View.OnClickListener() {
