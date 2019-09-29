@@ -73,7 +73,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     private TextView price;
-    private ImageButton flightBackButton;
+    //private ImageButton flightBackButton;
     private ImageButton getRoute;
     private EditText flightTextTo;
     private Button bookButton;
@@ -131,6 +131,10 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_flight);
 
+        //set back button on action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //set back button on action bar end
+
         String[] locations = getResources().getStringArray(R.array.locations);
         flightTextFrom = findViewById ( R.id.flight_text_from );
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -138,7 +142,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         flightTextFrom.setAdapter(adapter);
         bookButton = findViewById(R.id.flight_button);
         flightTextTo = findViewById(R.id.flight_text_to);
-        flightBackButton = findViewById(R.id.flightBackButton);
+        //flightBackButton = findViewById(R.id.flightBackButton);
         bookButton = findViewById(R.id.flight_button);
         switchButton = findViewById(R.id.btn_switch_start_end_flight);
         //Insert Stopover
@@ -233,14 +237,14 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
             }
         });
-        flightBackButton.setOnClickListener(new View.OnClickListener() {
+        /*flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i ( "NewFlightActivity" , "Go to MainActivity" );
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
-        });
+        });*/
 
 
         bookButton.setOnClickListener(new View.OnClickListener() {
@@ -479,6 +483,13 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    //set back button on action bar
+    @Override
+    public boolean  onSupportNavigateUp(){
+        onBackPressed();
+        return true;
+    }
+    //set back button on action bar end
 
     //Show popup to warn user about the entered start and destiantion Addresses
     public void showWarningMessage(View view){

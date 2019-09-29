@@ -53,7 +53,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     public double longitudeTo;
     private Address startAddress, destAddress;
 
-    private ImageButton orderBackButton;
+    //private ImageButton orderBackButton;
     private Button orderButton;
     private EditText orderTextFrom;
     private AutoCompleteTextView orderTextTo;
@@ -109,13 +109,17 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_order);
 
+        //set back button on action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //set back button on action bar end
+
         String[] locations = getResources().getStringArray(R.array.locations);
         orderTextTo = findViewById ( R.id.order_text_to );
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         orderTextTo.setAdapter(adapter);
         orderTextFrom = findViewById(R.id.order_text_from);
-        orderBackButton = findViewById(R.id.orderBackButton);
+        //orderBackButton = findViewById(R.id.orderBackButton);
         orderButton = findViewById(R.id.order_button);
         switchButton = findViewById(R.id.btn_switch_start_end_order);
         //Insert Stopover
@@ -164,14 +168,14 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getRoute = findViewById(R.id.search_route_order);
         price = findViewById ( R.id.price_output );
-        orderBackButton.setOnClickListener(new View.OnClickListener() {
+        /*orderBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("NewOrderActivity", "Go to MainActivity");
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
-        });
+        });*/
 
 
         if(getIntent().hasExtra("text") == true) {
@@ -438,6 +442,14 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             }
         });
     }
+
+    //set back button on action bar
+    @Override
+    public boolean  onSupportNavigateUp(){
+        onBackPressed();
+        return true;
+    }
+    //set back button on action bar end
 
     //Show popup to warn user about the entered start and destiantion Addresses
     public void showWarningMessage(View view){

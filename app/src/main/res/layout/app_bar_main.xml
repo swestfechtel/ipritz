@@ -20,6 +20,8 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
+
+
     <include
         layout="@layout/fragment_search_bar"
         android:layout_width="match_parent"
