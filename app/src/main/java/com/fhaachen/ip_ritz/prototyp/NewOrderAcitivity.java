@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -54,7 +55,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyCallback,DatePickerDialog.OnDateSetListener, TimePickerFragment.TimePickerListener {
@@ -230,19 +231,39 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    URL server = new URL("http://149.201.48.86/moveby.php"/*?d=" + Constants.SIM_MODE*/);
-                    Log.i("NewOrderActivity", server.toString());
-                    HttpURLConnection connection = (HttpURLConnection) server.openConnection();
-                    connection.setDoInput(false);
-                    connection.connect();
 
-                    if (connection.getResponseCode() != 200) {
-                        throw new RuntimeException("Failed: HTTP error code: " + connection.getResponseCode());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            URL server = new URL("http://149.201.48.86/moveby.php"/*?d=" + Constants.SIM_MODE*/);
+                            Log.i("NewOrderActivity", server.toString());
+                            HttpURLConnection connection = (HttpURLConnection) server.openConnection();
+                            connection.setDoInput(false);
+                            connection.connect();
+
+                            if (connection.getResponseCode() != 200) {
+                                throw new RuntimeException("Failed: HTTP error code: " + connection.getResponseCode());
+                            }
+
+                            Log.i("NewOrderActivity", connection.getResponseCode() + "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
+                }).start();
 
-                    Log.i("NewOrderActivity", connection.getResponseCode() + "");
 
+                Intent i = new Intent(view.getContext(), MainActivity.class);
+                Context context = getApplicationContext();
+                CharSequence text = "Ihre Bestellung ist auf dem Weg.";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+
+                startActivity(i);
                     // HIER: Fensterlieferung
                     // IP: /moveby.php?d=<SIMULATOR>
 
@@ -329,9 +350,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
                         startActivity ( i );*/
 
-                } catch ( Exception e ) {
-                    e.printStackTrace ();
-                }
+
             }
         });
 
@@ -545,13 +564,16 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         if(!searchString.isEmpty()) {
 
-            Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+            /*Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);
             }catch (IOException e){
                 Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-            }
+            }*/
+            GeoLocateAsync geoLocateAsync = new GeoLocateAsync();
+            List<Address> list = geoLocateAsync.doInBackground(searchString);
+
 
             if(list.size() > 0){
 
@@ -579,13 +601,15 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         if(!searchString.isEmpty()) {
 
-            Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+            /*Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);
             }catch (IOException e){
                 Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-            }
+            }*/
+            GeoLocateAsync geoLocateAsync = new GeoLocateAsync();
+            List<Address> list = geoLocateAsync.doInBackground(searchString);
 
             if(list.size() > 0){
 
@@ -636,6 +660,40 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             }
         });
 
+    }
+
+    class GeoLocateAsyncLL extends AsyncTask<Double, Integer, List<Address>> {
+        @Override
+        public List<Address> doInBackground(Double... params) {
+            double latitudeFrom = params[0];
+            double longitudeFrom = params[1];
+
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            List<Address> addresses = new ArrayList<>();
+            try {
+                addresses = geocoder.getFromLocation(latitudeFrom, longitudeFrom, 1);
+            } catch (IOException e) {
+                Log.e("NewOrderActivity", e.getMessage());
+            }
+            return addresses;
+        }
+    }
+
+    class GeoLocateAsync extends AsyncTask<String, Integer, List<Address>> {
+        @Override
+        public List<Address> doInBackground(String... params) {
+            String searchString = params[0];
+            if (!searchString.isEmpty()) {
+                Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+                List<Address> addresses = new ArrayList<>();
+                try {
+                    addresses = geocoder.getFromLocationName(searchString, 1);
+                } catch (IOException e) {
+                    Log.e("NewOrderActivity", e.getMessage());
+                }
+                return addresses;
+            } else return null;
+        }
     }
 
 

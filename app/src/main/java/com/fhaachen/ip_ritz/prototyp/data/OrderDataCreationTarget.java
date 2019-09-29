@@ -2,14 +2,23 @@ package com.fhaachen.ip_ritz.prototyp.data;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.fhaachen.ip_ritz.prototyp.Constants;
 import com.fhaachen.ip_ritz.prototyp.data.model.Order;
-import com.google.gson.*;
+import com.fhaachen.ip_ritz.prototyp.data.model.User;
+import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class OrderDataCreationTarget extends AsyncTask < Order, Float, String > {
     @Override
@@ -23,6 +32,8 @@ public class OrderDataCreationTarget extends AsyncTask < Order, Float, String > 
 
             Gson gson = new Gson ();
             String payload = gson.toJson ( params[ 0 ] );
+
+            Log.i("OrderDataCreationTarget", payload);
 
             OutputStream os = connection.getOutputStream ();
             os.write ( payload.getBytes () );
@@ -54,6 +65,22 @@ public class OrderDataCreationTarget extends AsyncTask < Order, Float, String > 
             }
             Log.i ( "OrderDataCreation" , orderId );
             connection.disconnect ();
+
+
+            Constants.CURRENT_ORDER = orderId;
+            User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser();
+            UserDataSource dataSource = new UserDataSource();
+
+            ArrayList<String> journeys;
+            if ((journeys = loggedInUser.getJourneys()) == null) {
+                journeys = new ArrayList<>();
+            }
+            journeys.add(orderId);
+            loggedInUser.setJourneys(journeys);
+
+            UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget();
+            userDataUpdateTarget.doInBackground(loggedInUser);
+
             return orderId;
         } catch ( Exception e ) {
             e.printStackTrace ();
