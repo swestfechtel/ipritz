@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.fhaachen.ip_ritz.prototyp.data.DroneConfirmationTarget;
@@ -29,11 +31,16 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class WaitingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private double la;
     private double lo;
+    private Button cancelBtn;
+    private Button landingBtn;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver () {
         @Override
@@ -109,6 +116,35 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
         setContentView ( R.layout.activity_waiting );
+        cancelBtn = findViewById(R.id.cancel_button);
+        landingBtn = findViewById(R.id.landing_button);
+        landingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //landing Befehl
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            URL server = new URL("149.201.48.86/landing.php");
+                            HttpURLConnection connection = (HttpURLConnection) server.openConnection();
+                            connection.setDoOutput(false);
+                            connection.connect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
+            }
+        });
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //cancel Befehl
+            }
+        });
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
                 .findFragmentById ( R.id.map );
@@ -116,6 +152,8 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
 
         LocalBroadcastManager.getInstance ( this ).registerReceiver ( mMessageReceiver ,
                 new IntentFilter ( "message-test" ) );
+
+
     }
 
     private void showDronePopup () {

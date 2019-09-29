@@ -49,7 +49,7 @@
                 android:text="From: "
                 style="@style/h6" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/order_text_from"
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
@@ -57,6 +57,9 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/colorSearchBar"
                 android:inputType="text"
+                android:completionThreshold="1"
+                android:popupBackground="@color/colorPrimary"
+                android:text="My location"
                 android:hint="Enter a start address"/>
 
             <ImageButton
