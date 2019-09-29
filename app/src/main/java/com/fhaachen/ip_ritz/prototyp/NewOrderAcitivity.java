@@ -266,10 +266,11 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                     String depDate =orderTextDepartureDate.getText().toString();
                     String curDate = datumsformat.format(Calendar.getInstance().getTime());
                     if(curDate.equals(depDate)){
-                        Date deptime = zeitformat.parse(orderTextDepatureTime.getText().toString());
-                        Date currentTime = Calendar.getInstance().getTime();
-                        if( (deptime.getHours() - currentTime.getHours()) == 0){
-                            if(deptime.getMinutes() - currentTime.getMinutes() <= 15){
+                        String cTime = zeitformat.format(Calendar.getInstance().getTime());
+                        String deptime[] = orderTextDepatureTime.getText().toString().split(":");
+                        String currentTime[] = cTime.toString().split(":");
+                        if( ( Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 0){
+                            if((Integer.parseInt(deptime[1]) - Integer.parseInt(currentTime[1])) <= 15){
                                 Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                 i.putExtra("startLat", startAddress.getLatitude());
                                 i.putExtra("startLong", startAddress.getLongitude());
@@ -279,9 +280,9 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                             }
 
                         }
-                        if (deptime.getHours() - currentTime.getHours() == 1){
-                            if(currentTime.getMinutes() > 45){
-                                if(deptime.getMinutes()- currentTime.getMinutes() >= - 45){
+                        else if ((Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 1){
+                            if(Integer.parseInt(currentTime[1]) > 45){
+                                if((Integer.parseInt(deptime[1])- Integer.parseInt(currentTime[1])) >= - 45){
                                     Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                     i.putExtra("startLat", startAddress.getLatitude());
                                     i.putExtra("startLong", startAddress.getLongitude());
@@ -291,19 +292,21 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                                 }
                             }
                         }
-                    }
 
-                        Intent i = new Intent ( view.getContext () , MainActivity.class );
+                    }
+                    else {
+
+
+                        Intent i = new Intent(view.getContext(), MainActivity.class);
                         Context context = getApplicationContext();
                         CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
                         int duration = Toast.LENGTH_LONG;
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
+                        startActivity(i);
 
-
-
-                        startActivity ( i );
+                    }
 
                 } catch ( Exception e ) {
                     e.printStackTrace ();
@@ -349,7 +352,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                         //find the location of the start address
                         geoLocateFrom ( orderTextFrom );
                         //find the location of the destination address
-                        if(orderTextTo.getText().toString().equals("My Location")){
+                        if(orderTextTo.getText().toString().equals("My location")){
                             getLastKnownLocation ();
                         }
                         else {
