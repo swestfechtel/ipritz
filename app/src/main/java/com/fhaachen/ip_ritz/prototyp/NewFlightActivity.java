@@ -347,12 +347,6 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 Log.i ( "NewFlightActivity" , "Show route startlocation to destination" );
-                //Keyboard weg
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
 
                 //Show popup to warn user about the entered start and destination Addresses
                 if(flightTextFrom.getText().toString().isEmpty() || flightTextTo.getText().toString().isEmpty()) {
@@ -360,6 +354,13 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
                     //Show popup to warn user about the entered start and destination Addresses -- end
                 }else if(!flightTextFrom.getText().toString().isEmpty() && !flightTextTo.getText().toString().isEmpty()){
+
+                    //Keyboard weg
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
 
                     if(flightTextFrom.getText().toString().equals("My location")){
                         //get current location
