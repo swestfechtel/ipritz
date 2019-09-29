@@ -420,21 +420,12 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         //Setting message manually and performing action on button click
         builder.setMessage("Please insert a start and a destination address!")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                       // finish();
-                        Toast.makeText(getApplicationContext(),"you choose yes action for the warning popup",
-                                Toast.LENGTH_SHORT).show();
-                    }
+
+                                           }
                 });
-               /* .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //  Action for 'NO' Button
-                        dialog.cancel();
-                        Toast.makeText(getApplicationContext(),"you choose no action for for the warning popup",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } );*/
+
         //Creating dialog box
         AlertDialog alert = builder.create();
         //Setting the title manually
