@@ -139,6 +139,7 @@ public class WaitingActivity extends FragmentActivity implements OnMapReadyCallb
                 }).start();
             }
         });
+
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
