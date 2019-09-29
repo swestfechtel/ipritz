@@ -365,9 +365,6 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         //get current location
                         getLastKnownLocation(0);
 
-
-
-
                     }else {
 
                         //find the location of the start address
