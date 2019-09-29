@@ -315,12 +315,6 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             @Override
             public void onClick( View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
-                //Keyboard weg
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
-                        InputMethodManager.HIDE_NOT_ALWAYS );
 
                 //Show popup to warn user about the entered start and destiantion Addresses
                 if( orderTextFrom.getText().toString().isEmpty() || orderTextTo.getText().toString().isEmpty() ){
@@ -329,6 +323,13 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
                     //Show popup to warn user about the entered start and destiantion Addresses -- end
                 }else if( !orderTextFrom.getText().toString().isEmpty() && !orderTextTo.getText().toString().isEmpty() ){
+
+                    //Keyboard weg
+                    InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                
+                    inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
+                        InputMethodManager.HIDE_NOT_ALWAYS );
 
                     if ( orderTextTo.getText ().toString ().equals ( "My location" ) ) {
                         //get current location
