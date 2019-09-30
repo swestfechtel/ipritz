@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Order {
-    private String id;
+    private _id _id;
     private String purchaser;
     private ArrayList < String > passengers;
     private Date orderTime;
@@ -24,8 +24,8 @@ public class Order {
     private String droneId;
     private boolean completed;
 
-    public Order ( String id , String purchaser , ArrayList < String > passengers , Date orderTime , Date startTime , Date arrivalTime , float price , ArrayList < String > startLocation , ArrayList < String > destinationLocation , String startAddress , String destinationAddress , boolean cancelled , String complaints , boolean paid , boolean confirmed , String paymentMethod , int priority , String droneId , boolean completed ) {
-        this.id = id;
+    public Order(_id _id, String purchaser, ArrayList<String> passengers, Date orderTime, Date startTime, Date arrivalTime, float price, ArrayList<String> startLocation, ArrayList<String> destinationLocation, String startAddress, String destinationAddress, boolean cancelled, String complaints, boolean paid, boolean confirmed, String paymentMethod, int priority, String droneId, boolean completed) {
+        this._id = _id;
         this.purchaser = purchaser;
         this.passengers = passengers;
         this.orderTime = orderTime;
@@ -52,12 +52,12 @@ public class Order {
         this.destinationLocation = destinationLocation;
     }
 
-    public String getId () {
-        return id;
+    public _id getId() {
+        return _id;
     }
 
-    public void setId ( String id ) {
-        this.id = id;
+    public void setId(_id _id) {
+        this._id = _id;
     }
 
     public String getPurchaser () {
