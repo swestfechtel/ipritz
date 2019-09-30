@@ -58,6 +58,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import static android.support.constraint.Constraints.TAG;
 
 public class MainActivity extends AppCompatActivity
@@ -440,6 +443,19 @@ public class MainActivity extends AppCompatActivity
             startActivity ( i );
         } else if (id == R.id.nav_stop) {
             Log.i("MainActivity", "Navigation item selected: Not-Aus");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        URL url = new URL(Constants.IP + "/emergency.php");
+                        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.setDoOutput(false);
+                        urlConnection.connect();
+                    } catch (Exception e) {
+
+                    }
+                }
+            }).start();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

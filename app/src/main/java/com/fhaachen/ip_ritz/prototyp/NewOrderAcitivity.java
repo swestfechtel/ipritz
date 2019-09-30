@@ -236,7 +236,7 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                     @Override
                     public void run() {
                         try {
-                            URL server = new URL("http://149.201.48.86/moveby.php"/*?d=" + Constants.SIM_MODE*/);
+                            URL server = new URL(Constants.IP + "/moveby.php"/*?d=" + Constants.SIM_MODE*/);
                             Log.i("NewOrderActivity", server.toString());
                             HttpURLConnection connection = (HttpURLConnection) server.openConnection();
                             connection.setDoInput(false);

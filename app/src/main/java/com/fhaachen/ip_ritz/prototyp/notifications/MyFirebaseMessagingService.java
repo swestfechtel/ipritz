@@ -11,6 +11,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static android.support.constraint.Constraints.TAG;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -28,11 +31,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if ( remoteMessage.getData ().size () > 0 ) {
             Log.d ( TAG , "Message data payload: " + remoteMessage.getData () );
-            if (remoteMessage.getData().toString().equalsIgnoreCase("confirm=startingpoint")) {
+            Pattern pattern = Pattern.compile(".*startingPoint.*");
+            Matcher matcher = pattern.matcher(remoteMessage.getData().toString());
+            if (matcher.matches()) {
+                //if (remoteMessage.getData().toString()./*equalsIgnoreCase("confirm=startingpoint")*/) {
                 // bestätige Zwischenlandung
+                Log.i("Firebase: ", "startingpoint");
                 Intent intent = new Intent("message-interm");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-            } else if (remoteMessage.getData().toString().equalsIgnoreCase("confirm=destinationpoint")) {
+            } else /*if (remoteMessage.getData().toString().equalsIgnoreCase("confirm=destinationpoint"))*/ {
+                Log.i("Firebase: ", "else");
                 Intent intent = new Intent("message-test");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
