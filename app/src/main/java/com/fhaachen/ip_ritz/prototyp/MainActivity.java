@@ -404,7 +404,8 @@ public class MainActivity extends AppCompatActivity
     private void popUp ( final View view ) {
         new AlertDialog.Builder ( view.getContext () )
                 .setTitle ( "New Booking" )
-                .setMessage ( "What do you want to receive?" )
+                .setMessage ( "What do you want to book?" )
+
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
