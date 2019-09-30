@@ -9,5 +9,5 @@ public class Constants {
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9003;
     public static boolean SIM_MODE = false;
     public static String CURRENT_ORDER = "";
-    public static String IP = "http://149.201.48.24";
+    public static String IP = "http://149.201.48.86:8001";
 }
