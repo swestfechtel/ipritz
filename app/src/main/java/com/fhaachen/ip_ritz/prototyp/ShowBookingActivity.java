@@ -159,7 +159,14 @@ public class ShowBookingActivity extends AppCompatActivity {
         OrderDataSource orderDataSource = new OrderDataSource ();
 
         for ( String id : journeys ) {
-            if ( id != null ) orders.add ( orderDataSource.doInBackground ( id ) );
+            if (id != null) {
+                Order tmp = orderDataSource.doInBackground(id);
+                if (tmp != null && !tmp.isCompleted()) {
+                    orders.add(tmp);
+                    if (tmp.getId() == null) Log.i("ShowBookingActivity", "ID IS NULL??");
+                    Log.i("ShowBookingActivity", tmp.getStartAddress());
+                }
+            }
         }
         final ShowBookingActivity.CustomArrayAdapter adapter = new ShowBookingActivity.CustomArrayAdapter ( getApplicationContext () , orders );
         listView.setAdapter ( adapter );

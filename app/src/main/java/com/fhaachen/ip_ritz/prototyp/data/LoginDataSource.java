@@ -2,6 +2,8 @@ package com.fhaachen.ip_ritz.prototyp.data;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.fhaachen.ip_ritz.prototyp.Constants;
 import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -20,7 +22,11 @@ import java.net.URL;
  */
 public class LoginDataSource extends AsyncTask < String, Integer, Result > {
 
-    public static String serverAddress = "http://149.201.48.86:8001/app/api";
+    // PUBLIC SERVER
+    //public static String serverAddress = "http://149.201.48.86:8001/app/api";
+
+    // LOCALHOST
+    public static String serverAddress = Constants.IP + "/app/api";
 
     @Override
     public Result < User > doInBackground ( String... params ) {

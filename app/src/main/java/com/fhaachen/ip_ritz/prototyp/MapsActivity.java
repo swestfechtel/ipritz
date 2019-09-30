@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
 import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
 import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
@@ -20,7 +21,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     Order order = new Order ( LoginActivity.loginViewModel.getLoggedInUser ().get_id ().get$oid () , startLocation , destinationLocation );
                     order.setPassengers ( passengers );
-                    order.setStartAddress ( startAddress );
+                    order.setStartAddress("");
                     order.setDestinationAddress ( destinationAddress );
 
                     OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();

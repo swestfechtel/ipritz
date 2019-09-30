@@ -8,8 +8,12 @@ import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.fhaachen.ip_ritz.prototyp.Constants;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -28,8 +32,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if ( remoteMessage.getData ().size () > 0 ) {
             Log.d ( TAG , "Message data payload: " + remoteMessage.getData () );
-            Intent intent = new Intent ( "message-test" );
-            LocalBroadcastManager.getInstance ( this ).sendBroadcast ( intent );
+            Pattern pattern = Pattern.compile(".*startingPoint.*");
+            Pattern orderId = Pattern.compile(".*orderid.*");
+            Matcher matcher = pattern.matcher(remoteMessage.getData().toString());
+            if (matcher.matches()) {
+                //if (remoteMessage.getData().toString()./*equalsIgnoreCase("confirm=startingpoint")*/) {
+                // bestätige Zwischenlandung
+                Log.i("Firebase: ", "startingpoint");
+                Intent intent = new Intent("message-interm");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            } else if (orderId.matcher(remoteMessage.getData().toString()).matches()) {
+                Log.i("Firebase: ", "orderid");
+                String str = remoteMessage.getData().toString();
+                str = str.substring(str.indexOf(":") + 2, str.lastIndexOf("\""));
+                Log.i("Firebase: ", str);
+                Constants.CURRENT_ORDER = str;
+            } else /*if (remoteMessage.getData().toString().equalsIgnoreCase("confirm=destinationpoint"))*/ {
+                Log.i("Firebase: ", "else");
+                Intent intent = new Intent("message-test");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }
         }
         try {
             String url = remoteMessage.getData().get("click_action");

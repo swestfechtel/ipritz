@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -20,29 +21,41 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
-import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
-import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
-import com.fhaachen.ip_ritz.prototyp.data.model.Order;
-import com.fhaachen.ip_ritz.prototyp.data.model.User;
-import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyCallback,DatePickerDialog.OnDateSetListener, TimePickerFragment.TimePickerListener {
@@ -123,10 +136,10 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderButton = findViewById(R.id.order_button);
         switchButton = findViewById(R.id.btn_switch_start_end_order);
         //Insert Stopover
-        orderTextStopover = (EditText) findViewById(R.id.order_text_stopover);
-        orderStopover = (TextView) findViewById(R.id.order_stopover);
-        orderAddStopover = (ImageButton) findViewById(R.id.order_add_stopover);
-        orderRemoveStopover = (ImageButton) findViewById(R.id.order_remove_stopover);
+        orderTextStopover = findViewById(R.id.order_text_stopover);
+        orderStopover = findViewById(R.id.order_stopover);
+        orderAddStopover = findViewById(R.id.order_add_stopover);
+        orderRemoveStopover = findViewById(R.id.order_remove_stopover);
         orderRemoveStopover.setVisibility(View.GONE);
         orderStopover.setVisibility(View.GONE);
         orderTextStopover.setVisibility(View.GONE);
@@ -222,10 +235,46 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            URL server = new URL(Constants.IP + "/moveby.php"/*?d=" + Constants.SIM_MODE*/);
+                            Log.i("NewOrderActivity", server.toString());
+                            HttpURLConnection connection = (HttpURLConnection) server.openConnection();
+                            connection.setDoInput(false);
+                            connection.connect();
+
+                            if (connection.getResponseCode() != 200) {
+                                throw new RuntimeException("Failed: HTTP error code: " + connection.getResponseCode());
+                            }
+
+                            Log.i("NewOrderActivity", connection.getResponseCode() + "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+
+                Intent i = new Intent(view.getContext(), MainActivity.class);
+                Context context = getApplicationContext();
+                CharSequence text = "Ihre Bestellung ist auf dem Weg.";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+
+                startActivity(i);
+                    // HIER: Fensterlieferung
+                    // IP: /moveby.php?d=<SIMULATOR>
+
                 /*Intent i = new Intent(view.getContext(), WaitingActivity.class);
                 startActivity(i);*/
 
-                try {
+                /*try {
 
                     User loggedInUser = LoginActivity.loginViewModel.getLoggedInUser ();
                     ArrayList < String > startLocation = new ArrayList < String > ();
@@ -306,11 +355,10 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                         toast.show();
                         startActivity(i);
 
-                    }
 
-                } catch ( Exception e ) {
-                    e.printStackTrace ();
-                }
+
+                        startActivity ( i );*/
+
             }
         });
 
@@ -538,13 +586,16 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         if(!searchString.isEmpty()) {
 
-            Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+            /*Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);
             }catch (IOException e){
                 Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-            }
+            }*/
+            GeoLocateAsync geoLocateAsync = new GeoLocateAsync();
+            List<Address> list = geoLocateAsync.doInBackground(searchString);
+
 
             if(list.size() > 0){
 
@@ -572,13 +623,15 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
         if(!searchString.isEmpty()) {
 
-            Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+            /*Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);
             }catch (IOException e){
                 Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-            }
+            }*/
+            GeoLocateAsync geoLocateAsync = new GeoLocateAsync();
+            List<Address> list = geoLocateAsync.doInBackground(searchString);
 
             if(list.size() > 0){
 
@@ -629,6 +682,40 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             }
         });
 
+    }
+
+    class GeoLocateAsyncLL extends AsyncTask<Double, Integer, List<Address>> {
+        @Override
+        public List<Address> doInBackground(Double... params) {
+            double latitudeFrom = params[0];
+            double longitudeFrom = params[1];
+
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            List<Address> addresses = new ArrayList<>();
+            try {
+                addresses = geocoder.getFromLocation(latitudeFrom, longitudeFrom, 1);
+            } catch (IOException e) {
+                Log.e("NewOrderActivity", e.getMessage());
+            }
+            return addresses;
+        }
+    }
+
+    class GeoLocateAsync extends AsyncTask<String, Integer, List<Address>> {
+        @Override
+        public List<Address> doInBackground(String... params) {
+            String searchString = params[0];
+            if (!searchString.isEmpty()) {
+                Geocoder geocoder = new Geocoder(NewOrderAcitivity.this);
+                List<Address> addresses = new ArrayList<>();
+                try {
+                    addresses = geocoder.getFromLocationName(searchString, 1);
+                } catch (IOException e) {
+                    Log.e("NewOrderActivity", e.getMessage());
+                }
+                return addresses;
+            } else return null;
+        }
     }
 
 

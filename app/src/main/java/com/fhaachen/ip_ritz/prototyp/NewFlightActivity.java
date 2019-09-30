@@ -10,8 +10,10 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NotificationManagerCompat;
@@ -33,8 +35,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.fhaachen.ip_ritz.prototyp.data.OrderDataCreationTarget;
-import com.fhaachen.ip_ritz.prototyp.data.UserDataSource;
-import com.fhaachen.ip_ritz.prototyp.data.UserDataUpdateTarget;
 import com.fhaachen.ip_ritz.prototyp.data.model.Order;
 import com.fhaachen.ip_ritz.prototyp.data.model.User;
 import com.fhaachen.ip_ritz.prototyp.ui.login.LoginActivity;
@@ -270,14 +270,23 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     String startAddressString = startAddress.getAddressLine(0);
                     String destinationAddressString = destAddress.getAddressLine ( 0 );
 
-                    Order order = new Order ( loggedInUser.get_id ().get$oid () , startLocation , destinationLocation );
+                    final Order order = new Order(loggedInUser.get_id().get$oid(), startLocation, destinationLocation);
                     order.setPassengers ( passengers );
                     order.setStartAddress ( startAddressString );
                     order.setDestinationAddress ( destinationAddressString );
 
-                    OrderDataCreationTarget dataTarget = new OrderDataCreationTarget ();
-                    String orderId = dataTarget.doInBackground ( order );
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            OrderDataCreationTarget dataTarget = new OrderDataCreationTarget();
+                            dataTarget.doInBackground(order);
+                        }
+                    }).start();
+
+                    /*String orderId = dataTarget.doInBackground ( order );
                     Log.i ( "NewFlightActivity" , orderId );
+
+                    Constants.CURRENT_ORDER = orderId;
 
                     UserDataSource dataSource = new UserDataSource ();
 
@@ -289,7 +298,8 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     loggedInUser.setJourneys ( journeys );
 
                     UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
-                    userDataUpdateTarget.doInBackground ( loggedInUser );
+                    userDataUpdateTarget.doInBackground ( loggedInUser );*/
+                    
                     String depDate =flightTextDepartureDate.getText().toString();
                     String curDate = datumsformat.format(Calendar.getInstance().getTime());
                     if(curDate.equals(depDate)){
@@ -507,6 +517,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     //search a location
+    @WorkerThread
     public void geoLocateFrom(EditText searchText){
         Log.d(TAG, "geoLocate: geolocating");
 
@@ -514,13 +525,15 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
         if(!searchString.isEmpty()) {
 
-            Geocoder geocoder = new Geocoder(NewFlightActivity.this);
+            /*Geocoder geocoder = new Geocoder(NewFlightActivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);
             }catch (IOException e){
                 Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-            }
+            }*/
+            GeoLocateAsync geoLocateAsync = new GeoLocateAsync();
+            List<Address> list = geoLocateAsync.doInBackground(searchString);
 
             if(list.size() > 0){
 
@@ -539,7 +552,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-
+    @WorkerThread
     public void geoLocateTo(EditText searchText){
         Log.d(TAG, "geoLocate: geolocating");
 
@@ -547,13 +560,15 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
         if(!searchString.isEmpty()) {
 
-            Geocoder geocoder = new Geocoder(NewFlightActivity.this);
+            /*Geocoder geocoder = new Geocoder(NewFlightActivity.this);
             List<Address> list = new ArrayList<>();
             try{
                 list = geocoder.getFromLocationName(searchString, 1);
             }catch (IOException e){
                 Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-            }
+            }*/
+            GeoLocateAsync geoLocateAsync = new GeoLocateAsync();
+            List<Address> list = geoLocateAsync.doInBackground(searchString);
 
             if(list.size() > 0){
 
@@ -581,6 +596,11 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             Toast.makeText(this, "Enter the destination address for your order", Toast.LENGTH_SHORT).show();
 
         }
+
+        // FÜR TEST:
+       /* this.destAddress = "E"
+        this.latitudeTo = 50.7585445;
+        this.longitudeTo = 6.0824400;*/
     }
 
     //Get actual Location
@@ -604,8 +624,10 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         longitudeTo = geoPoint.getLongitude(); //myLocatonLongitude
                     }
                     try {
-                        Geocoder geocoder = new Geocoder ( getApplicationContext () , Locale.getDefault () );
-                        List < Address > addresses = geocoder.getFromLocation ( latitudeFrom , longitudeFrom , 1 );
+                        /*Geocoder geocoder = new Geocoder ( getApplicationContext () , Locale.getDefault () );
+                        List < Address > addresses = geocoder.getFromLocation ( latitudeFrom , longitudeFrom , 1 );*/
+                        GeoLocateAsyncLL geoLocateAsyncLL = new GeoLocateAsyncLL();
+                        List<Address> addresses = geoLocateAsyncLL.doInBackground(latitudeFrom, longitudeFrom);
                         startAddress = addresses.get ( 0 );
                     } catch ( Exception e ) {
                         e.printStackTrace ();
@@ -615,9 +637,41 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         });
-
     }
 
+    class GeoLocateAsync extends AsyncTask<String, Integer, List<Address>> {
+        @Override
+        public List<Address> doInBackground(String... params) {
+            String searchString = params[0];
+            if (!searchString.isEmpty()) {
+                Geocoder geocoder = new Geocoder(NewFlightActivity.this);
+                List<Address> addresses = new ArrayList<>();
+                try {
+                    addresses = geocoder.getFromLocationName(searchString, 1);
+                } catch (IOException e) {
+                    Log.e("NewFlightActivity", e.getMessage());
+                }
+                return addresses;
+            } else return null;
+        }
+    }
+
+    class GeoLocateAsyncLL extends AsyncTask<Double, Integer, List<Address>> {
+        @Override
+        public List<Address> doInBackground(Double... params) {
+            double latitudeFrom = params[0];
+            double longitudeFrom = params[1];
+
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            List<Address> addresses = new ArrayList<>();
+            try {
+                addresses = geocoder.getFromLocation(latitudeFrom, longitudeFrom, 1);
+            } catch (IOException e) {
+                Log.e("NewFlightActivity", e.getMessage());
+            }
+            return addresses;
+        }
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
