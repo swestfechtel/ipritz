@@ -66,9 +66,9 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
     public double longitudeTo;
     private Address startAddress, destAddress;
 
-    private ImageButton orderBackButton;
+    //private ImageButton orderBackButton;
     private Button orderButton;
-    private EditText orderTextFrom;
+    private AutoCompleteTextView orderTextFrom;
     private AutoCompleteTextView orderTextTo;
     private ImageButton switchButton;
 
@@ -122,13 +122,17 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_order);
 
+        //set back button on action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //set back button on action bar end
+
         String[] locations = getResources().getStringArray(R.array.locations);
         orderTextTo = findViewById ( R.id.order_text_to );
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         orderTextTo.setAdapter(adapter);
         orderTextFrom = findViewById(R.id.order_text_from);
-        orderBackButton = findViewById(R.id.orderBackButton);
+        //orderBackButton = findViewById(R.id.orderBackButton);
         orderButton = findViewById(R.id.order_button);
         switchButton = findViewById(R.id.btn_switch_start_end_order);
         //Insert Stopover
@@ -177,14 +181,14 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getRoute = findViewById(R.id.search_route_order);
         price = findViewById ( R.id.price_output );
-        orderBackButton.setOnClickListener(new View.OnClickListener() {
+        /*orderBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("NewOrderActivity", "Go to MainActivity");
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
-        });
+        });*/
 
 
         if(getIntent().hasExtra("text") == true) {
@@ -311,10 +315,11 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                     String depDate =orderTextDepartureDate.getText().toString();
                     String curDate = datumsformat.format(Calendar.getInstance().getTime());
                     if(curDate.equals(depDate)){
-                        Date deptime = zeitformat.parse(orderTextDepatureTime.getText().toString());
-                        Date currentTime = Calendar.getInstance().getTime();
-                        if( (deptime.getHours() - currentTime.getHours()) == 0){
-                            if(deptime.getMinutes() - currentTime.getMinutes() <= 15){
+                        String cTime = zeitformat.format(Calendar.getInstance().getTime());
+                        String deptime[] = orderTextDepatureTime.getText().toString().split(":");
+                        String currentTime[] = cTime.toString().split(":");
+                        if( ( Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 0){
+                            if((Integer.parseInt(deptime[1]) - Integer.parseInt(currentTime[1])) <= 15){
                                 Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                 i.putExtra("startLat", startAddress.getLatitude());
                                 i.putExtra("startLong", startAddress.getLongitude());
@@ -324,9 +329,9 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                             }
 
                         }
-                        if (deptime.getHours() - currentTime.getHours() == 1){
-                            if(currentTime.getMinutes() > 45){
-                                if(deptime.getMinutes()- currentTime.getMinutes() >= - 45){
+                        else if ((Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 1){
+                            if(Integer.parseInt(currentTime[1]) > 45){
+                                if((Integer.parseInt(deptime[1])- Integer.parseInt(currentTime[1])) >= - 45){
                                     Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                     i.putExtra("startLat", startAddress.getLatitude());
                                     i.putExtra("startLong", startAddress.getLongitude());
@@ -336,20 +341,23 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                                 }
                             }
                         }
-                    }
 
-                        Intent i = new Intent ( view.getContext () , MainActivity.class );
+                    }
+                    else {
+
+
+                        Intent i = new Intent(view.getContext(), MainActivity.class);
                         Context context = getApplicationContext();
                         CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
                         int duration = Toast.LENGTH_LONG;
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
+                        startActivity(i);
 
 
 
                         startActivity ( i );*/
-
 
             }
         });
@@ -358,12 +366,6 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             @Override
             public void onClick( View v) {
                 Log.i("BookingOrderActivity", "Show route startlocation to destination");
-                //Keyboard weg
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
-                        InputMethodManager.HIDE_NOT_ALWAYS );
 
                 //Show popup to warn user about the entered start and destiantion Addresses
                 if( orderTextFrom.getText().toString().isEmpty() || orderTextTo.getText().toString().isEmpty() ){
@@ -372,6 +374,13 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
 
                     //Show popup to warn user about the entered start and destiantion Addresses -- end
                 }else if( !orderTextFrom.getText().toString().isEmpty() && !orderTextTo.getText().toString().isEmpty() ){
+
+                    //Keyboard weg
+                    InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                
+                    inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
+                        InputMethodManager.HIDE_NOT_ALWAYS );
 
                     if ( orderTextTo.getText ().toString ().equals ( "My location" ) ) {
                         //get current location
@@ -392,7 +401,12 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
                         //find the location of the start address
                         geoLocateFrom ( orderTextFrom );
                         //find the location of the destination address
-                        geoLocateTo ( orderTextTo );
+                        if(orderTextTo.getText().toString().equals("My location")){
+                            getLastKnownLocation ();
+                        }
+                        else {
+                            geoLocateTo(orderTextTo);
+                        }
 
                         //Check if a stopover is demanded and if the user entered an address
                         if(orderTextStopover.getVisibility() == View.VISIBLE && !orderTextStopover.toString().isEmpty()){
@@ -485,6 +499,14 @@ public class NewOrderAcitivity extends AppCompatActivity implements  OnMapReadyC
             }
         });
     }
+
+    //set back button on action bar
+    @Override
+    public boolean  onSupportNavigateUp(){
+        onBackPressed();
+        return true;
+    }
+    //set back button on action bar end
 
     //Show popup to warn user about the entered start and destiantion Addresses
     public void showWarningMessage(View view){

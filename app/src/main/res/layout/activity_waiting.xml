@@ -53,13 +53,23 @@
                 android:layout_marginLeft="40dp"
                 style="@style/body1" />
         </LinearLayout>
-
         <Button
+            android:id="@+id/landing_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Landing"
             android:layout_marginTop="20dp"
+            android:backgroundTint="@android:color/background_light"
+            style="@style/button"
+            />
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="cancel"
             android:backgroundTint="@color/colorButton"
             style="@style/button"/>
+
     </LinearLayout>
 </LinearLayout>

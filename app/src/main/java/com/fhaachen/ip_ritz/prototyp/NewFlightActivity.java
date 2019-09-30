@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,9 +74,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     private TextView price;
-    private ImageButton flightBackButton;
+    //private ImageButton flightBackButton;
     private ImageButton getRoute;
-    private EditText flightTextTo;
+    private AutoCompleteTextView flightTextTo;
     private Button bookButton;
     private ImageButton switchButton;
 
@@ -123,6 +124,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
     private static final String[] LOCATIONS = new String[]{
             "My location"
+            //hier Locations in FH Aachen Eup Str hinzufügen
     };
     private static final String TAG = "NewFlightActivity";
 
@@ -131,15 +133,20 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_flight);
 
+        //set back button on action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //set back button on action bar end
+
         String[] locations = getResources().getStringArray(R.array.locations);
         flightTextFrom = findViewById ( R.id.flight_text_from );
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
         flightTextFrom.setAdapter(adapter);
+
         bookButton = findViewById(R.id.flight_button);
         flightTextTo = findViewById(R.id.flight_text_to);
-        flightBackButton = findViewById(R.id.flightBackButton);
-        bookButton = findViewById(R.id.flight_button);
+        flightTextTo.setAdapter(adapter);
+        //flightBackButton = findViewById(R.id.flightBackButton);
         switchButton = findViewById(R.id.btn_switch_start_end_flight);
         //Insert Stopover
         flightTextStopover = findViewById ( R.id.flight_text_stopover );
@@ -233,14 +240,14 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
 
             }
         });
-        flightBackButton.setOnClickListener(new View.OnClickListener() {
+        /*flightBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i ( "NewFlightActivity" , "Go to MainActivity" );
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
-        });
+        });*/
 
 
         bookButton.setOnClickListener(new View.OnClickListener() {
@@ -291,16 +298,16 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                     loggedInUser.setJourneys ( journeys );
 
                     UserDataUpdateTarget userDataUpdateTarget = new UserDataUpdateTarget ();
-                    userDataUpdateTarget.doInBackground ( loggedInUser );
+                    userDataUpdateTarget.doInBackground ( loggedInUser );*/
+                    
                     String depDate =flightTextDepartureDate.getText().toString();
-                    String curDate = datumsformat.format(Calendar.getInstance().getTime());*/
-
-
-                    /*if(curDate.equals(depDate)){
-                        Date deptime = zeitformat.parse(flightTextDepatureTime.getText().toString());
-                        Date currentTime = Calendar.getInstance().getTime();
-                        if( (deptime.getHours() - currentTime.getHours()) == 0){
-                            if(deptime.getMinutes() - currentTime.getMinutes() <= 15){
+                    String curDate = datumsformat.format(Calendar.getInstance().getTime());
+                    if(curDate.equals(depDate)){
+                        String cTime = zeitformat.format(Calendar.getInstance().getTime());
+                        String deptime[] = flightTextDepatureTime.getText().toString().split(":");
+                        String currentTime[] = cTime.toString().split(":");
+                        if( ( Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 0){
+                            if((Integer.parseInt(deptime[1]) - Integer.parseInt(currentTime[1])) <= 15){
                                 Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                 i.putExtra("startLat", startAddress.getLatitude());
                                 i.putExtra("startLong", startAddress.getLongitude());
@@ -310,9 +317,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                             }
 
                         }
-                        else if (deptime.getHours() - currentTime.getHours() == 1){
-                            if(currentTime.getMinutes() > 45){
-                                if(deptime.getMinutes()- currentTime.getMinutes() >= - 45){
+                        else if ((Integer.parseInt(deptime[0]) - Integer.parseInt(currentTime[0])) == 1){
+                            if(Integer.parseInt(currentTime[1]) > 45){
+                                if((Integer.parseInt(deptime[1])- Integer.parseInt(currentTime[1])) >= - 45){
                                     Intent i = new Intent ( view.getContext () , WaitingActivity.class );
                                     i.putExtra("startLat", startAddress.getLatitude());
                                     i.putExtra("startLong", startAddress.getLongitude());
@@ -324,27 +331,19 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                         }
 
                     }
+                    else {
 
 
-
-                        Intent i = new Intent ( view.getContext () , MainActivity.class );
+                        Intent i = new Intent(view.getContext(), MainActivity.class);
                         Context context = getApplicationContext();
                         CharSequence text = "Ihre Order wurde gespeichert. Sie werden informiert, wenn ihr Flugtaxi da ist.";
                         int duration = Toast.LENGTH_LONG;
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
+                        startActivity(i);
 
-
-
-                        startActivity ( i );*/
-                    Intent i = new Intent ( view.getContext () , WaitingActivity.class );
-                    i.putExtra ( "startLat" , startAddress.getLatitude () );
-                    i.putExtra ( "startLong" , startAddress.getLongitude () );
-
-
-                    startActivity ( i );
-
+                    }
 
                 } catch ( Exception e ) {
                     e.printStackTrace ();
@@ -358,51 +357,44 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 Log.i ( "NewFlightActivity" , "Show route startlocation to destination" );
-                //Keyboard weg
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
-
-                //Show popup to warn user about the entered start and destiantion Addresses
+                //Show popup to warn user about the entered start and destination Addresses
                 if(flightTextFrom.getText().toString().isEmpty() || flightTextTo.getText().toString().isEmpty()) {
                     showWarningMessage(v);
 
-                    //Show popup to warn user about the entered start and destiantion Addresses -- end
+                    //Show popup to warn user about the entered start and destination Addresses -- end
                 }else if(!flightTextFrom.getText().toString().isEmpty() && !flightTextTo.getText().toString().isEmpty()){
+
+                    //Keyboard weg
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
 
                     if(flightTextFrom.getText().toString().equals("My location")){
                         //get current location
-                        getLastKnownLocation();
-                        geoLocateTo(flightTextTo);
+                        getLastKnownLocation(0);
 
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of the stopover
-                            geoLocateTo(flightTextStopover);
-
-                        }
-
-
-                    }else{
+                    }else {
 
                         //find the location of the start address
                         geoLocateFrom(flightTextFrom);
-                        //find the location of the destination address
+                    }
+                    //find the location of the destination address
+                    if(flightTextTo.getText().toString().equals("My location")){
+                        getLastKnownLocation(1);
+                    }
+                    else {
                         geoLocateTo(flightTextTo);
+                    }
+                    //Check if a stopover is demanded and if the user entered an address
+                    if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
 
+                        stopoverIsDemanded = true;
+                        //get the location of th stopover
+                        geoLocateTo(flightTextStopover);
 
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of th stopover
-                            geoLocateTo(flightTextStopover);
-
-                        }
                     }
 
                 }
@@ -428,68 +420,9 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-        flightTextTo.setOnEditorActionListener ( new TextView.OnEditorActionListener () {
-            @Override
-            public boolean onEditorAction ( TextView v , int actionId , KeyEvent event ) {
-                if ( actionId == EditorInfo.IME_ACTION_SEARCH ) {
 
-                    Log.i ( "NewFlightActivity" , "Show route startlocation to destination" );
-                    //Keyboard weg
-                    InputMethodManager inputManager = ( InputMethodManager )
-                            getSystemService ( Context.INPUT_METHOD_SERVICE );
-
-                    inputManager.hideSoftInputFromWindow ( getCurrentFocus ().getWindowToken () ,
-                            InputMethodManager.HIDE_NOT_ALWAYS );
-                    if ( flightTextFrom.getText ().toString ().equals ( "My location" ) ) {
-                        //get current location
-                        getLastKnownLocation ();
-                        geoLocateTo ( flightTextTo );
-
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of th stopover
-                            geoLocateTo(flightTextStopover);
-
-                        }
-
-                    } else {
-
-                        //find the location of the start address
-                        geoLocateFrom ( flightTextFrom );
-                        //find the location of the destination address
-                        geoLocateTo ( flightTextTo );
-
-                        //Check if a stopover is demanded and if the user entered an address
-                        if(flightTextStopover.getVisibility() == View.VISIBLE && !flightTextStopover.toString().isEmpty()){
-
-                            stopoverIsDemanded = true;
-                            //get the location of th stopover
-                            geoLocateTo(flightTextStopover);
-
-                        }
-                    }
-
-                    if ( aRouteIsShown ) {
-                        //Clear the map, if a route is already shown
-                        mMap.clear ();
-                    }
-                    aRouteIsShown = true;
-                    price.setText ( setDynamicPrice () );
-                    SupportMapFragment mapFragment = ( SupportMapFragment ) getSupportFragmentManager ()
-                            .findFragmentById ( R.id.map );
-                    mapFragment.getMapAsync ( NewFlightActivity.this );
-
-
-                    return true;
-                }
-                return false;
-            }
-        } );
 
     }
-
 
     //Show popup to warn user about the entered start and destiantion Addresses
     public void showWarningMessage(View view){
@@ -499,21 +432,12 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
         //Setting message manually and performing action on button click
         builder.setMessage("Please insert a start and a destination address!")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                       // finish();
-                        Toast.makeText(getApplicationContext(),"you choose yes action for the warning popup",
-                                Toast.LENGTH_SHORT).show();
-                    }
+
+                                           }
                 });
-               /* .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //  Action for 'NO' Button
-                        dialog.cancel();
-                        Toast.makeText(getApplicationContext(),"you choose no action for for the warning popup",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } );*/
+
         //Creating dialog box
         AlertDialog alert = builder.create();
         //Setting the title manually
@@ -522,6 +446,12 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     }
     //Show popup to warn user about the entered start and destiantion Addresses -- end
 
+    //set back button on action bar
+    public boolean onSupportNavigateUp(){
+        onBackPressed();
+        return true;
+    }
+    //set back button on action bar end
 
     //Send notification
     public void startService(View v) {
@@ -674,7 +604,7 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     //Get actual Location
-    private void getLastKnownLocation() {
+    private void getLastKnownLocation(final int i)  { //0 = Start, 1 = Destination
         Log.d(TAG, "getLastKnownLocation: called.");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -685,8 +615,14 @@ public class NewFlightActivity extends AppCompatActivity implements OnMapReadyCa
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    latitudeFrom = geoPoint.getLatitude(); //myLocationLatitude
-                    longitudeFrom = geoPoint.getLongitude(); //myLocatonLongitude
+                    if(i == 0) {
+                        latitudeFrom = geoPoint.getLatitude(); //myLocationLatitude
+                        longitudeFrom = geoPoint.getLongitude(); //myLocatonLongitude
+                    }
+                    if(i == 1) {
+                        latitudeTo = geoPoint.getLatitude(); //myLocationLatitude
+                        longitudeTo = geoPoint.getLongitude(); //myLocatonLongitude
+                    }
                     try {
                         /*Geocoder geocoder = new Geocoder ( getApplicationContext () , Locale.getDefault () );
                         List < Address > addresses = geocoder.getFromLocation ( latitudeFrom , longitudeFrom , 1 );*/

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 <RelativeLayout
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_order"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_margin="10dp"
     tools:context=".NewOrderAcitivity">
 
 
-        <LinearLayout
+       <!-- <LinearLayout
             android:id="@+id/btn_l"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -27,15 +27,14 @@
                 android:layout_alignEnd="@+id/btn_l"
                 android:backgroundTint="#FFFFFF"
                 android:src="@drawable/ic_arrow_back_black_24dp" />
-        </LinearLayout>
+        </LinearLayout> -->
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/route_titles"
-        android:layout_below="@id/btn_l">
+        android:id="@+id/route_titles"> <!-- android:layout_below="@id/btn_l"-->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -50,7 +49,7 @@
                 android:text="From: "
                 style="@style/h6" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/order_text_from"
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
@@ -58,6 +57,9 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/colorSearchBar"
                 android:inputType="text"
+                android:completionThreshold="1"
+                android:popupBackground="@color/colorPrimary"
+                android:text="My location"
                 android:hint="Enter a start address"/>
 
             <ImageButton
@@ -147,7 +149,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="100dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -253,18 +255,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="260dp"
             android:layout_weight="0.6"
             android:id="@+id/card"
             android:layout_below="@id/route_titles"
-            android:layout_marginTop="180dp">
+            android:layout_marginTop="170dp">
 
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+            <fragment
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 tools:context=".MainActivity" />
         </LinearLayout>
 
@@ -295,12 +297,10 @@
 
     </LinearLayout>
 
-
-
         <Button
             android:id="@+id/order_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@id/price_title"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
@@ -312,4 +312,4 @@
 
 
 </RelativeLayout>
-</ScrollView>
+</android.support.design.widget.CoordinatorLayout>

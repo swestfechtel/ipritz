@@ -14,7 +14,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/search_layout">
 
         <ImageButton
             android:id="@+id/delivery_back_button"
@@ -31,8 +32,7 @@
             android:background="@color/colorSearchBar"
             android:inputType="text"
             android:hint="Enter an adress"
-            android:imeOptions="actionSearch"
-            />
+            android:imeOptions="actionSearch"/>
 
         <ImageButton
             android:id="@+id/delivery_search_button"
@@ -41,6 +41,29 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_white_right"
             app:srcCompat="@drawable/ic_search_blue" />
-
     </LinearLayout>
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:layout_weight="0.6"
+        android:layout_alignTop="@+id/search_layout"
+
+        android:orientation="horizontal">
+
+       <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignEnd="@+id/search_layout"
+            tools:context=".MainActivity" />
+    </LinearLayout>-->
+
+
+
 </RelativeLayout>
